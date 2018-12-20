@@ -1,4 +1,4 @@
--- Database file for Island Rush 2.5
+-- Database Creation for K2.5
 
 
 -- -----------------------------------------------------------------------------
@@ -14,25 +14,32 @@ SET SQL_SAFE_UPDATES = 0;
 -- Table of Games
 CREATE TABLE IF NOT EXISTS `games`(
   `gameId` int(5) NOT NULL AUTO_INCREMENT,
+  
   `gameSection` varchar(10) NOT NULL,  -- 'M1A', 'T7C'
   `gameInstructor` varchar(50) NOT NULL,  -- "Lastname"
   `gameAdminPassword` varchar(50) NOT NULL DEFAULT 'c4a276e907f10b988d593fcd573a3cba',  -- "password"
+  
   `gameActive` int(1) NOT NULL DEFAULT 0, -- 1 or 0
+  
+  `gameRedJoined` int(1) NOT NULL DEFAULT 0, -- 0 or 1 (1 = joined)
+  `gameBlueJoined` int(1) NOT NULL DEFAULT 0,
+  
   `gameCurrentTeam`  varchar(5) NOT NULL DEFAULT 'Blue', -- 'Red' or 'Blue'
   `gameTurn` int(4) NOT NULL DEFAULT 0, -- 0, 1, 2, 3...
   `gamePhase`  int(1) NOT NULL DEFAULT 1, --  1 = news, 2 = reinforcements...
+  
   `gameRedRpoints` int(5) NOT NULL DEFAULT 10,
   `gameBlueRpoints` int(5) NOT NULL DEFAULT 60,
   `gameRedHpoints` int(5) NOT NULL DEFAULT 0,
   `gameBlueHpoints` int(5) NOT NULL DEFAULT 0,
-  `gameRedJoined` int(1) NOT NULL DEFAULT 0, -- 0 or 1 (1 = joined)
-  `gameBlueJoined` int(1) NOT NULL DEFAULT 0,
+
   `gameBattleSection` varchar(20) NOT NULL DEFAULT 'none',  -- "none" (no popup), "attack", "counter", "askRepeat"......"selectPos", "selectPieces"?
   `gameBattleSubSection` varchar(20) NOT NULL DEFAULT 'choosing_pieces', -- "choosing_pieces", "attacked_popup", "defense_popup"
   `gameBattleTurn` int(3) NOT NULL DEFAULT 0,  -- put in to kick out aircraft after 2 turns
   `gameBattleLastRoll` int(1) NOT NULL DEFAULT 1, -- 1 for default (or no roll to display anymore/reset), 1-6 for roll
   `gameBattleLastMessage` varchar(50) DEFAULT '', -- used for explaining what happened "red killed blue's fighter with fighter" ex...
   `gameBattlePosSelected` int(8) NOT NULL DEFAULT 999999, -- positionId chosen by attacker (999999 default)
+  
   `gameIsland1` varchar(10) NOT NULL DEFAULT 'Red',
   `gameIsland2` varchar(10) NOT NULL DEFAULT 'Red',
   `gameIsland3` varchar(10) NOT NULL DEFAULT 'Red',
@@ -49,6 +56,9 @@ CREATE TABLE IF NOT EXISTS `games`(
   `gameIsland14` varchar(10) NOT NULL DEFAULT 'Blue',
     PRIMARY KEY(`gameId`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
+
+
+
 -- Insert games into the database
 INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword, gameActive) VALUES ('M1A1', 'Adolph', 	'5f4dcc3b5aa765d61d8327deb882cf99', 1);
 INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword, gameActive) VALUES ('M3A1', 'Kulp', 	'5f4dcc3b5aa765d61d8327deb882cf99', 1);

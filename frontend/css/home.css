@@ -20,8 +20,6 @@ nav {
     padding:0;
     position: sticky;
     top: 0;
-    display: grid;
-    grid-template-columns: 3fr 2fr 1fr;
 }
 
 nav a {
