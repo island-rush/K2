@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS `games`(
   `gameBattleTurn` int(3) NOT NULL DEFAULT 0,  -- put in to kick out aircraft after 2 turns
   `gameBattleLastRoll` int(1) NOT NULL DEFAULT 1, -- 1 for default (or no roll to display anymore/reset), 1-6 for roll
   `gameBattleLastMessage` varchar(50) DEFAULT '', -- used for explaining what happened "red killed blue's fighter with fighter" ex...
-  `gameBattlePosSelected` int(8) NOT NULL DEFAULT 999999, -- positionId chosen by attacker (999999 default)
+  `gameBattlePosSelected` int(8) NOT NULL DEFAULT -1, -- positionId chosen by attacker (999999 default)
   
   `gameIsland1` varchar(10) NOT NULL DEFAULT 'Red',
   `gameIsland2` varchar(10) NOT NULL DEFAULT 'Red',
@@ -164,7 +164,7 @@ CREATE TABLE IF NOT EXISTS `placements`(
     `placementGameId` int(5) NOT NULL,
     `placementUnitId` int(5) NOT NULL,
     `placementTeamId` varchar(10) NOT NULL,  -- "Red" or "Blue"
-	`placementContainerId` int(16) NOT NULL,  -- placementId of the container its in (999999 used instead of null)
+	`placementContainerId` int(16) NOT NULL,  -- placementId of the container its in (-1 used instead of null)
     `placementCurrentMoves` int(3) NOT NULL,
     `placementPositionId` int(4) NOT NULL,  -- references what spot its in on the board (map is available in resources / gameInfo)
     `placementBattleUsed` int(1) NOT NULL, -- 0 for not yet used, 1 for used
