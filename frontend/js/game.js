@@ -43,10 +43,36 @@ let popupBodyNews = document.getElementById("popupBodyNews");
 let popupBodyHybridMenu = document.getElementById("popupBodyHybridMenu");
 let popup = document.getElementById("popup");
 
+
+let popIsland1 = document.getElementById("special_island1_pop");
+let popIsland2 = document.getElementById("special_island2_pop");
+let popIsland3 = document.getElementById("special_island3_pop");
+let popIsland4 = document.getElementById("special_island4_pop");
+let popIsland5 = document.getElementById("special_island5_pop");
+let popIsland6 = document.getElementById("special_island6_pop");
+let popIsland7 = document.getElementById("special_island7_pop");
+let popIsland8 = document.getElementById("special_island8_pop");
+let popIsland9 = document.getElementById("special_island9_pop");
+let popIsland10 = document.getElementById("special_island10_pop");
+let popIsland11 = document.getElementById("special_island11_pop");
+let popIsland12 = document.getElementById("special_island12_pop");
+let popIslands = [popIsland1, popIsland2, popIsland3, popIsland4, popIsland5, popIsland6, popIsland7, popIsland8, popIsland9, popIsland10, popIsland11, popIsland12];
+
+let gridIsland1 = document.getElementById("special_island1");
+let gridIsland2 = document.getElementById("special_island2");
+let gridIsland3 = document.getElementById("special_island3");
+let gridIsland4 = document.getElementById("special_island4");
+let gridIsland5 = document.getElementById("special_island5");
+let gridIsland6 = document.getElementById("special_island6");
+let gridIsland7 = document.getElementById("special_island7");
+let gridIsland8 = document.getElementById("special_island8");
+let gridIsland9 = document.getElementById("special_island9");
+let gridIsland10 = document.getElementById("special_island10");
+let gridIsland11 = document.getElementById("special_island11");
+let gridIsland12 = document.getElementById("special_island12");
+let gridIslands = [gridIsland1, gridIsland2, gridIsland3, gridIsland4, gridIsland5, gridIsland6, gridIsland7, gridIsland8, gridIsland9, gridIsland10, gridIsland11, gridIsland12];
+
 //-------------------------------------------------------------------------------------------------------------------
-
-
-
 
 
 function getPanel(){
@@ -96,8 +122,6 @@ function getPanel(){
 }
 getPanel();
 
-
-
 function ajaxUpdate(){
 	let phpUpdateBoard = new XMLHttpRequest();
 	phpUpdateBoard.onreadystatechange = function () {
@@ -110,6 +134,11 @@ function ajaxUpdate(){
 				lastUpdateId = decoded.updateId;
 
 				let updateType = decoded.updateType;
+
+				if (updateType === "logout") {
+					alert("Teacher has disabled the game...logging out.");  //TODO: don't log out spectators
+					logout();
+				}
 
 				if (updateType === "phaseChange") {
 					getPanel();
@@ -134,55 +163,81 @@ ajaxUpdate();
 
 //button functions---------------------------------------------------
 function controlButtonFunction() {
-	//hit the server for control button click
+	event.preventDefault();
+
+	event.stopPropagation();
 }
 
 function nextPhaseButtonFunction(){
+	event.preventDefault();
 	if (confirm("Are you sure you want to complete this phase?")) {
 		let phpUpdateBoard = new XMLHttpRequest();
 		phpUpdateBoard.open("GET", "backend/game/phaseChange.php", true);
 		phpUpdateBoard.send();
 	}
+	event.stopPropagation();
 }
 
 function attackButtonFunction(){
-	//hit the server for attack button click
+	event.preventDefault();
+
+	event.stopPropagation();
 }
 
 function changeSectionButtonFunction(){
-	//hit the server for change section button click
+	event.preventDefault();
+
+	event.stopPropagation();
 }
 
 function undoButtonFunction(){
-	//hit the server for undo button click
+	event.preventDefault();
+
+	event.stopPropagation();
 }
 
 function hybridAirfieldShutdownButtonFunction(){
+	event.preventDefault();
 
+	event.stopPropagation();
 }
 function hybridBankDrainButtonFunction(){
+	event.preventDefault();
 
+	event.stopPropagation();
 }
 function hybridAddMoveButtonFunction(){
+	event.preventDefault();
 
+	event.stopPropagation();
 }
 function hybridDeletePieceButtonFunction(){
+	event.preventDefault();
 
+	event.stopPropagation();
 }
 function hybridAircraftDisableButtonFunction(){
+	event.preventDefault();
 
+	event.stopPropagation();
 }
 function hybridNukeIslandButtonFunction(){
+	event.preventDefault();
 
+	event.stopPropagation();
 }
 function hybridHumanitarianButtonFunction(){
+	event.preventDefault();
 
+	event.stopPropagation();
 }
 
 function purchasePieceFunction(unitId){
+	event.preventDefault();
 	let phpUpdateBoard = new XMLHttpRequest();
 	phpUpdateBoard.open("GET", "backend/game/pieces/piecePurchase.php?unitId=" + unitId, true);
 	phpUpdateBoard.send();
+	event.stopPropagation();
 }
 //----------------------------------------------------------------
 
@@ -190,12 +245,34 @@ function purchasePieceFunction(unitId){
 
 
 
+function gridIslandClick(islandNum){
+	event.preventDefault();
+
+	//close all open islands
+	unpopIslands();
+
+	//pop this island
+	popIslands[islandNum-1].style.display = "block";
+	gridIslands[islandNum-1].style.zIndex = 20;  //default for a gridblock is 10
+
+	event.stopPropagation();
+}
+
+function unpopIslands() {
+	for (let x = 0; x < popIslands.length; x++) {
+		popIslands[x].style.display = "none";
+		popIslands[x].parentNode.style.zIndex = 10;  //10 is the default
+	}
+}
 
 
+function waterClick(){
+	event.preventDefault();
 
+	unpopIslands();
 
-
-
+	event.stopPropagation();
+}
 
 
 
@@ -229,12 +306,8 @@ function showDice(diceNumber){
 	dice[diceNumber-1].style.display = "block";
 }
 
-
-
-
 function logout(){
-	// let phpUpdateBoard = new XMLHttpRequest();
-	// phpUpdateBoard.open("GET", "backend/game/logout.php", true);
-	// phpUpdateBoard.send();
+	event.preventDefault();
 	window.location.replace("backend/game/logout.php");
+	event.stopPropagation();
 }
