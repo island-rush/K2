@@ -20,9 +20,9 @@ include("backend/db.php");
 <body>
 <div id="whole_game">
     <div id="side_panel">
-        <div id="titlebar">Logged into: Loading...<br>Reinforcement Shop</div>
+        <div id="titlebar">Logged into: <?php echo $_SESSION['gameSection']." - ".$_SESSION['gameInstructor']." - ".$_SESSION['myTeam']; ?><br>Reinforcement Shop</div>
         <div id="purchase_buttons_container">
-            <div class="purchase_square Transport" title="Transport&#013;Cost: 8&#013;Moves: 2" id="Transport" data-unitId="0"></div>
+            <div class="purchase_square Transport" title="Transport&#013;Cost: 8&#013;Moves: 2" id="Transport" data-unitId="0" onclick="purchasePieceFunction(0);"></div>
             <div class="purchase_square Submarine" title="Submarine&#013;Cost: 8&#013;Moves: 2" id="Submarine" data-unitId="1"></div>
             <div class="purchase_square Destroyer" title="Destroyer&#013;Cost: 10&#013;Moves: 2" id="Destroyer" data-unitId="2"></div>
             <div class="purchase_square AircraftCarrier" title="AircraftCarrier&#013;Cost: 15&#013;Moves: 2" id="AircraftCarrier" data-unitId="3"></div>
@@ -62,22 +62,22 @@ include("backend/db.php");
             </div>
             <div id="misc_info_undo">
                 <div id="logout_div">
-                    <button id="logout_button">Logout</button>
+                    <button id="logout_button" onclick="logout();">Logout</button>
                 </div>
                 <div id="undo_button_div">
-                    <button id="undo_button" disabled>Undo Movement</button>
+                    <button id="undo_button" disabled onclick="undoButtonFunction();">Undo Movement</button>
                 </div>
             </div>
         </div>
         <div id="bottom_panel">
             <div id="battle_button_container">
-                <button id="battle_button" disabled>Loading...</button>
+                <button id="control_button" disabled onclick="controlButtonFunction();">Loading...</button>
             </div>
             <div id="user_feedback_container">
                 <div id="user_feedback">User Feedback Loading...</div>
             </div>
             <div id="phase_button_container">
-                <button id="phase_button" disabled>Next Phase</button>
+                <button id="phase_button" disabled onclick="nextPhaseButtonFunction();">Next Phase</button>
             </div>
         </div>
     </div>
@@ -270,8 +270,8 @@ include("backend/db.php");
             <div id="center_defender" data-boxId="6"><?php $boxId = 6; include("backend/game/battles/battlePieceDisplay.php"); ?></div>
             <div id="battle_outcome"></div>
             <div id="battle_buttons">
-                <button id="attackButton" disabled>Loading...</button>
-                <button id="changeSectionButton" disabled>Loading...</button>
+                <button id="attackButton" disabled onclick="attackButtonFunction();">Loading...</button>
+                <button id="changeSectionButton" disabled onclick="changeSectionButtonFunction();">Loading...</button>
             </div>
             <div id="battleActionPopup">
                 <div id="battleActionPopupContainer">
@@ -313,43 +313,42 @@ include("backend/db.php");
                             <td rowspan="2">Cyber</td>
                             <td title="A Cyber attack causes an enemy airfield to be completely shutdown. &#013;Aircraft may not leave or enter that airfield during the enemy turn.">Air Traffic Control Scramble</td>
                             <td>3</td>
-                            <td><button id="hybridAirfieldShutdown">Choose</button></td>
+                            <td><button id="hybridAirfieldShutdown" onclick="hybridAirfieldShutdownButtonFunction();">Choose</button></td>
                         </tr>
                         <tr>
                             <td title="Enemy island value counts towards your points for the next two turns. &#013;Enemy team does not earn any points from this island.">Bank Drain</td>
                             <td>4</td>
-                            <td><button id="hybridBankDrain">Choose</button></td>
+                            <td><button id="hybridBankDrain" onclick="hybridBankDrainButtonFunction();">Choose</button></td>
                         </tr>
                         <tr>
                             <td rowspan="2">Space</td>
                             <td title="Satellite technology has discovered how to temporarily shorten all &#013;logisical routes. For one turn, all your units get +1 moves.">Advanced Remote Sensing</td>
                             <td>8</td>
-                            <td><button id="hybridAddMove">Choose</button></td>
+                            <td><button id="hybridAddMove" onclick="hybridAddMoveButtonFunction();">Choose</button></td>
                         </tr>
                         <tr>
                             <td title="Satellite technology allows for kinetic effects from space! &#013;Instantly destroy a unit on the board. &#013;(destroying a container destroys everything inside of it)">Rods from God</td>
                             <td>6</td>
-                            <td><button id="hybridDeletePiece">Choose</button></td>
+                            <td><button id="hybridDeletePiece" onclick="hybridDeletePieceButtonFunction();">Choose</button></td>
                         </tr>
                         <tr>
                             <td rowspan="2" title="Using a nuclear option makes a team unable to use Humanitarian options for 3 turns">Nuclear*</td>
                             <td title="A high altitude ICBM detonation produces an electromagnetic pulse &#013;over all enemy aircraft, disabling them for their next turn.">Goldeneye</td>
                             <td>10</td>
-                            <td><button id="hybridAircraftDisable">Choose</button></td>
+                            <td><button id="hybridAircraftDisable" onclick="hybridAircraftDisableButtonFunction();">Choose</button></td>
                         </tr>
                         <tr>
                             <td title="An ICBM ground burst strike destroys a non-capital island. All units on island &#013;and adjacent sea zones are destroyed. The island will not be used for &#013;the rest of the game and does not contribute to points.">Nuclear Strike</td>
                             <td>12</td>
-                            <td><button id="hybridNukeIsland">Choose</button></td>
+                            <td><button id="hybridNukeIsland" onclick="hybridNukeIslandButtonFunction();">Choose</button></td>
                         </tr>
                         <tr>
                             <td>Humanitarian</td>
                             <td title="When a News alert notifies a team about a catastrophe in an area, &#013;teams have the option to provide humanitarian aid to that nation. &#013;Spend 3 HW points and receive 10 Reinforcement Points.">Humanitarian Option</td>
                             <td>3</td>
-                            <td><button id="hybridHumanitarian">Choose</button></td>
+                            <td><button id="hybridHumanitarian" onclick="hybridHumanitarianButtonFunction();">Choose</button></td>
                         </tr>
                         </tbody>
-
                     </table>
                 </div>
                 <br>

@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS `games`(
   
   `gameCurrentTeam`  varchar(5) NOT NULL DEFAULT 'Blue', -- 'Red' or 'Blue'
   `gameTurn` int(4) NOT NULL DEFAULT 0, -- 0, 1, 2, 3...
-  `gamePhase`  int(1) NOT NULL DEFAULT 1, --  1 = news, 2 = reinforcements...
+  `gamePhase`  int(1) NOT NULL DEFAULT 0, --  0 = news, 1 = reinforcements...
   
   `gameRedRpoints` int(5) NOT NULL DEFAULT 10,
   `gameBlueRpoints` int(5) NOT NULL DEFAULT 60,
@@ -61,71 +61,6 @@ CREATE TABLE IF NOT EXISTS `games`(
 
 -- Insert games into the database
 INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword, gameActive) VALUES ('M1A1', 'Adolph', 	'5f4dcc3b5aa765d61d8327deb882cf99', 1);
-INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword, gameActive) VALUES ('M3A1', 'Kulp', 	'5f4dcc3b5aa765d61d8327deb882cf99', 1);
-INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword, gameActive) VALUES ('M1A1', 'test', 	'5f4dcc3b5aa765d61d8327deb882cf99', 1);
-INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword, gameActive) VALUES ('M2A1', 'test', 	'5f4dcc3b5aa765d61d8327deb882cf99', 1);
-INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword, gameActive) VALUES ('M3A1', 'test', 	'5f4dcc3b5aa765d61d8327deb882cf99', 1);
-INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword, gameActive) VALUES ('M4A1', 'test', 	'5f4dcc3b5aa765d61d8327deb882cf99', 1);
-INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword, gameActive) VALUES ('M5A1', 'test', 	'5f4dcc3b5aa765d61d8327deb882cf99', 1);
-INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword, gameActive) VALUES ('M6A1', 'test', 	'5f4dcc3b5aa765d61d8327deb882cf99', 1);
-INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword, gameActive) VALUES ('M7A1', 'test', 	'5f4dcc3b5aa765d61d8327deb882cf99', 1);
-INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword, gameActive) VALUES ('T1A1', 'test', 	'5f4dcc3b5aa765d61d8327deb882cf99', 1);
-INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword, gameActive) VALUES ('T2A1', 'test', 	'5f4dcc3b5aa765d61d8327deb882cf99', 1);
-INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword, gameActive) VALUES ('T3A1', 'test', 	'5f4dcc3b5aa765d61d8327deb882cf99', 1);
-INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword, gameActive) VALUES ('T4A1', 'test', 	'5f4dcc3b5aa765d61d8327deb882cf99', 1);
--- REAL GAMES
--- password = 'DFMI2019teacher'
-INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword) VALUES ('M1A1', 'Start', 			'a3890051c3b41a4b3890633eb1340248');  -- 'DFCS2019student'
-INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword) VALUES ('M1A1', 'German', 			'c4a276e907f10b988d593fcd573a3cba');
-INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword) VALUES ('M1A2', 'German', 			'c4a276e907f10b988d593fcd573a3cba');
-INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword) VALUES ('M1B1', 'Grotelueschen', 	'c4a276e907f10b988d593fcd573a3cba');
-INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword) VALUES ('M1B2', 'Grotelueschen', 	'c4a276e907f10b988d593fcd573a3cba');
-INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword) VALUES ('M1C1', 'Smicklas', 		'c4a276e907f10b988d593fcd573a3cba');
-INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword) VALUES ('M1C2', 'Smicklas', 		'c4a276e907f10b988d593fcd573a3cba');
-INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword) VALUES ('M1D1', 'Moore', 			'c4a276e907f10b988d593fcd573a3cba');
-INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword) VALUES ('M1D2', 'Moore', 			'c4a276e907f10b988d593fcd573a3cba');
-INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword) VALUES ('M3A1', 'Burke', 			'c4a276e907f10b988d593fcd573a3cba');
-INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword) VALUES ('M3A2', 'Burke', 			'c4a276e907f10b988d593fcd573a3cba');
-INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword) VALUES ('M3B1', 'Moore', 			'c4a276e907f10b988d593fcd573a3cba');
-INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword) VALUES ('M3B2', 'Moore', 			'c4a276e907f10b988d593fcd573a3cba');
-INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword) VALUES ('M3C1', 'Smicklas',		'c4a276e907f10b988d593fcd573a3cba');
-INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword) VALUES ('M3C2', 'Smicklas',		'c4a276e907f10b988d593fcd573a3cba');
-INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword) VALUES ('M6A1', 'Estrada', 		'c4a276e907f10b988d593fcd573a3cba');
-INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword) VALUES ('M6A2', 'Estrada', 		'c4a276e907f10b988d593fcd573a3cba');
-INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword) VALUES ('M6B1', 'Grotelueschen', 	'c4a276e907f10b988d593fcd573a3cba');
-INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword) VALUES ('M6B2', 'Grotelueschen',	'c4a276e907f10b988d593fcd573a3cba');
-INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword) VALUES ('M6C1', 'German', 			'c4a276e907f10b988d593fcd573a3cba');
-INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword) VALUES ('M6C2', 'German', 			'c4a276e907f10b988d593fcd573a3cba');
-INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword) VALUES ('M6D1', 'Matisek', 		'c4a276e907f10b988d593fcd573a3cba');
-INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword) VALUES ('M6D2', 'Matisek', 		'c4a276e907f10b988d593fcd573a3cba');
-INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword) VALUES ('T1A1', 'McPhilamy', 		'c4a276e907f10b988d593fcd573a3cba');
-INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword) VALUES ('T1A2', 'McPilamy', 		'c4a276e907f10b988d593fcd573a3cba');
-INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword) VALUES ('T1B1', 'Cutchin', 		'c4a276e907f10b988d593fcd573a3cba');
-INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword) VALUES ('T1B2', 'Cutchin', 		'c4a276e907f10b988d593fcd573a3cba');
-INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword) VALUES ('T1C1', 'Davitch', 		'c4a276e907f10b988d593fcd573a3cba');
-INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword) VALUES ('T1C2', 'Davitch', 		'c4a276e907f10b988d593fcd573a3cba');
-INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword) VALUES ('T1D1', 'Fogle', 			'c4a276e907f10b988d593fcd573a3cba');
-INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword) VALUES ('T1D2', 'Fogle', 			'c4a276e907f10b988d593fcd573a3cba');
-INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword) VALUES ('T3A1', 'Swaim', 			'c4a276e907f10b988d593fcd573a3cba');
-INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword) VALUES ('T3A2', 'Swaim', 			'c4a276e907f10b988d593fcd573a3cba');
-INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword) VALUES ('T3B1', 'Nelson', 			'c4a276e907f10b988d593fcd573a3cba');
-INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword) VALUES ('T3B2', 'Nelson', 			'c4a276e907f10b988d593fcd573a3cba');
-INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword) VALUES ('T3C1', 'Davitch', 		'c4a276e907f10b988d593fcd573a3cba');
-INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword) VALUES ('T3C2', 'Davitch', 		'c4a276e907f10b988d593fcd573a3cba');
-INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword) VALUES ('T4A1', 'Fogle', 			'c4a276e907f10b988d593fcd573a3cba');
-INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword) VALUES ('T4A2', 'Fogle', 			'c4a276e907f10b988d593fcd573a3cba');
-INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword) VALUES ('T5A1', 'McPhilamy', 		'c4a276e907f10b988d593fcd573a3cba');
-INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword) VALUES ('T5A2', 'McPhilamy', 		'c4a276e907f10b988d593fcd573a3cba');
-INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword) VALUES ('T5B1', 'Hersch', 			'c4a276e907f10b988d593fcd573a3cba');
-INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword) VALUES ('T5B2', 'Hersch', 			'c4a276e907f10b988d593fcd573a3cba');
-INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword) VALUES ('T6A1', 'Nelson', 			'c4a276e907f10b988d593fcd573a3cba');
-INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword) VALUES ('T6A2', 'Nelson', 			'c4a276e907f10b988d593fcd573a3cba');
-INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword) VALUES ('T6B1', 'Cutchin', 		'c4a276e907f10b988d593fcd573a3cba');
-INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword) VALUES ('T6B2', 'Cutchin', 		'c4a276e907f10b988d593fcd573a3cba');
-INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword) VALUES ('T6C1', 'Araki', 			'c4a276e907f10b988d593fcd573a3cba');
-INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword) VALUES ('T6C2', 'Araki', 			'c4a276e907f10b988d593fcd573a3cba');
-INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword) VALUES ('T6D1', 'Matisek', 		'c4a276e907f10b988d593fcd573a3cba');
-INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword) VALUES ('T6D2', 'Matisek', 		'c4a276e907f10b988d593fcd573a3cba');
 
 
 
@@ -208,8 +143,6 @@ CREATE TABLE IF NOT EXISTS `battlePieces`(
 CREATE TABLE IF NOT EXISTS `updates`(
 	`updateId` int(16) NOT NULL AUTO_INCREMENT,
 	`updateGameId` int(5) NOT NULL,
-	`updateValue` int(5) NOT NULL,  -- has the update been processed / changed / null? (0 = not been processed) (1 = processed)  
-	`updateTeam` varchar(10),  -- Red, Blue, Spec
 	`updateType` varchar(30), -- phaseChange,
 	`updatePlacementId` int(4) DEFAULT 0,
 	`updateNewPositionId` int(4) DEFAULT 0,

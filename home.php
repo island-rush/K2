@@ -1,5 +1,6 @@
 <?php
 //Session Stuff
+session_unset();
 ?>
 
 <!DOCTYPE html>

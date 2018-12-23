@@ -1,5 +1,4 @@
 <?php
-session_abort();
 session_start();
 
 if ( (isset($_POST['gameSection'])) && (isset($_POST['gameInstructor'])) && (isset($_POST['gameTeam'])) ){
@@ -21,6 +20,8 @@ if ( (isset($_POST['gameSection'])) && (isset($_POST['gameInstructor'])) && (iss
 
         $_SESSION['myTeam'] = $team;
         $_SESSION['gameId'] = $r['gameId'];
+        $_SESSION['gameSection'] = $section;
+        $_SESSION['gameInstructor'] = $instructor;
 
         //Check if the game is activated by the teacher
         if ($r['gameActive'] == 0) {
@@ -56,8 +57,20 @@ if ( (isset($_POST['gameSection'])) && (isset($_POST['gameInstructor'])) && (iss
             exit;
         }
 
+        $query8 = "SELECT updateId FROM updates WHERE updateGameId = ? ORDER BY updateId DESC";
+        $preparedQuery8 = $db->prepare($query8);
+        $preparedQuery8->bind_param("i", $gameId);
+        $preparedQuery8->execute();
+        $results8 = $preparedQuery8->get_result();
+        $num_results8 = $results8->num_rows;
+        if ($num_results8 == 0) {
+            $_SESSION['lastUpdateId'] = 0;
+        } else {
+            $r8= $results8->fetch_assoc();
+            $_SESSION['lastUpdateId'] = $r8['updateId'];
+        }
 
-        //Store the matrices in the session TODO: change how these are stored, as constants that aren't looked up
+        //Store the matrices in the session TODO: change how these are stored, as constants that aren't looked up (but need to store them on the server itself for multiple clients? / threads?)
         if (($handle = fopen('../matrices/adjMatrix.csv', "r")) !== FALSE) {
             $counter = 0;
             while(($data = fgetcsv($handle, 0, ",")) !== FALSE) {

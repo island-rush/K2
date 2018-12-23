@@ -20,7 +20,7 @@ SET SQL_SAFE_UPDATES = 0;
 
 -- UPDATE games SET gameRedRpoints = 1000 WHERE gameId = 1;
 
--- SELECT * FROM games WHERE gameId = 1;
+SELECT * FROM games WHERE gameId = 1;
 
 -- SELECT * FROM units;
 
@@ -45,7 +45,7 @@ SET SQL_SAFE_UPDATES = 0;
 -- INSERT INTO placements VALUES ();
 
 
--- INSERT INTO placements (placementGameId, placementUnitId, placementTeamId, placementContainerId, placementCurrentMoves, placementPositionId, placementBattleUsed) VALUES(1, 10, 'Red', 999999, 1, 101, 0);
+INSERT INTO placements (placementGameId, placementUnitId, placementTeamId, placementContainerId, placementCurrentMoves, placementPositionId, placementBattleUsed) VALUES(1, 2, 'Red', -1, 1, 1, 0);
 
 
 -- UPDATE placements SET placementCurrentMoves = 1 WHERE placementId = 95;
