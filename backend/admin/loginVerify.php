@@ -23,9 +23,11 @@ if ( (isset($_POST['adminSection'])) && (isset($_POST['adminInstructor'])) && (i
             break;
 
         case 1:
-            $r= $results->fetch_assoc();
+            $r = $results->fetch_assoc();
             $_SESSION['gameId'] = $r['gameId'];
             $_SESSION['secretAdminSessionVariable'] = "SpencerIsCool";
+            $_SESSION['gameSection'] = $section;
+            $_SESSION['gameInstructor'] = $instructor;
             header("location:../../admin.php");
             break;
 

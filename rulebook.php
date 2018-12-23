@@ -15,7 +15,7 @@
 
 <nav>
     <a href="home.php">Home</a>
-    <a class="active" href="rulebook.php">Rules</a>
+    <a class="active" href="rulebook.php">Rule Book</a>
 </nav>
 
 <p>Use the rules posted on blackboard...</p>

@@ -23,7 +23,6 @@ $gameBattleLastRoll = $r['gameBattleLastRoll'];
 $gameBattleLastMessage = $r['gameBattleLastMessage'];
 $gameBattlePosSelected = $r['gameBattlePosSelected'];
 
-
 $activated = 1;
 $zero = 0;
 $query2 = "SELECT newsText, newsEffectText FROM newsAlerts WHERE newsGameId = ? AND newsActivated = ? AND newsLength != ? ORDER BY newsOrder DESC";
@@ -53,7 +52,7 @@ if (($myTeam != "Spec") && (($gamePhase == 2 || $gamePhase == 3 || $gamePhase ==
 }
 
 //control (battle) button disabled
-if (($myTeam == "Spec") || $gameBattleSection == "attack" || $gameBattleSection == "counter" || $gameBattleSection == "askRepeat" || $gamePhase != 5) {
+if (($myTeam != $gameCurrentTeam) || $gameBattleSection == "attack" || $gameBattleSection == "counter" || $gameBattleSection == "askRepeat" || ($gamePhase != 5 && $gamePhase != 2)) {
     $control_button_disabled = true;
 } else {
     $control_button_disabled = false;
@@ -73,7 +72,7 @@ if ($gameBattleSection == "none" && $gamePhase == 2) {
 }
 
 //next phase disabled
-if ($gameBattleSection == "none" && ($myTeam != "Spec")) {
+if ($gameBattleSection == "none" && ($myTeam == $gameCurrentTeam)) {
     $next_phase_disabled = false;
 } else {
     $next_phase_disabled = true;  //battle is going on

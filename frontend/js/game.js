@@ -1,4 +1,5 @@
 // Javascript File for Island Rush Game (Main game page)
+console.log("Island Rush Game Javascript");
 
 //global variables and DOM caching
 let phaseNames = ['News', 'Buy Reinforcements', 'Combat', 'Fortify Move', 'Reinforcement Place', 'Hybrid War', 'Round Recap'];
@@ -137,9 +138,11 @@ function controlButtonFunction() {
 }
 
 function nextPhaseButtonFunction(){
-	let phpUpdateBoard = new XMLHttpRequest();
-	phpUpdateBoard.open("GET", "backend/game/phaseChange.php", true);
-	phpUpdateBoard.send();
+	if (confirm("Are you sure you want to complete this phase?")) {
+		let phpUpdateBoard = new XMLHttpRequest();
+		phpUpdateBoard.open("GET", "backend/game/phaseChange.php", true);
+		phpUpdateBoard.send();
+	}
 }
 
 function attackButtonFunction(){
@@ -157,27 +160,21 @@ function undoButtonFunction(){
 function hybridAirfieldShutdownButtonFunction(){
 
 }
-
 function hybridBankDrainButtonFunction(){
 
 }
-
 function hybridAddMoveButtonFunction(){
 
 }
-
 function hybridDeletePieceButtonFunction(){
 
 }
-
 function hybridAircraftDisableButtonFunction(){
 
 }
-
 function hybridNukeIslandButtonFunction(){
 
 }
-
 function hybridHumanitarianButtonFunction(){
 
 }

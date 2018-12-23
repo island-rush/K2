@@ -16,7 +16,7 @@ session_abort();
 
 <nav>
     <a class="active" href="home.php">Home</a>
-    <a href="rulebook.php">Rules</a>
+    <a href="rulebook.php">Rule Book</a>
 </nav>
 
 
