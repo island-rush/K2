@@ -1,10 +1,8 @@
 <?php
 set_time_limit(0);
-session_start();
 
-$gameId = $_SESSION['gameId'];
-$myTeam = $_SESSION['myTeam'];
-$lastUpdateId = $_SESSION['lastUpdateId'];
+$gameId = $_REQUEST['gameId'];
+$lastUpdateId = $_REQUEST['lastUpdateId'];
 
 include("../db.php");
 
@@ -22,6 +20,7 @@ while(true) {
         $r = $results->fetch_assoc();
         $updateId = $r['updateId'];
         $arr = array(
+            'updateId' => (int) $updateId,
             'updateType' => (string) $r['updateType'],
             'updatePlacementId' => (string) $r['updatePlacementId'],
             'updateNewPositionId' => (string) $r['updateNewPositionId'],
@@ -35,9 +34,6 @@ while(true) {
             'updateIslandTeam' => (string) $r['updateIslandTeam']
         );
         echo json_encode($arr);
-
-        $_SESSION['lastUpdateId'] = $updateId;
-
         break;
     }
 
@@ -51,4 +47,3 @@ while(true) {
 
 $results->free();
 $db->close();
-

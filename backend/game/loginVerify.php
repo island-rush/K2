@@ -1,9 +1,7 @@
 <?php
 session_start();
-
+include("../db.php");
 if ( (isset($_POST['gameSection'])) && (isset($_POST['gameInstructor'])) && (isset($_POST['gameTeam'])) ){
-    include("../db.php");
-
     $section = htmlentities($_POST['gameSection']);
     $instructor = htmlentities($_POST['gameInstructor']);
     $team = htmlentities($_POST['gameTeam']);
@@ -70,6 +68,8 @@ if ( (isset($_POST['gameSection'])) && (isset($_POST['gameInstructor'])) && (iss
             $_SESSION['lastUpdateId'] = $r8['updateId'];
         }
 
+
+
         //Store the matrices in the session TODO: change how these are stored, as constants that aren't looked up (but need to store them on the server itself for multiple clients? / threads?)
         if (($handle = fopen('../matrices/adjMatrix.csv', "r")) !== FALSE) {
             $counter = 0;
@@ -115,5 +115,5 @@ if ( (isset($_POST['gameSection'])) && (isset($_POST['gameInstructor'])) && (iss
 }
 
 
-
+$db->close();
 

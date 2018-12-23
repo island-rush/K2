@@ -24,13 +24,13 @@ SELECT * FROM games WHERE gameId = 1;
 
 -- SELECT * FROM units;
 
--- SELECT * FROM placements ORDER BY placementId DESC;
+SELECT * FROM placements ORDER BY placementId DESC;
 
 -- SELECT * FROM movements;
 
 -- SELECT * FROM battlePieces;
 
--- SELECT * FROM updates order by updateId DESC;
+SELECT * FROM updates order by updateId DESC;
 
 -- SELECT * FROM newsAlerts;
 
@@ -45,7 +45,7 @@ SELECT * FROM games WHERE gameId = 1;
 -- INSERT INTO placements VALUES ();
 
 
-INSERT INTO placements (placementGameId, placementUnitId, placementTeamId, placementContainerId, placementCurrentMoves, placementPositionId, placementBattleUsed) VALUES(1, 2, 'Red', -1, 1, 1, 0);
+INSERT INTO placements (placementGameId, placementUnitId, placementTeamId, placementCurrentMoves, placementPositionId) VALUES(1, 2, 'Red', 1, 1);
 
 
 -- UPDATE placements SET placementCurrentMoves = 1 WHERE placementId = 95;

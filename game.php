@@ -1,13 +1,11 @@
 <?php
 session_start();
+include("backend/db.php");
 
 $gameId = $_SESSION['gameId'];
-$myTeam = $_SESSION['myTeam'];
 
 $out_container = -1;
 $unitNames = ['Transport', 'Submarine', 'Destroyer', 'AircraftCarrier', 'ArmyCompany', 'ArtilleryBattery', 'TankPlatoon', 'MarinePlatoon', 'MarineConvoy', 'AttackHelo', 'SAM', 'FighterSquadron', 'BomberSquadron', 'StealthBomberSquadron', 'Tanker', 'LandBasedSeaMissile'];
-
-include("backend/db.php");
 ?>
 
 <!DOCTYPE html>
@@ -15,6 +13,22 @@ include("backend/db.php");
 <head>
     <title>Island Rush Game V2.5</title>
     <link rel="stylesheet" type="text/css" href="frontend/css/game.css">
+    <script>
+        let gameId = <?php echo $gameId; ?>;
+        let lastUpdateId = <?php
+            $query8 = "SELECT updateId FROM updates WHERE updateGameId = ? ORDER BY updateId DESC";
+            $preparedQuery8 = $db->prepare($query8);
+            $preparedQuery8->bind_param("i", $gameId);
+            $preparedQuery8->execute();
+            $results8 = $preparedQuery8->get_result();
+            $num_results8 = $results8->num_rows;
+            if ($num_results8 == 0) {
+                echo 0;
+            } else {
+                $r8= $results8->fetch_assoc();
+                echo $r8['updateId'];
+            }?>;
+    </script>
 </head>
 
 <body>
@@ -23,21 +37,21 @@ include("backend/db.php");
         <div id="titlebar">Logged into: <?php echo $_SESSION['gameSection']." - ".$_SESSION['gameInstructor']." - ".$_SESSION['myTeam']; ?><br>Reinforcement Shop</div>
         <div id="purchase_buttons_container">
             <div class="purchase_square Transport" title="Transport&#013;Cost: 8&#013;Moves: 2" id="Transport" data-unitId="0" onclick="purchasePieceFunction(0);"></div>
-            <div class="purchase_square Submarine" title="Submarine&#013;Cost: 8&#013;Moves: 2" id="Submarine" data-unitId="1"></div>
-            <div class="purchase_square Destroyer" title="Destroyer&#013;Cost: 10&#013;Moves: 2" id="Destroyer" data-unitId="2"></div>
-            <div class="purchase_square AircraftCarrier" title="AircraftCarrier&#013;Cost: 15&#013;Moves: 2" id="AircraftCarrier" data-unitId="3"></div>
-            <div class="purchase_square ArmyCompany" title="ArmyCompany&#013;Cost: 4&#013;Moves: 1" id="ArmyCompany" data-unitId="4"></div>
-            <div class="purchase_square ArtilleryBattery" title="ArtilleryBattery&#013;Cost: 5&#013;Moves: 1" id="ArtilleryBattery" data-unitId="5"></div>
-            <div class="purchase_square TankPlatoon" title="TankPlatoon&#013;Cost: 6&#013;Moves: 1" id="TankPlatoon" data-unitId="6"></div>
-            <div class="purchase_square MarinePlatoon" title="MarinePlatoon&#013;Cost: 5&#013;Moves: 1" id="MarinePlatoon" data-unitId="7"></div>
-            <div class="purchase_square MarineConvoy" title="MarineConvoy&#013;Cost: 8&#013;Moves: 2" id="MarineConvoy" data-unitId="8"></div>
-            <div class="purchase_square AttackHelo" title="AttackHelo&#013;Cost: 7&#013;Moves: 3" id="AttackHelo" data-unitId="9"></div>
-            <div class="purchase_square SAM" title="SAM&#013;Cost: 8&#013;Moves: 1" id="SAM" data-unitId="10"></div>
-            <div class="purchase_square FighterSquadron" title="FighterSquadron&#013;Cost: 12&#013;Moves: 4" id="FighterSquadron" data-unitId="11"></div>
-            <div class="purchase_square BomberSquadron" title="BomberSquadron&#013;Cost: 12&#013;Moves: 6" id="BomberSquadron" data-unitId="12"></div>
-            <div class="purchase_square StealthBomberSquadron" title="StealthBomberSquadron&#013;Cost: 15&#013;Moves: 5" id="StealthBomberSquadron" data-unitId="13"></div>
-            <div class="purchase_square Tanker" title="Tanker&#013;Cost: 11&#013;Moves: 5" id="Tanker" data-unitId="14"></div>
-            <div class="purchase_square LandBasedSeaMissile" title="LandBasedSeaMissile&#013;Cost: 10" id="LandBasedSeaMissile" data-unitId="15"></div>
+            <div class="purchase_square Submarine" title="Submarine&#013;Cost: 8&#013;Moves: 2" id="Submarine" data-unitId="1" onclick="purchasePieceFunction(1);"></div>
+            <div class="purchase_square Destroyer" title="Destroyer&#013;Cost: 10&#013;Moves: 2" id="Destroyer" data-unitId="2" onclick="purchasePieceFunction(2);"></div>
+            <div class="purchase_square AircraftCarrier" title="AircraftCarrier&#013;Cost: 15&#013;Moves: 2" id="AircraftCarrier" data-unitId="3" onclick="purchasePieceFunction(3);"></div>
+            <div class="purchase_square ArmyCompany" title="ArmyCompany&#013;Cost: 4&#013;Moves: 1" id="ArmyCompany" data-unitId="4" onclick="purchasePieceFunction(4);"></div>
+            <div class="purchase_square ArtilleryBattery" title="ArtilleryBattery&#013;Cost: 5&#013;Moves: 1" id="ArtilleryBattery" data-unitId="5" onclick="purchasePieceFunction(5);"></div>
+            <div class="purchase_square TankPlatoon" title="TankPlatoon&#013;Cost: 6&#013;Moves: 1" id="TankPlatoon" data-unitId="6" onclick="purchasePieceFunction(6);"></div>
+            <div class="purchase_square MarinePlatoon" title="MarinePlatoon&#013;Cost: 5&#013;Moves: 1" id="MarinePlatoon" data-unitId="7" onclick="purchasePieceFunction(7);"></div>
+            <div class="purchase_square MarineConvoy" title="MarineConvoy&#013;Cost: 8&#013;Moves: 2" id="MarineConvoy" data-unitId="8" onclick="purchasePieceFunction(8);"></div>
+            <div class="purchase_square AttackHelo" title="AttackHelo&#013;Cost: 7&#013;Moves: 3" id="AttackHelo" data-unitId="9" onclick="purchasePieceFunction(9);"></div>
+            <div class="purchase_square SAM" title="SAM&#013;Cost: 8&#013;Moves: 1" id="SAM" data-unitId="10" onclick="purchasePieceFunction(10);"></div>
+            <div class="purchase_square FighterSquadron" title="FighterSquadron&#013;Cost: 12&#013;Moves: 4" id="FighterSquadron" data-unitId="11" onclick="purchasePieceFunction(11);"></div>
+            <div class="purchase_square BomberSquadron" title="BomberSquadron&#013;Cost: 12&#013;Moves: 6" id="BomberSquadron" data-unitId="12" onclick="purchasePieceFunction(12);"></div>
+            <div class="purchase_square StealthBomberSquadron" title="StealthBomberSquadron&#013;Cost: 15&#013;Moves: 5" id="StealthBomberSquadron" data-unitId="13" onclick="purchasePieceFunction(13);"></div>
+            <div class="purchase_square Tanker" title="Tanker&#013;Cost: 11&#013;Moves: 5" id="Tanker" data-unitId="14" onclick="purchasePieceFunction(14);"></div>
+            <div class="purchase_square LandBasedSeaMissile" title="LandBasedSeaMissile&#013;Cost: 10" id="LandBasedSeaMissile" data-unitId="15" onclick="purchasePieceFunction(15);"></div>
         </div>
         <div id="purchase_seperator">Inventory</div>
         <div id="shopping_things">

@@ -99,10 +99,10 @@ CREATE TABLE IF NOT EXISTS `placements`(
     `placementGameId` int(5) NOT NULL,
     `placementUnitId` int(5) NOT NULL,
     `placementTeamId` varchar(10) NOT NULL,  -- "Red" or "Blue"
-	`placementContainerId` int(16) NOT NULL,  -- placementId of the container its in (-1 used instead of null)
+	`placementContainerId` int(16) NOT NULL DEFAULT -1,  -- placementId of the container its in (-1 used instead of null)
     `placementCurrentMoves` int(3) NOT NULL,
     `placementPositionId` int(4) NOT NULL,  -- references what spot its in on the board (map is available in resources / gameInfo)
-    `placementBattleUsed` int(1) NOT NULL, -- 0 for not yet used, 1 for used
+    `placementBattleUsed` int(1) NOT NULL DEFAULT 0, -- 0 for not yet used, 1 for used
     PRIMARY KEY(`placementId`),
     FOREIGN KEY (placementUnitId) REFERENCES units(unitId),
     FOREIGN KEY (placementGameId) REFERENCES games(gameId)

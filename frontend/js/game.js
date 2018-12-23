@@ -106,13 +106,24 @@ function ajaxUpdate(){
 			} else {
 				let decoded = JSON.parse(this.responseText);
 
-				//handle the update here
+				lastUpdateId = decoded.updateId;
+
+				let updateType = decoded.updateType;
+
+				if (updateType === "phaseChange") {
+					getPanel();
+				}
+
+				if (updateType === "piecePurchase") {
+					purchased_container.innerHTML += decoded.updateBattlePiecesSelected;
+					getPanel();
+				}
 
 				window.setTimeout("ajaxUpdate();", smallDelay);
 			}
 		}
 	};
-	phpUpdateBoard.open("GET", "backend/game/ajaxUpdate.php", true);
+	phpUpdateBoard.open("GET", "backend/game/ajaxUpdate.php?gameId=" + gameId + "&lastUpdateId=" + lastUpdateId, true);
 	phpUpdateBoard.send();
 }
 ajaxUpdate();
@@ -126,7 +137,9 @@ function controlButtonFunction() {
 }
 
 function nextPhaseButtonFunction(){
-	//hit the server for phase button click
+	let phpUpdateBoard = new XMLHttpRequest();
+	phpUpdateBoard.open("GET", "backend/game/phaseChange.php", true);
+	phpUpdateBoard.send();
 }
 
 function attackButtonFunction(){
@@ -170,9 +183,9 @@ function hybridHumanitarianButtonFunction(){
 }
 
 function purchasePieceFunction(unitId){
-	//hit the server for this piece id?
-	alert("purchasing a piece");
-	alert(unitId);
+	let phpUpdateBoard = new XMLHttpRequest();
+	phpUpdateBoard.open("GET", "backend/game/pieces/piecePurchase.php?unitId=" + unitId, true);
+	phpUpdateBoard.send();
 }
 //----------------------------------------------------------------
 
@@ -223,7 +236,8 @@ function showDice(diceNumber){
 
 
 function logout(){
-	let phpUpdateBoard = new XMLHttpRequest();
-	phpUpdateBoard.open("GET", "backend/game/logout.php", true);
-	phpUpdateBoard.send();
+	// let phpUpdateBoard = new XMLHttpRequest();
+	// phpUpdateBoard.open("GET", "backend/game/logout.php", true);
+	// phpUpdateBoard.send();
+	window.location.replace("backend/game/logout.php");
 }

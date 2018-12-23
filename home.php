@@ -1,6 +1,6 @@
 <?php
 //Session Stuff
-session_unset();
+session_abort();
 ?>
 
 <!DOCTYPE html>

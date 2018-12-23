@@ -24,8 +24,7 @@ $query->execute();
 
 $db->close();
 
-//session_unset();  //not sure capabilities of this yet (or how to fully delete the session stuff)
-//session_abort();
+session_unset();  //not sure capabilities of this yet (or how to fully delete the session stuff)
 
 header("location:../../home.php");
 exit;
