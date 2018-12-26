@@ -114,12 +114,9 @@ CREATE TABLE IF NOT EXISTS `placements`(
 CREATE TABLE IF NOT EXISTS `movements`(
 	`movementId` int(16) NOT NULL AUTO_INCREMENT,
     `movementGameId` int(5) NOT NULL,
-    `movementTurn` int(5) NOT NULL,  -- need what phase/turn movement was made (only undo current phase/turn)
-    `movementPhase` varchar(20) NOT NULL,
     `movementFromPosition` int(4) NOT NULL,
     `movementFromContainer` int(16),
     `movementNowPlacement` int(16) NOT NULL,  -- placement contains current position/container
-    `movementCost` int(3) NOT NULL,  -- cost of moves
     PRIMARY KEY(`movementId`),
     FOREIGN KEY (movementGameId) REFERENCES games(gameId)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
@@ -147,7 +144,6 @@ CREATE TABLE IF NOT EXISTS `updates`(
 	`updatePlacementId` int(4) DEFAULT 0,
 	`updateNewPositionId` int(4) DEFAULT 0,
 	`updateNewContainerId` int(4) DEFAULT 0,
-    `updateNewMoves` int(2) DEFAULT 9,
 	`updateNewUnitId` int(4) DEFAULT 16,
     `updateBattlePieceState` int(2) DEFAULT 8,
     `updateBattlePositionSelectedPieces` varchar(16000) DEFAULT 'defaultString',

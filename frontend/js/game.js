@@ -43,7 +43,6 @@ let popupBodyNews = document.getElementById("popupBodyNews");
 let popupBodyHybridMenu = document.getElementById("popupBodyHybridMenu");
 let popup = document.getElementById("popup");
 
-
 let popIsland1 = document.getElementById("special_island1_pop");
 let popIsland2 = document.getElementById("special_island2_pop");
 let popIsland3 = document.getElementById("special_island3_pop");
@@ -73,7 +72,6 @@ let gridIsland12 = document.getElementById("special_island12");
 let gridIslands = [gridIsland1, gridIsland2, gridIsland3, gridIsland4, gridIsland5, gridIsland6, gridIsland7, gridIsland8, gridIsland9, gridIsland10, gridIsland11, gridIsland12];
 
 //-------------------------------------------------------------------------------------------------------------------
-
 
 function getPanel(){
 	let phpPhaseChange = new XMLHttpRequest();
@@ -114,7 +112,7 @@ function getPanel(){
 			attackButton.innerHTML = decoded.attack_button_text;
 			changeSectionButton.disabled = decoded.change_section_button_disabled;
 			changeSectionButton.innerHTML = decoded.change_section_button_text;
-			user_feedback.innerHTML = decoded.user_feedback;
+			// user_feedback.innerHTML = decoded.user_feedback;  //TODO: use phase change to update points, overrides other user feedback
 		}
 	};
 	phpPhaseChange.open("GET", "backend/game/getBoard.php", true);
@@ -122,6 +120,7 @@ function getPanel(){
 }
 getPanel();
 
+// Ajax functions --------------------------------------------------------
 function ajaxUpdate(){
 	let phpUpdateBoard = new XMLHttpRequest();
 	phpUpdateBoard.onreadystatechange = function () {
@@ -142,6 +141,10 @@ function ajaxUpdate(){
 					getPanel();
 				}
 
+				if (updateType === "islandOwnerChange") {
+					ajaxIslandOwnerChange(parseInt(decoded.updateIsland), decoded.updateIslandTeam);
+				}
+
 				if (updateType === "piecePurchase") {
 					purchased_container.innerHTML += decoded.updateBattlePiecesSelected;
 					getPanel();
@@ -155,8 +158,8 @@ function ajaxUpdate(){
 					ajaxPieceMove(parseInt(decoded.updatePlacementId), parseInt(decoded.updateNewPositionId), parseInt(decoded.updateNewContainerId));
 				}
 
-				if (updateType === "pieceKilled") {
-					ajaxPieceKilled(parseInt(decoded.updatePlacementId));
+				if (updateType === "pieceRemove") {
+					ajaxPieceRemove(parseInt(decoded.updatePlacementId));
 				}
 
 				window.setTimeout("ajaxUpdate();", smallDelay);
@@ -179,11 +182,116 @@ function ajaxPieceMove(placementId, toPositionId, toContainerId) {
 	newLocation.append(gamePiece);
 }
 
-function ajaxPieceKilled(placementId) {
+function ajaxIslandOwnerChange(islandNum, newTeamId) {
+	let gridIsland = gridIslands[islandNum-1];
+	let popIsland = popIslands[islandNum-1];
+	let oldTeamId = "Red";
+	if (newTeamId === "Red") {
+		oldTeamId = "Blue";
+	}
+	gridIsland.classList.remove(oldTeamId);
+	gridIsland.classList.add(newTeamId);
+	popIsland.classList.remove(oldTeamId);
+	popIsland.classList.add(newTeamId);
+}
+
+function ajaxPieceRemove(placementId) {
 	//TODO: make all document selectors check for null returns before .removing (see updatePieceDelete() in K2)
 	document.querySelector("[data-placementId='" + placementId + "']").remove();
 }
+//----------------------------------------------------------------
 
+function gridIslandClick(callingElement){
+	event.preventDefault();
+	unpopIslands();  //close all open islands
+	let islandNum = callingElement.getAttribute("data-islandNum");
+	popIslands[islandNum-1].style.display = "block";
+	gridIslands[islandNum-1].style.zIndex = 20;  //default for a gridblock is 10
+	event.stopPropagation();
+}
+
+function unpopIslands() {
+	for (let x = 0; x < popIslands.length; x++) {
+		popIslands[x].style.display = "none";
+		popIslands[x].parentNode.style.zIndex = 10;  //10 is the default
+	}
+}
+
+function waterClick(){
+	event.preventDefault();
+	unpopIslands();
+	event.stopPropagation();
+}
+
+function positionDragover(event, callingElement){
+	event.preventDefault();
+	//TODO: client side checks to prevent dragging pieces
+	//Can't Drop into something draggable (other pieces) (containers are non-draggable)
+	if (callingElement.getAttribute("draggable") === "true") {
+		event.dataTransfer.dropEffect = "none";
+	} else {
+		event.dataTransfer.dropEffect = "all";
+	}
+}
+
+function positionDrop(event, callingElement){
+	event.preventDefault();
+	let placementId = event.dataTransfer.getData("placementId");  //what piece was dropped
+	let positionId = parseInt(callingElement.getAttribute("data-positionId"));  //-1 if going into container
+	let containerId = parseInt(callingElement.parentNode.getAttribute("data-placementId"));  //-1 if going into position
+	let phpUpdateBoard = new XMLHttpRequest();
+	phpUpdateBoard.onreadystatechange = function () {
+		if (this.readyState === 4 && this.status === 200) {
+			user_feedback.innerHTML = this.responseText;
+		}
+	};
+	phpUpdateBoard.open("GET", "backend/game/pieces/pieceMove.php?placementId=" + placementId + "&positionId=" + positionId + "&containerId=" + containerId, true);
+	phpUpdateBoard.send();
+	event.stopPropagation();
+}
+
+function pieceTrash(event, callingElement) {
+	event.preventDefault();
+	let placementId = event.dataTransfer.getData("placementId");  //what piece was dropped
+	let phpUpdateBoard = new XMLHttpRequest();
+	phpUpdateBoard.onreadystatechange = function () {
+		if (this.readyState === 4 && this.status === 200) {
+			user_feedback.innerHTML = this.responseText;
+		}
+	};
+	phpUpdateBoard.open("GET", "backend/game/pieces/pieceTrash.php?placementId=" + placementId, true);
+	phpUpdateBoard.send();
+	event.stopPropagation();
+}
+
+function piecePurchase(unitId){
+	event.preventDefault();
+	let phpUpdateBoard = new XMLHttpRequest();
+	phpUpdateBoard.onreadystatechange = function () {
+		if (this.readyState === 4 && this.status === 200) {
+			user_feedback.innerHTML = this.responseText;
+		}
+	};
+	phpUpdateBoard.open("GET", "backend/game/pieces/piecePurchase.php?unitId=" + unitId, true);
+	phpUpdateBoard.send();
+	event.stopPropagation();
+}
+
+function pieceDragstart(event, callingElement){
+	//only need the placementId to know what is being dragged, server side will handle everything else
+	event.dataTransfer.setData("placementId", callingElement.getAttribute("data-placementId"));
+	event.stopPropagation();
+}
+
+function showDice(diceNumber){
+	dice[0].style.display = "none";
+	dice[1].style.display = "none";
+	dice[2].style.display = "none";
+	dice[3].style.display = "none";
+	dice[4].style.display = "none";
+	dice[5].style.display = "none";
+	dice[diceNumber-1].style.display = "block";
+}
 
 //button functions---------------------------------------------------
 function controlButtonFunction() {
@@ -256,11 +364,9 @@ function hybridHumanitarianButtonFunction(){
 	event.stopPropagation();
 }
 
-function purchasePieceFunction(unitId){
+function logout(){
 	event.preventDefault();
-	let phpUpdateBoard = new XMLHttpRequest();
-	phpUpdateBoard.open("GET", "backend/game/pieces/piecePurchase.php?unitId=" + unitId, true);
-	phpUpdateBoard.send();
+	window.location.replace("backend/game/logout.php");
 	event.stopPropagation();
 }
 //----------------------------------------------------------------
@@ -268,101 +374,3 @@ function purchasePieceFunction(unitId){
 
 
 
-
-function gridIslandClick(callingElement){
-	event.preventDefault();
-
-	//close all open islands
-	unpopIslands();
-
-	let islandNum = callingElement.getAttribute("data-islandNum");
-
-	//pop this island
-	popIslands[islandNum-1].style.display = "block";
-	gridIslands[islandNum-1].style.zIndex = 20;  //default for a gridblock is 10
-
-	event.stopPropagation();
-}
-
-function unpopIslands() {
-	for (let x = 0; x < popIslands.length; x++) {
-		popIslands[x].style.display = "none";
-		popIslands[x].parentNode.style.zIndex = 10;  //10 is the default
-	}
-}
-
-
-function waterClick(){
-	event.preventDefault();
-
-	unpopIslands();
-
-	event.stopPropagation();
-}
-
-
-
-
-
-
-function pieceDragstart(event, callingElement){
-	//only need the placementId to know what is being dragged, server side will handle everything else
-	event.dataTransfer.setData("placementId", callingElement.getAttribute("data-placementId"));
-	event.stopPropagation();
-}
-
-
-function positionDragover(event, callingElement){
-	event.preventDefault();
-	//TODO: client side checks to prevent dragging pieces
-	//Can't Drop into something draggable (other pieces) (containers are non-draggable)
-	if (callingElement.getAttribute("draggable") === "true") {
-		event.dataTransfer.dropEffect = "none";
-	} else {
-		event.dataTransfer.dropEffect = "all";
-	}
-}
-
-
-function positionDrop(event, callingElement){
-	event.preventDefault();
-
-	let placementId = event.dataTransfer.getData("placementId");  //what piece was dropped
-	let positionId = parseInt(callingElement.getAttribute("data-positionId"));  //-1 if going into container
-	let containerId = parseInt(callingElement.parentNode.getAttribute("data-placementId"));  //-1 if going into position
-
-	let phpUpdateBoard = new XMLHttpRequest();
-	phpUpdateBoard.onreadystatechange = function () {
-		if (this.readyState === 4 && this.status === 200) {
-			user_feedback.innerHTML = this.responseText;
-		}
-	};
-	phpUpdateBoard.open("GET", "backend/game/pieces/pieceMove.php?placementId=" + placementId + "&positionId=" + positionId + "&containerId=" + containerId, true);
-	phpUpdateBoard.send();
-
-	event.stopPropagation();
-}
-
-
-
-
-
-
-
-
-
-function showDice(diceNumber){
-	dice[0].style.display = "none";
-	dice[1].style.display = "none";
-	dice[2].style.display = "none";
-	dice[3].style.display = "none";
-	dice[4].style.display = "none";
-	dice[5].style.display = "none";
-	dice[diceNumber-1].style.display = "block";
-}
-
-function logout(){
-	event.preventDefault();
-	window.location.replace("backend/game/logout.php");
-	event.stopPropagation();
-}

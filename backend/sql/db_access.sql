@@ -9,11 +9,12 @@ SET SQL_SAFE_UPDATES = 0;
 
 
 
+SELECT a.placementUnitId, a.placementTeamId, a.placementCurrentMoves, a.placementPositionId, a.placementContainerId, b.unitTerrain, b.unitName FROM (SELECT placementUnitId, placementTeamId, placementCurrentMoves, placementPositionId FROM placements WHERE placementId = 2) a NATURAL JOIN units b WHERE placementUnitId = unitId;
 
+SELECT placementPositionId, unitCost FROM (SELECT placementPositionId, placementUnitId FROM placements WHERE placementId = 2) a NATURAL JOIN units b WHERE placementUnitId = unitId;
 
-
-
-
+SELECT placementTeamId, unitTerrain FROM placements NATURAL JOIN units WHERE placementId = 2 AND placementUnitId = unitId;
+SELECT placementTeamId, unitTerrain FROM (SELECT placementTeamId, placementUnitId FROM placements WHERE placementId = 2) a NATURAL JOIN units b WHERE placementUnitId = unitId;
 
 
 
@@ -49,6 +50,6 @@ INSERT INTO placements (placementGameId, placementUnitId, placementTeamId, place
 
 
 -- UPDATE placements SET placementCurrentMoves = 1 WHERE placementId = 95;
-
+SELECT LAST_INSERT_ID();
 
 

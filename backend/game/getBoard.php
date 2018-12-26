@@ -4,7 +4,7 @@ include("../db.php");
 $gameId = $_SESSION['gameId'];
 $myTeam = $_SESSION['myTeam'];
 
-$query = 'SELECT gamePhase, gameCurrentTeam, gameRedRpoints, gameBlueRpoints, gameRedHpoints, gameBlueHpoints, gameBattleSection, gameBattleSubSection, gameBattleLastRoll, gameBattleLastMessage, gameBattlePosSelected FROM GAMES WHERE gameId = ?';
+$query = 'SELECT * FROM GAMES WHERE gameId = ?';
 $preparedQuery = $db->prepare($query);
 $preparedQuery->bind_param("i", $gameId);
 $preparedQuery->execute();

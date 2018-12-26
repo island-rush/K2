@@ -5,10 +5,10 @@ include("../../db.php");
 $gameId = $_SESSION['gameId'];
 $myTeam = $_SESSION['myTeam'];
 
-$unitId = $_REQUEST['unitId'];
+$placementUnitId = $_REQUEST['unitId'];
 $costs = [8, 8, 10, 15, 4, 5, 6, 5, 8, 7, 8, 12, 12, 15, 11, 10];
 
-$query = 'SELECT gamePhase, gameCurrentTeam, gameRedRpoints, gameBlueRpoints FROM GAMES WHERE gameId = ?';
+$query = 'SELECT gamePhase, gameCurrentTeam, game'.$myTeam.'Rpoints FROM GAMES WHERE gameId = ?';
 $preparedQuery = $db->prepare($query);
 $preparedQuery->bind_param("i", $gameId);
 $preparedQuery->execute();
@@ -17,42 +17,62 @@ $r = $results->fetch_assoc();
 
 $gamePhase = $r['gamePhase'];
 $gameCurrentTeam = $r['gameCurrentTeam'];
-if ($myTeam == "Red") {
-    $points = $r['gameRedRpoints'];
-} else {
-    $points = $r['gameBlueRpoints'];
+$points = $r['game'.$myTeam.'Rpoints'];
+
+if ($myTeam != $gameCurrentTeam) {
+    echo "Not your team's turn.";
+    exit;
+}
+if ($gamePhase != 1) {
+    echo "Not the right phase to purchase.";
+    exit;
+}
+if ($points < $costs[$placementUnitId]) {
+    echo "Not enough points.";
+    exit;
 }
 
-if ($gamePhase == 1 && $myTeam == $gameCurrentTeam && $points >= $costs[$unitId]) {
-    if ($myTeam == "Red") {
-        $query = 'UPDATE games SET gameRedRpoints = gameRedRpoints - ? WHERE (gameId = ?)';
+$query = 'UPDATE games SET game'.$myTeam.'Rpoints = game'.$myTeam.'Rpoints - ? WHERE (gameId = ?)';
+$query = $db->prepare($query);
+$query->bind_param("ii", $costs[$placementUnitId], $gameId);
+$query->execute();
+
+$unitsMoves = [2, 2, 2, 2, 1, 1, 1, 1, 2, 3, 1, 4, 6, 5, 5, 0];
+$placementPositionId = 118;
+$query = 'INSERT INTO placements (placementGameId, placementUnitId, placementTeamId, placementCurrentMoves, placementPositionId) VALUES(?, ?, ?, ?, ?)';
+$query = $db->prepare($query);
+$query->bind_param("iisii", $gameId, $placementUnitId, $myTeam, $unitsMoves[$placementUnitId], $placementPositionId);
+$query->execute();
+
+$query = 'SELECT LAST_INSERT_ID()';
+$query = $db->prepare($query);
+$query->execute();
+$results = $query->get_result();
+$num_results = $results->num_rows;
+$r = $results->fetch_assoc();
+$placementId = (int) $r['LAST_INSERT_ID()'];
+
+$unitNames = ['Transport', 'Submarine', 'Destroyer', 'AircraftCarrier', 'ArmyCompany', 'ArtilleryBattery', 'TankPlatoon', 'MarinePlatoon', 'MarineConvoy', 'AttackHelo', 'SAM', 'FighterSquadron', 'BomberSquadron', 'StealthBomberSquadron', 'Tanker', 'LandBasedSeaMissile'];
+$pieceFunctions = ' draggable="true" ondragstart="pieceDragstart(event, this);" ';
+
+$pieceHTML = "<div class='".$unitNames[$placementUnitId]." gamePiece ".$myTeam."' title='".$unitNames[$placementUnitId]."' data-placementId='".$placementId."' ".$pieceFunctions.">";
+if ($placementUnitId == 0 || $placementUnitId == 3) {
+    if ($placementUnitId == 0) {
+        $classthing = "transportContainer";
     } else {
-        $query = 'UPDATE games SET gameBlueRpoints = gameBlueRpoints - ? WHERE (gameId = ?)';
+        $classthing = "aircraftCarrierContainer";
     }
-    $query = $db->prepare($query);
-    $query->bind_param("ii", $costs[$unitId], $gameId);
-    $query->execute();
-
-    $unitsMoves = [2, 2, 2, 2, 1, 1, 1, 1, 2, 3, 1, 4, 6, 5, 5, 0];
-    $placementPositionId = 118;
-    $query = 'INSERT INTO placements (placementGameId, placementUnitId, placementTeamId, placementCurrentMoves, placementPositionId) VALUES(?, ?, ?, ?, ?)';
-    $query = $db->prepare($query);
-    $query->bind_param("iisii", $gameId, $unitId, $myTeam, $unitsMoves[$unitId], $placementPositionId);
-    $query->execute();
-
-    $query = 'SELECT LAST_INSERT_ID()';
-    $query = $db->prepare($query);
-    $query->execute();
-    $results = $query->get_result();
-    $num_results = $results->num_rows;
-    $r= $results->fetch_assoc();
-    $placementId = $r['LAST_INSERT_ID()'];
-
-    $unitNames = ['Transport', 'Submarine', 'Destroyer', 'AircraftCarrier', 'ArmyCompany', 'ArtilleryBattery', 'TankPlatoon', 'MarinePlatoon', 'MarineConvoy', 'AttackHelo', 'SAM', 'FighterSquadron', 'BomberSquadron', 'StealthBomberSquadron', 'Tanker', 'LandBasedSeaMissile'];
-    $updateType = "piecePurchase";
-    $pieceHTML = "<div class='".$unitNames[$unitId]." gamePiece ".$myTeam."' title='".$unitNames[$unitId]."' data-placementId='".$placementId."'></div>";
-    $query = 'INSERT INTO updates (updateGameId, updateType, updateBattlePiecesSelected) VALUES (?, ?, ?)';
-    $query = $db->prepare($query);
-    $query->bind_param("iss", $gameId, $updateType, $pieceHTML);
-    $query->execute();
+    $pieceHTML = $pieceHTML."<div class='".$classthing."' data-positionId='-1'></div>";  //open the container
 }
+$pieceHTML = $pieceHTML."</div>";  //end the overall piece
+
+$updateType = "piecePurchase";
+$query = 'INSERT INTO updates (updateGameId, updateType, updateBattlePiecesSelected) VALUES (?, ?, ?)';
+$query = $db->prepare($query);
+$query->bind_param("iss", $gameId, $updateType, $pieceHTML);
+$query->execute();
+
+echo "Piece Purchased";
+exit;
+
+
