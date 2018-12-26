@@ -53,7 +53,8 @@ $r = $results->fetch_assoc();
 $placementId = (int) $r['LAST_INSERT_ID()'];
 
 $unitNames = ['Transport', 'Submarine', 'Destroyer', 'AircraftCarrier', 'ArmyCompany', 'ArtilleryBattery', 'TankPlatoon', 'MarinePlatoon', 'MarineConvoy', 'AttackHelo', 'SAM', 'FighterSquadron', 'BomberSquadron', 'StealthBomberSquadron', 'Tanker', 'LandBasedSeaMissile'];
-$pieceFunctions = ' draggable="true" ondragstart="pieceDragstart(event, this);" ';
+$pieceFunctions = ' draggable="true" ondragstart="pieceDragstart(event, this);" ondragleave="pieceDragleave(event, this);" onclick="pieceClick(event, this);" ondragenter="pieceDragenter(event, this);" ';
+$containerFunctions = " ondragenter='containerDragenter(event, this);' ondragleave='containerDragleave(event, this);' ondragover='positionDragover(event, this);' ondrop='positionDrop(event, this);' ";
 
 $pieceHTML = "<div class='".$unitNames[$placementUnitId]." gamePiece ".$myTeam."' title='".$unitNames[$placementUnitId]."' data-placementId='".$placementId."' ".$pieceFunctions.">";
 if ($placementUnitId == 0 || $placementUnitId == 3) {
@@ -62,7 +63,7 @@ if ($placementUnitId == 0 || $placementUnitId == 3) {
     } else {
         $classthing = "aircraftCarrierContainer";
     }
-    $pieceHTML = $pieceHTML."<div class='".$classthing."' data-positionId='-1'></div>";  //open the container
+    $pieceHTML = $pieceHTML."<div class='".$classthing."' data-positionId='-1' ".$containerFunctions."></div>";  //open the container
 }
 $pieceHTML = $pieceHTML."</div>";  //end the overall piece
 

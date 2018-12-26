@@ -29,9 +29,11 @@ $gameIsland12 = $r['gameIsland12'];
 $gameIsland13 = $r['gameIsland13'];
 $gameIsland14 = $r['gameIsland14'];
 
+//TODO: combine if no differences
 $waterFunctions = 'onclick="waterClick();" ondragover="positionDragover(event, this);" ondrop="positionDrop(event, this);"';
-$landFunctions = 'ondragover="positionDragover(event, this);" ondrop="positionDrop(event, this);"';
-$gridIslandFunctions = 'onclick="gridIslandClick(this);"';
+$landFunctions = 'onclick="landClick();" ondragover="positionDragover(event, this);" ondrop="positionDrop(event, this);"';
+
+$gridIslandFunctions = 'onclick="gridIslandClick(event, this);"';
 $popIslandFunctions = "";
 $trashBoxFunctions = 'ondragover="positionDragover(event, this);" ondrop="pieceTrash(event, this);"';
 

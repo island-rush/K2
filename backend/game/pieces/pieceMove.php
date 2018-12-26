@@ -70,9 +70,11 @@ if ($myTeam != $placementTeamId) {
     echo "This piece does not belong to you";
     exit;
 }
-if ($placementCurrentMoves == 0 && $placementUnitId != 15) {  //exclude missile from this check
-    echo "This piece is out of moves.";
-    exit;
+if (($placementCurrentMoves == 0) && $placementUnitId != 15) {  //exclude missile from this check
+    if ($_SESSION['dist'][$oldPositionId][$newPositionId] != 0) {
+        echo "This piece is out of moves.";
+        exit;
+    }
 }
 if (($oldPositionId == 118 && $gamePhase != 4)) {
     echo "Can only place Reinforcements during 'Reinforcement Place' phase.";
@@ -122,7 +124,7 @@ if ($newContainerId != -1) {
             exit;
         }
         if (in_array($placementUnitId, $people)) {  //people going in
-            if (sizeof($containerContents_UnitIds == 2)) {
+            if (sizeof($containerContents_UnitIds) == 2) {
                 if (in_array($containerContents_UnitIds[0], $machines) || in_array($containerContents_UnitIds[1], $machines)) {
                     echo "This troop can't fit with this combination.";
                     exit;
@@ -380,7 +382,7 @@ if ($killed == 1) {
         $index = array_search($newPositionId, $flagPositions);
         if ($ownerships[$index] != $myTeam) {
             if (sizeof($listEnemyPiecesInPosition_UnitIds) == 0) {  //already have this from land/water blockade check
-                $query = 'UPDATE games SET gameIsland'.($index + 1).' = ? WHERE gameId = ?';
+                $query = 'UPDATE games SET gameIsland'.($index + 1).' = ?, game'.$myTeam.'Hpoints = game'.$myTeam.'Hpoints + 1 WHERE gameId = ?';
                 $query = $db->prepare($query);
                 $query->bind_param("si", $myTeam, $gameId);
                 $query->execute();

@@ -71,6 +71,8 @@ let gridIsland11 = document.getElementById("special_island11");
 let gridIsland12 = document.getElementById("special_island12");
 let gridIslands = [gridIsland1, gridIsland2, gridIsland3, gridIsland4, gridIsland5, gridIsland6, gridIsland7, gridIsland8, gridIsland9, gridIsland10, gridIsland11, gridIsland12];
 
+let openContainerPiece = null;
+let pieceDragTimer;
 //-------------------------------------------------------------------------------------------------------------------
 
 function getPanel(){
@@ -201,14 +203,6 @@ function ajaxPieceRemove(placementId) {
 }
 //----------------------------------------------------------------
 
-function gridIslandClick(callingElement){
-	event.preventDefault();
-	unpopIslands();  //close all open islands
-	let islandNum = callingElement.getAttribute("data-islandNum");
-	popIslands[islandNum-1].style.display = "block";
-	gridIslands[islandNum-1].style.zIndex = 20;  //default for a gridblock is 10
-	event.stopPropagation();
-}
 
 function unpopIslands() {
 	for (let x = 0; x < popIslands.length; x++) {
@@ -217,9 +211,66 @@ function unpopIslands() {
 	}
 }
 
-function waterClick(){
+function closeContainer() {
+	if (openContainerPiece != null) {
+		openContainerPiece.firstChild.style.display = "none";
+		openContainerPiece.style.zIndex = 15;
+		openContainerPiece.parentNode.style.zIndex = 10;
+		openContainerPiece = null;
+	}
+}
+
+function gridIslandClick(event, callingElement){
 	event.preventDefault();
+	unpopIslands();  //close all open islands
+	closeContainer();
+	let islandNum = callingElement.getAttribute("data-islandNum");
+	popIslands[islandNum-1].style.display = "block";
+	gridIslands[islandNum-1].style.zIndex = 20;  //default for a gridblock is 10
+	event.stopPropagation();
+}
+
+function waterClick(){
 	unpopIslands();
+	closeContainer();
+}
+
+function landClick() {
+	unpopIslands();
+	closeContainer();
+}
+
+//TODO: actually figure out timing mechanics for dragging over and popping
+function containerDragenter(event, callingElement) {
+	event.preventDefault();
+	clearTimeout(pieceDragTimer);
+	event.stopPropagation();
+}
+
+function containerDragleave(event, callingElement) {
+	event.preventDefault();
+	clearTimeout(pieceDragTimer);
+	pieceDragTimer = setTimeout(function() { waterClick();}, 1000);
+	event.stopPropagation();
+}
+
+function pieceDragenter(event, callingElement) {
+	event.preventDefault();
+	clearTimeout(pieceDragTimer);
+	let positionId = parseInt(callingElement.parentNode.getAttribute("data-positionId"));
+	let unitName = callingElement.classList[0];
+	if (unitName === "Transport" || unitName === "AircraftCarrier") {
+		if (positionId !== 118) {
+			clearTimeout(pieceDragTimer);
+			pieceDragTimer = setTimeout(function() { pieceClick(event, callingElement);}, 1000);
+		}
+	}
+	event.stopPropagation();
+}
+
+function pieceDragleave(event, callingElement){
+	event.preventDefault();
+
 	event.stopPropagation();
 }
 
@@ -250,6 +301,10 @@ function positionDrop(event, callingElement){
 	event.stopPropagation();
 }
 
+
+
+
+
 function pieceTrash(event, callingElement) {
 	event.preventDefault();
 	let placementId = event.dataTransfer.getData("placementId");  //what piece was dropped
@@ -277,11 +332,42 @@ function piecePurchase(unitId){
 	event.stopPropagation();
 }
 
+function pieceClick(event, callingElement) {
+	event.preventDefault();
+
+	//clear other stuff and close other stuff
+
+	unpopIslands();
+	closeContainer();
+
+	let unitName = callingElement.classList[0];
+	let positionId = parseInt(callingElement.parentNode.getAttribute("data-positionId"));
+
+	openContainerPiece = callingElement;
+
+	//close other pieces / islands
+
+	if (unitName === "Transport" || unitName === "AircraftCarrier") {
+		if (positionId !== 118) {
+			callingElement.childNodes[0].style.display = "block";
+			callingElement.style.zIndex = 30;
+			callingElement.parentNode.style.zIndex = 70;
+		}
+	}
+
+	event.stopPropagation();
+}
+
 function pieceDragstart(event, callingElement){
 	//only need the placementId to know what is being dragged, server side will handle everything else
 	event.dataTransfer.setData("placementId", callingElement.getAttribute("data-placementId"));
 	event.stopPropagation();
 }
+
+
+
+
+
 
 function showDice(diceNumber){
 	dice[0].style.display = "none";
@@ -296,6 +382,8 @@ function showDice(diceNumber){
 //button functions---------------------------------------------------
 function controlButtonFunction() {
 	event.preventDefault();
+
+
 
 	event.stopPropagation();
 }
@@ -384,5 +472,7 @@ function logout(){
 //----------------------------------------------------------------
 
 
+function toggleHybridMenu() {
 
+}
 

@@ -16,7 +16,8 @@ if (isset($positionId)) {
                 $placementUnitId = (int) $r['placementUnitId'];
                 $placementTeamId = $r['placementTeamId'];
 
-                $pieceFunctions = ' draggable="true" ondragstart="pieceDragstart(event, this);" ';
+                $pieceFunctions = ' draggable="true" ondragstart="pieceDragstart(event, this);" ondragleave="pieceDragleave(event, this);" onclick="pieceClick(event, this);" ondragenter="pieceDragenter(event, this);" ';
+                $containerFunctions = " ondragenter='containerDragenter(event, this);' ondragleave='containerDragleave(event, this);' ondragover='positionDragover(event, this);' ondrop='positionDrop(event, this);' ";
 
                 //open the overall piece
                 echo "<div class='".$unitNames[$placementUnitId]." gamePiece ".$placementTeamId."' title='".$unitNames[$placementUnitId]."' data-placementId='".$placementId."' ".$pieceFunctions.">";
@@ -26,7 +27,7 @@ if (isset($positionId)) {
                     } else {
                         $classthing = "aircraftCarrierContainer";
                     }
-                    echo "<div class='".$classthing."' data-positionId='-1'>";  //open the container
+                    echo "<div class='".$classthing."' data-positionId='-1' ".$containerFunctions.">";  //open the container
                     $query2 = 'SELECT placementId, placementUnitId FROM placements WHERE (placementGameId = ?) AND (placementContainerId = ?)';
                     $query2 = $db->prepare($query2);
                     $query2->bind_param("ii", $gameId, $placementId);
