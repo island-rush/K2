@@ -130,9 +130,7 @@ function ajaxUpdate(){
 				window.setTimeout("ajaxUpdate();", smallDelay);
 			} else {
 				let decoded = JSON.parse(this.responseText);
-
 				lastUpdateId = decoded.updateId;
-
 				let updateType = decoded.updateType;
 
 				if (updateType === "logout") {
@@ -149,6 +147,18 @@ function ajaxUpdate(){
 					getPanel();
 				}
 
+				if (updateType === "userFeedback") {
+					user_feedback.innerHTML = decoded.updateBattlePiecesSelected;
+				}
+
+				if (updateType === "pieceMove") {
+					ajaxPieceMove(parseInt(decoded.updatePlacementId), parseInt(decoded.updateNewPositionId), parseInt(decoded.updateNewContainerId));
+				}
+
+				if (updateType === "pieceKilled") {
+					ajaxPieceKilled(parseInt(decoded.updatePlacementId));
+				}
+
 				window.setTimeout("ajaxUpdate();", smallDelay);
 			}
 		}
@@ -158,7 +168,21 @@ function ajaxUpdate(){
 }
 ajaxUpdate();
 
+function ajaxPieceMove(placementId, toPositionId, toContainerId) {
+	let gamePiece = document.querySelector("[data-placementId='" + placementId + "']");
+	let newLocation;
+	if (toContainerId === -1) {
+		newLocation = document.querySelector("[data-positionId='" + toPositionId + "']");
+	} else {
+		newLocation = document.querySelector("[data-placementId='" + toContainerId + "']").firstChild;
+	}
+	newLocation.append(gamePiece);
+}
 
+function ajaxPieceKilled(placementId) {
+	//TODO: make all document selectors check for null returns before .removing (see updatePieceDelete() in K2)
+	document.querySelector("[data-placementId='" + placementId + "']").remove();
+}
 
 
 //button functions---------------------------------------------------
@@ -245,11 +269,13 @@ function purchasePieceFunction(unitId){
 
 
 
-function gridIslandClick(islandNum){
+function gridIslandClick(callingElement){
 	event.preventDefault();
 
 	//close all open islands
 	unpopIslands();
+
+	let islandNum = callingElement.getAttribute("data-islandNum");
 
 	//pop this island
 	popIslands[islandNum-1].style.display = "block";
@@ -279,14 +305,43 @@ function waterClick(){
 
 
 
+function pieceDragstart(event, callingElement){
+	//only need the placementId to know what is being dragged, server side will handle everything else
+	event.dataTransfer.setData("placementId", callingElement.getAttribute("data-placementId"));
+	event.stopPropagation();
+}
 
 
+function positionDragover(event, callingElement){
+	event.preventDefault();
+	//TODO: client side checks to prevent dragging pieces
+	//Can't Drop into something draggable (other pieces) (containers are non-draggable)
+	if (callingElement.getAttribute("draggable") === "true") {
+		event.dataTransfer.dropEffect = "none";
+	} else {
+		event.dataTransfer.dropEffect = "all";
+	}
+}
 
 
+function positionDrop(event, callingElement){
+	event.preventDefault();
 
+	let placementId = event.dataTransfer.getData("placementId");  //what piece was dropped
+	let positionId = parseInt(callingElement.getAttribute("data-positionId"));  //-1 if going into container
+	let containerId = parseInt(callingElement.parentNode.getAttribute("data-placementId"));  //-1 if going into position
 
+	let phpUpdateBoard = new XMLHttpRequest();
+	phpUpdateBoard.onreadystatechange = function () {
+		if (this.readyState === 4 && this.status === 200) {
+			user_feedback.innerHTML = this.responseText;
+		}
+	};
+	phpUpdateBoard.open("GET", "backend/game/pieces/pieceMove.php?placementId=" + placementId + "&positionId=" + positionId + "&containerId=" + containerId, true);
+	phpUpdateBoard.send();
 
-
+	event.stopPropagation();
+}
 
 
 

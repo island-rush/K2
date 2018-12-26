@@ -3,6 +3,7 @@ session_start();
 include("backend/db.php");
 
 $gameId = $_SESSION['gameId'];
+$myTeam = $_SESSION['myTeam'];
 
 $out_container = -1;
 $unitNames = ['Transport', 'Submarine', 'Destroyer', 'AircraftCarrier', 'ArmyCompany', 'ArtilleryBattery', 'TankPlatoon', 'MarinePlatoon', 'MarineConvoy', 'AttackHelo', 'SAM', 'FighterSquadron', 'BomberSquadron', 'StealthBomberSquadron', 'Tanker', 'LandBasedSeaMissile'];
@@ -27,6 +28,15 @@ $gameIsland11 = $r['gameIsland11'];
 $gameIsland12 = $r['gameIsland12'];
 $gameIsland13 = $r['gameIsland13'];
 $gameIsland14 = $r['gameIsland14'];
+
+$waterFunctions = 'onclick="waterClick();" ondragover="positionDragover(event, this);" ondrop="positionDrop(event, this);"';
+$landFunctions = 'ondragover="positionDragover(event, this);" ondrop="positionDrop(event, this);"';
+$gridIslandFunctions = 'onclick="gridIslandClick(this);"';
+$popIslandFunctions = "";
+$trashBoxFunctions = "";
+
+$landPositionClass = 'class="gridblockTiny"';
+$waterClass = 'class="gridblock water"';
 ?>
 
 <!DOCTYPE html>
@@ -36,6 +46,7 @@ $gameIsland14 = $r['gameIsland14'];
     <link rel="stylesheet" type="text/css" href="frontend/css/game.css">
     <script>
         let gameId = <?php echo $gameId; ?>;
+        let myTeam = "<?php echo $myTeam; ?>";
         let lastUpdateId = <?php
             $query8 = "SELECT updateId FROM updates WHERE updateGameId = ? ORDER BY updateId DESC";
             $preparedQuery8 = $db->prepare($query8);
@@ -77,7 +88,7 @@ $gameIsland14 = $r['gameIsland14'];
         <div id="purchase_seperator">Inventory</div>
         <div id="shopping_things">
             <div id="purchased_container" data-positionType="purchased_container" data-positionId="118"><?php $positionId = 118; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-            <div id="trashbox"></div>
+            <div id="trashbox" <?php echo $trashBoxFunctions; ?>></div>
         </div>
         <div id="rest_things">
             <div id="phase_indicator">Current Phase = Loading...</div>
@@ -116,186 +127,185 @@ $gameIsland14 = $r['gameIsland14'];
             </div>
         </div>
     </div>
-
-    <div id="game_board">
+    <div id="game_board" data-placementId="-1">
         <div id="grid_marker_top"></div>
-        <div id="special_island13" class="gridblockLeftBig <?php echo $gameIsland13; ?>" title="This island is worth 15 Reinforcement Points" data-islandNum="13">
-            <div class="gridblockTiny" id="pos13a" data-positionId="55"><?php $positionId = 55; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-            <div class="gridblockTiny" id="pos13b" data-positionId="56"><?php $positionId = 56; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-            <div class="gridblockTiny" id="pos13c" data-positionId="57"><?php $positionId = 57; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-            <div class="gridblockTiny" id="pos13d" data-positionId="58"><?php $positionId = 58; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-            <div class="gridblockTiny" id="pos13e" data-positionId="59"><?php $positionId = 59; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-            <div class="gridblockTiny" id="pos13f" data-positionId="60"><?php $positionId = 60; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-            <div class="gridblockTiny" id="pos13g" data-positionId="61"><?php $positionId = 61; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-            <div class="gridblockTiny" id="pos13h" data-positionId="62"><?php $positionId = 62; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-            <div class="gridblockTiny" id="pos13i" data-positionId="63"><?php $positionId = 63; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-            <div class="gridblockTiny" id="pos13j" data-positionId="64"><?php $positionId = 64; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div id="special_island13" class="gridblockLeftBig <?php echo $gameIsland13; ?>" title="This island is worth 15 Reinforcement Points" data-islandNum="13" data-placementId="-1">
+            <div <?php echo $landPositionClass; ?> id="pos13a" data-positionId="55" <?php echo $landFunctions; ?>><?php $positionId = 55; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+            <div <?php echo $landPositionClass; ?> id="pos13b" data-positionId="56" <?php echo $landFunctions; ?>><?php $positionId = 56; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+            <div <?php echo $landPositionClass; ?> id="pos13c" data-positionId="57" <?php echo $landFunctions; ?>><?php $positionId = 57; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+            <div <?php echo $landPositionClass; ?> id="pos13d" data-positionId="58" <?php echo $landFunctions; ?>><?php $positionId = 58; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+            <div <?php echo $landPositionClass; ?> id="pos13e" data-positionId="59" <?php echo $landFunctions; ?>><?php $positionId = 59; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+            <div <?php echo $landPositionClass; ?> id="pos13f" data-positionId="60" <?php echo $landFunctions; ?>><?php $positionId = 60; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+            <div <?php echo $landPositionClass; ?> id="pos13g" data-positionId="61" <?php echo $landFunctions; ?>><?php $positionId = 61; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+            <div <?php echo $landPositionClass; ?> id="pos13h" data-positionId="62" <?php echo $landFunctions; ?>><?php $positionId = 62; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+            <div <?php echo $landPositionClass; ?> id="pos13i" data-positionId="63" <?php echo $landFunctions; ?>><?php $positionId = 63; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+            <div <?php echo $landPositionClass; ?> id="pos13j" data-positionId="64" <?php echo $landFunctions; ?>><?php $positionId = 64; include("backend/game/pieces/pieceDisplay.php"); ?></div>
         </div>
-        <div class="gridblock water" data-positionId="0" onclick="waterClick();"><?php $positionId = 0; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-        <div class="gridblock water" data-positionId="1" onclick="waterClick();"><?php $positionId = 1; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-        <div class="gridblock water" data-positionId="2" onclick="waterClick();"><?php $positionId = 2; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-        <div class="gridblock water" data-positionId="3" onclick="waterClick();"><?php $positionId = 3; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-        <div class="gridblock water" data-positionId="4" onclick="waterClick();"><?php $positionId = 4; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-        <div class="gridblock water" data-positionId="5" onclick="waterClick();"><?php $positionId = 5; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-        <div class="gridblock water" data-positionId="6" onclick="waterClick();"><?php $positionId = 6; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-        <div class="gridblock water" data-positionId="7" onclick="waterClick();"><?php $positionId = 7; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-        <div class="gridblock water" data-positionId="8" onclick="waterClick();"><?php $positionId = 8; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-        <div id="special_island1" class="gridblock grid_special_island1 <?php echo $gameIsland1; ?>" title="This island is worth 4 Reinforcement Points" onclick="gridIslandClick(1);">
-            <div id="special_island1_pop" class="special_island1 special_island3x3 <?php echo $gameIsland1; ?>" data-islandNum="1">
-                <div class="gridblockTiny" id="pos1a" data-positionId="75"><?php $positionId = 75; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-                <div class="gridblockTiny" id="pos1b" data-positionId="76"><?php $positionId = 76; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-                <div class="gridblockTiny" id="pos1c" data-positionId="77"><?php $positionId = 77; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-                <div class="gridblockTiny" id="pos1d" data-positionId="78"><?php $positionId = 78; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div <?php echo $waterClass; ?> data-positionId="0" <?php echo $waterFunctions; ?>><?php $positionId = 0; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div <?php echo $waterClass; ?> data-positionId="1" <?php echo $waterFunctions; ?>><?php $positionId = 1; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div <?php echo $waterClass; ?> data-positionId="2" <?php echo $waterFunctions; ?>><?php $positionId = 2; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div <?php echo $waterClass; ?> data-positionId="3" <?php echo $waterFunctions; ?>><?php $positionId = 3; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div <?php echo $waterClass; ?> data-positionId="4" <?php echo $waterFunctions; ?>><?php $positionId = 4; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div <?php echo $waterClass; ?> data-positionId="5" <?php echo $waterFunctions; ?>><?php $positionId = 5; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div <?php echo $waterClass; ?> data-positionId="6" <?php echo $waterFunctions; ?>><?php $positionId = 6; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div <?php echo $waterClass; ?> data-positionId="7" <?php echo $waterFunctions; ?>><?php $positionId = 7; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div <?php echo $waterClass; ?> data-positionId="8" <?php echo $waterFunctions; ?>><?php $positionId = 8; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div id="special_island1" class="gridblock grid_special_island1 <?php echo $gameIsland1; ?>" data-islandNum="1" title="This island is worth 4 Reinforcement Points" <?php echo $gridIslandFunctions; ?>>
+            <div id="special_island1_pop" class="special_island1 special_island3x3 <?php echo $gameIsland1; ?>" data-islandNum="1" data-placementId="-1">
+                <div <?php echo $landPositionClass; ?> id="pos1a" data-positionId="75" <?php echo $landFunctions; ?>><?php $positionId = 75; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+                <div <?php echo $landPositionClass; ?> id="pos1b" data-positionId="76" <?php echo $landFunctions; ?>><?php $positionId = 76; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+                <div <?php echo $landPositionClass; ?> id="pos1c" data-positionId="77" <?php echo $landFunctions; ?>><?php $positionId = 77; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+                <div <?php echo $landPositionClass; ?> id="pos1d" data-positionId="78" <?php echo $landFunctions; ?>><?php $positionId = 78; include("backend/game/pieces/pieceDisplay.php"); ?></div>
             </div>
         </div>
-        <div class="gridblock water" data-positionId="9" onclick="waterClick();"><?php $positionId = 9; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-        <div class="gridblock water" data-positionId="10" onclick="waterClick();"><?php $positionId = 10; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-        <div id="special_island2" class="gridblock grid_special_island2 <?php echo $gameIsland2; ?>" title="This island is worth 6 Reinforcement Points" onclick="gridIslandClick(2);">
-            <div id="special_island2_pop" class="special_island2 special_island3x3 <?php echo $gameIsland2; ?>" data-islandNum="2">
-                <div class="gridblockTiny" id="pos2a" data-positionId="79"><?php $positionId = 79; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-                <div class="gridblockTiny" id="pos2b" data-positionId="80"><?php $positionId = 80; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-                <div class="gridblockTiny" id="pos2c" data-positionId="81"><?php $positionId = 81; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-                <div class="gridblockTiny" id="pos2d" data-positionId="82"><?php $positionId = 82; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div <?php echo $waterClass; ?> data-positionId="9" <?php echo $waterFunctions; ?>><?php $positionId = 9; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div <?php echo $waterClass; ?> data-positionId="10" <?php echo $waterFunctions; ?>><?php $positionId = 10; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div id="special_island2" class="gridblock grid_special_island2 <?php echo $gameIsland2; ?>" data-islandNum="2" title="This island is worth 6 Reinforcement Points" <?php echo $gridIslandFunctions; ?>>
+            <div id="special_island2_pop" class="special_island2 special_island3x3 <?php echo $gameIsland2; ?>" data-islandNum="2" data-placementId="-1">
+                <div <?php echo $landPositionClass; ?> id="pos2a" data-positionId="79" <?php echo $landFunctions; ?>><?php $positionId = 79; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+                <div <?php echo $landPositionClass; ?> id="pos2b" data-positionId="80" <?php echo $landFunctions; ?>><?php $positionId = 80; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+                <div <?php echo $landPositionClass; ?> id="pos2c" data-positionId="81" <?php echo $landFunctions; ?>><?php $positionId = 81; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+                <div <?php echo $landPositionClass; ?> id="pos2d" data-positionId="82" <?php echo $landFunctions; ?>><?php $positionId = 82; include("backend/game/pieces/pieceDisplay.php"); ?></div>
                 <div class="gridblockTiny missileContainer" id="posM1" data-positionId="121"><?php $positionId = 121; include("backend/game/pieces/pieceDisplay.php"); ?></div>
             </div>
         </div>
-        <div class="gridblock water" data-positionId="11" onclick="waterClick();"><?php $positionId = 11; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-        <div id="special_island3" class="gridblock grid_special_island3 <?php echo $gameIsland3; ?>" title="This island is worth 4 Reinforcement Points" onclick="gridIslandClick(3);">
-            <div id="special_island3_pop" class="special_island3 special_island3x3 <?php echo $gameIsland3; ?>" data-islandNum="3">
-                <div class="gridblockTiny" id="pos3a" data-positionId="83"><?php $positionId = 83; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-                <div class="gridblockTiny" id="pos3b" data-positionId="84"><?php $positionId = 84; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-                <div class="gridblockTiny" id="pos3c" data-positionId="85"><?php $positionId = 85; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div <?php echo $waterClass; ?> data-positionId="11" <?php echo $waterFunctions; ?>><?php $positionId = 11; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div id="special_island3" class="gridblock grid_special_island3 <?php echo $gameIsland3; ?>" data-islandNum="3" title="This island is worth 4 Reinforcement Points" <?php echo $gridIslandFunctions; ?>>
+            <div id="special_island3_pop" class="special_island3 special_island3x3 <?php echo $gameIsland3; ?>" data-islandNum="3" data-placementId="-1">
+                <div <?php echo $landPositionClass; ?> id="pos3a" data-positionId="83" <?php echo $landFunctions; ?>><?php $positionId = 83; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+                <div <?php echo $landPositionClass; ?> id="pos3b" data-positionId="84" <?php echo $landFunctions; ?>><?php $positionId = 84; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+                <div <?php echo $landPositionClass; ?> id="pos3c" data-positionId="85" <?php echo $landFunctions; ?>><?php $positionId = 85; include("backend/game/pieces/pieceDisplay.php"); ?></div>
             </div>
         </div>
-        <div class="gridblock water" data-positionId="12" onclick="waterClick();"><?php $positionId = 12; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-        <div id="special_island14" class="gridblockRightBig <?php echo $gameIsland14; ?>" title="This island is worth 25 Reinforcement Points" data-islandNum="14">
-            <div class="gridblockTiny" id="pos14a" data-positionId="65"><?php $positionId = 65; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-            <div class="gridblockTiny" id="pos14b" data-positionId="66"><?php $positionId = 66; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-            <div class="gridblockTiny" id="pos14c" data-positionId="67"><?php $positionId = 67; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-            <div class="gridblockTiny" id="pos14d" data-positionId="68"><?php $positionId = 68; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-            <div class="gridblockTiny" id="pos14e" data-positionId="69"><?php $positionId = 69; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-            <div class="gridblockTiny" id="pos14f" data-positionId="70"><?php $positionId = 70; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-            <div class="gridblockTiny" id="pos14g" data-positionId="71"><?php $positionId = 71; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-            <div class="gridblockTiny" id="pos14h" data-positionId="72"><?php $positionId = 72; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-            <div class="gridblockTiny" id="pos14i" data-positionId="73"><?php $positionId = 73; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-            <div class="gridblockTiny" id="pos14j" data-positionId="74"><?php $positionId = 74; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div <?php echo $waterClass; ?> data-positionId="12" <?php echo $waterFunctions; ?>><?php $positionId = 12; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div id="special_island14" class="gridblockRightBig <?php echo $gameIsland14; ?>" title="This island is worth 25 Reinforcement Points" data-islandNum="14" data-placementId="-1">
+            <div <?php echo $landPositionClass; ?> id="pos14a" data-positionId="65" <?php echo $landFunctions; ?>><?php $positionId = 65; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+            <div <?php echo $landPositionClass; ?> id="pos14b" data-positionId="66" <?php echo $landFunctions; ?>><?php $positionId = 66; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+            <div <?php echo $landPositionClass; ?> id="pos14c" data-positionId="67" <?php echo $landFunctions; ?>><?php $positionId = 67; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+            <div <?php echo $landPositionClass; ?> id="pos14d" data-positionId="68" <?php echo $landFunctions; ?>><?php $positionId = 68; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+            <div <?php echo $landPositionClass; ?> id="pos14e" data-positionId="69" <?php echo $landFunctions; ?>><?php $positionId = 69; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+            <div <?php echo $landPositionClass; ?> id="pos14f" data-positionId="70" <?php echo $landFunctions; ?>><?php $positionId = 70; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+            <div <?php echo $landPositionClass; ?> id="pos14g" data-positionId="71" <?php echo $landFunctions; ?>><?php $positionId = 71; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+            <div <?php echo $landPositionClass; ?> id="pos14h" data-positionId="72" <?php echo $landFunctions; ?>><?php $positionId = 72; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+            <div <?php echo $landPositionClass; ?> id="pos14i" data-positionId="73" <?php echo $landFunctions; ?>><?php $positionId = 73; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+            <div <?php echo $landPositionClass; ?> id="pos14j" data-positionId="74" <?php echo $landFunctions; ?>><?php $positionId = 74; include("backend/game/pieces/pieceDisplay.php"); ?></div>
         </div>
-        <div class="gridblock water" data-positionId="13" onclick="waterClick();"><?php $positionId = 13; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-        <div class="gridblock water" data-positionId="14" onclick="waterClick();"><?php $positionId = 14; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-        <div class="gridblock water" data-positionId="15" onclick="waterClick();"><?php $positionId = 15; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-        <div id="special_island4" class="gridblock grid_special_island4 <?php echo $gameIsland4; ?>" title="This island is worth 3 Reinforcement Points" onclick="gridIslandClick(4);">
-            <div id="special_island4_pop" class="special_island4 special_island3x3 <?php echo $gameIsland4; ?>" data-islandNum="4">
-                <div class="gridblockTiny" id="pos4a" data-positionId="86"><?php $positionId = 86; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-                <div class="gridblockTiny" id="pos4b" data-positionId="87"><?php $positionId = 87; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-                <div class="gridblockTiny" id="pos4c" data-positionId="88"><?php $positionId = 88; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-                <div class="gridblockTiny" id="pos4d" data-positionId="89"><?php $positionId = 89; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div <?php echo $waterClass; ?> data-positionId="13" <?php echo $waterFunctions; ?>><?php $positionId = 13; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div <?php echo $waterClass; ?> data-positionId="14" <?php echo $waterFunctions; ?>><?php $positionId = 14; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div <?php echo $waterClass; ?> data-positionId="15" <?php echo $waterFunctions; ?>><?php $positionId = 15; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div id="special_island4" class="gridblock grid_special_island4 <?php echo $gameIsland4; ?>" data-islandNum="4" title="This island is worth 3 Reinforcement Points" <?php echo $gridIslandFunctions; ?>>
+            <div id="special_island4_pop" class="special_island4 special_island3x3 <?php echo $gameIsland4; ?>" data-islandNum="4" data-placementId="-1">
+                <div <?php echo $landPositionClass; ?> id="pos4a" data-positionId="86" <?php echo $landFunctions; ?>><?php $positionId = 86; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+                <div <?php echo $landPositionClass; ?> id="pos4b" data-positionId="87" <?php echo $landFunctions; ?>><?php $positionId = 87; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+                <div <?php echo $landPositionClass; ?> id="pos4c" data-positionId="88" <?php echo $landFunctions; ?>><?php $positionId = 88; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+                <div <?php echo $landPositionClass; ?> id="pos4d" data-positionId="89" <?php echo $landFunctions; ?>><?php $positionId = 89; include("backend/game/pieces/pieceDisplay.php"); ?></div>
             </div>
         </div>
-        <div class="gridblock water" data-positionId="16" onclick="waterClick();"><?php $positionId = 16; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-        <div class="gridblock water" data-positionId="17" onclick="waterClick();"><?php $positionId = 17; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-        <div class="gridblock water" data-positionId="18" onclick="waterClick();"><?php $positionId = 18; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div <?php echo $waterClass; ?> data-positionId="16" <?php echo $waterFunctions; ?>><?php $positionId = 16; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div <?php echo $waterClass; ?> data-positionId="17" <?php echo $waterFunctions; ?>><?php $positionId = 17; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div <?php echo $waterClass; ?> data-positionId="18" <?php echo $waterFunctions; ?>><?php $positionId = 18; include("backend/game/pieces/pieceDisplay.php"); ?></div>
         <div class="gridblockEmptyLeft"></div>
-        <div class="gridblock water" data-positionId="19" onclick="waterClick();"><?php $positionId = 19; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-        <div class="gridblock water" data-positionId="20" onclick="waterClick();"><?php $positionId = 20; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-        <div class="gridblock water" data-positionId="21" onclick="waterClick();"><?php $positionId = 21; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-        <div id="special_island5" class="gridblock grid_special_island5_1 <?php echo $gameIsland5; ?>" title="This island is worth 8 Reinforcement Points" onclick="gridIslandClick(5);">
-            <div id="special_island5_pop" class="special_island5 special_island3x3 <?php echo $gameIsland5; ?>" data-islandNum="5">
-                <div class="gridblockTiny" id="pos5a" data-positionId="90"><?php $positionId = 90; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-                <div class="gridblockTiny" id="pos5b" data-positionId="91"><?php $positionId = 91; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-                <div class="gridblockTiny" id="pos5c" data-positionId="92"><?php $positionId = 92; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-                <div class="gridblockTiny" id="pos5d" data-positionId="93"><?php $positionId = 93; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div <?php echo $waterClass; ?> data-positionId="19" <?php echo $waterFunctions; ?>><?php $positionId = 19; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div <?php echo $waterClass; ?> data-positionId="20" <?php echo $waterFunctions; ?>><?php $positionId = 20; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div <?php echo $waterClass; ?> data-positionId="21" <?php echo $waterFunctions; ?>><?php $positionId = 21; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div id="special_island5" class="gridblock grid_special_island5_1 <?php echo $gameIsland5; ?>" data-islandNum="5" title="This island is worth 8 Reinforcement Points" <?php echo $gridIslandFunctions; ?>>
+            <div id="special_island5_pop" class="special_island5 special_island3x3 <?php echo $gameIsland5; ?>" data-islandNum="5" data-placementId="-1">
+                <div <?php echo $landPositionClass; ?> id="pos5a" data-positionId="90" <?php echo $landFunctions; ?>><?php $positionId = 90; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+                <div <?php echo $landPositionClass; ?> id="pos5b" data-positionId="91" <?php echo $landFunctions; ?>><?php $positionId = 91; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+                <div <?php echo $landPositionClass; ?> id="pos5c" data-positionId="92" <?php echo $landFunctions; ?>><?php $positionId = 92; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+                <div <?php echo $landPositionClass; ?> id="pos5d" data-positionId="93" <?php echo $landFunctions; ?>><?php $positionId = 93; include("backend/game/pieces/pieceDisplay.php"); ?></div>
             </div>
         </div>
-        <div class="gridblock water" data-positionId="22" onclick="waterClick();"><?php $positionId = 22; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-        <div class="gridblock water" data-positionId="23" onclick="waterClick();"><?php $positionId = 23; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-        <div class="gridblock water" data-positionId="24" onclick="waterClick();"><?php $positionId = 24; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-        <div id="special_island6" class="gridblock grid_special_island6 <?php echo $gameIsland6; ?>" title="This island is worth 7 Reinforcement Points" onclick="gridIslandClick(6);">
-            <div id="special_island6_pop" class="special_island6 special_island3x3 <?php echo $gameIsland6; ?>" data-islandNum="6">
-                <div class="gridblockTiny" id="pos6a" data-positionId="94"><?php $positionId = 94; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-                <div class="gridblockTiny" id="pos6b" data-positionId="95"><?php $positionId = 95; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-                <div class="gridblockTiny" id="pos6c" data-positionId="96"><?php $positionId = 96; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div <?php echo $waterClass; ?> data-positionId="22" <?php echo $waterFunctions; ?>><?php $positionId = 22; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div <?php echo $waterClass; ?> data-positionId="23" <?php echo $waterFunctions; ?>><?php $positionId = 23; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div <?php echo $waterClass; ?> data-positionId="24" <?php echo $waterFunctions; ?>><?php $positionId = 24; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div id="special_island6" class="gridblock grid_special_island6 <?php echo $gameIsland6; ?>" data-islandNum="6" title="This island is worth 7 Reinforcement Points" <?php echo $gridIslandFunctions; ?>>
+            <div id="special_island6_pop" class="special_island6 special_island3x3 <?php echo $gameIsland6; ?>" data-islandNum="6" data-placementId="-1">
+                <div <?php echo $landPositionClass; ?> id="pos6a" data-positionId="94" <?php echo $landFunctions; ?>><?php $positionId = 94; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+                <div <?php echo $landPositionClass; ?> id="pos6b" data-positionId="95" <?php echo $landFunctions; ?>><?php $positionId = 95; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+                <div <?php echo $landPositionClass; ?> id="pos6c" data-positionId="96" <?php echo $landFunctions; ?>><?php $positionId = 96; include("backend/game/pieces/pieceDisplay.php"); ?></div>
                 <div class="gridblockTiny missileContainer" id="posM2" data-positionId="122"><?php $positionId = 122; include("backend/game/pieces/pieceDisplay.php"); ?></div>
             </div>
         </div>
-        <div class="gridblock water" data-positionId="25" onclick="waterClick();"><?php $positionId = 25; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-        <div class="gridblock water" data-positionId="26" onclick="waterClick();"><?php $positionId = 26; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-        <div id="special_island7" class="gridblock grid_special_island7 <?php echo $gameIsland7; ?>" title="This island is worth 7 Reinforcement Points" onclick="gridIslandClick(7);">
-            <div id="special_island7_pop" class="special_island7 special_island3x3 <?php echo $gameIsland7; ?>" data-islandNum="7">
-                <div class="gridblockTiny" id="pos7a" data-positionId="97"><?php $positionId = 97; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-                <div class="gridblockTiny" id="pos7b" data-positionId="98"><?php $positionId = 98; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-                <div class="gridblockTiny" id="pos7c" data-positionId="99"><?php $positionId = 99; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div <?php echo $waterClass; ?> data-positionId="25" <?php echo $waterFunctions; ?>><?php $positionId = 25; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div <?php echo $waterClass; ?> data-positionId="26" <?php echo $waterFunctions; ?>><?php $positionId = 26; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div id="special_island7" class="gridblock grid_special_island7 <?php echo $gameIsland7; ?>" data-islandNum="7" title="This island is worth 7 Reinforcement Points" <?php echo $gridIslandFunctions; ?>>
+            <div id="special_island7_pop" class="special_island7 special_island3x3 <?php echo $gameIsland7; ?>" data-islandNum="7" data-placementId="-1">
+                <div <?php echo $landPositionClass; ?> id="pos7a" data-positionId="97" <?php echo $landFunctions; ?>><?php $positionId = 97; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+                <div <?php echo $landPositionClass; ?> id="pos7b" data-positionId="98" <?php echo $landFunctions; ?>><?php $positionId = 98; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+                <div <?php echo $landPositionClass; ?> id="pos7c" data-positionId="99" <?php echo $landFunctions; ?>><?php $positionId = 99; include("backend/game/pieces/pieceDisplay.php"); ?></div>
                 <div class="gridblockTiny missileContainer" id="posM3" data-positionId="123"><?php $positionId = 123; include("backend/game/pieces/pieceDisplay.php"); ?></div>
             </div>
         </div>
-        <div class="gridblock water" data-positionId="27" onclick="waterClick();"><?php $positionId = 27; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-        <div class="gridblock grid_special_island5_2  <?php echo $gameIsland5; ?>" title="This island is worth 8 Reinforcement Points" id="special_island5_extra" onclick="gridIslandClick(5);">
+        <div <?php echo $waterClass; ?> data-positionId="27" <?php echo $waterFunctions; ?>><?php $positionId = 27; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div class="gridblock grid_special_island5_2  <?php echo $gameIsland5; ?>" title="This island is worth 8 Reinforcement Points" data-islandNum="5" id="special_island5_extra" <?php echo $gridIslandFunctions; ?>>
         </div>
-        <div class="gridblock water" data-positionId="28" onclick="waterClick();"><?php $positionId = 28; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-        <div id="special_island8" class="gridblock grid_special_island8 <?php echo $gameIsland8; ?>" title="This island is worth 10 Reinforcement Points" onclick="gridIslandClick(8);">
-            <div id="special_island8_pop" class="special_island8 special_island3x3 <?php echo $gameIsland8; ?>" data-islandNum="8">
-                <div class="gridblockTiny" id="pos8a" data-positionId="100"><?php $positionId = 100; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-                <div class="gridblockTiny" id="pos8b" data-positionId="101"><?php $positionId = 101; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-                <div class="gridblockTiny" id="pos8c" data-positionId="102"><?php $positionId = 102; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div <?php echo $waterClass; ?> data-positionId="28" <?php echo $waterFunctions; ?>><?php $positionId = 28; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div id="special_island8" class="gridblock grid_special_island8 <?php echo $gameIsland8; ?>" data-islandNum="8" title="This island is worth 10 Reinforcement Points" <?php echo $gridIslandFunctions; ?>>
+            <div id="special_island8_pop" class="special_island8 special_island3x3 <?php echo $gameIsland8; ?>" data-islandNum="8" data-placementId="-1">
+                <div <?php echo $landPositionClass; ?> id="pos8a" data-positionId="100" <?php echo $landFunctions; ?>><?php $positionId = 100; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+                <div <?php echo $landPositionClass; ?> id="pos8b" data-positionId="101" <?php echo $landFunctions; ?>><?php $positionId = 101; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+                <div <?php echo $landPositionClass; ?> id="pos8c" data-positionId="102" <?php echo $landFunctions; ?>><?php $positionId = 102; include("backend/game/pieces/pieceDisplay.php"); ?></div>
             </div>
         </div>
-        <div class="gridblock water" data-positionId="29" onclick="waterClick();"><?php $positionId = 29; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-        <div class="gridblock water" data-positionId="30" onclick="waterClick();"><?php $positionId = 30; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-        <div class="gridblock water" data-positionId="31" onclick="waterClick();"><?php $positionId = 31; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-        <div class="gridblock water" data-positionId="32" onclick="waterClick();"><?php $positionId = 32; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-        <div class="gridblock water" data-positionId="33" onclick="waterClick();"><?php $positionId = 33; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-        <div class="gridblock water" data-positionId="34" onclick="waterClick();"><?php $positionId = 34; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-        <div class="gridblock water" data-positionId="35" onclick="waterClick();"><?php $positionId = 35; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-        <div id="special_island9" class="gridblock grid_special_island9 <?php echo $gameIsland9; ?>" title="This island is worth 8 Reinforcement Points" onclick="gridIslandClick(9);">
-            <div id="special_island9_pop" class="special_island9 special_island3x3 <?php echo $gameIsland9; ?>" data-islandNum="9">
-                <div class="gridblockTiny" id="pos9a" data-positionId="103"><?php $positionId = 103; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-                <div class="gridblockTiny" id="pos9b" data-positionId="104"><?php $positionId = 104; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-                <div class="gridblockTiny" id="pos9c" data-positionId="105"><?php $positionId = 105; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-                <div class="gridblockTiny" id="pos9d" data-positionId="106"><?php $positionId = 106; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div <?php echo $waterClass; ?> data-positionId="29" <?php echo $waterFunctions; ?>><?php $positionId = 29; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div <?php echo $waterClass; ?> data-positionId="30" <?php echo $waterFunctions; ?>><?php $positionId = 30; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div <?php echo $waterClass; ?> data-positionId="31" <?php echo $waterFunctions; ?>><?php $positionId = 31; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div <?php echo $waterClass; ?> data-positionId="32" <?php echo $waterFunctions; ?>><?php $positionId = 32; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div <?php echo $waterClass; ?> data-positionId="33" <?php echo $waterFunctions; ?>><?php $positionId = 33; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div <?php echo $waterClass; ?> data-positionId="34" <?php echo $waterFunctions; ?>><?php $positionId = 34; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div <?php echo $waterClass; ?> data-positionId="35" <?php echo $waterFunctions; ?>><?php $positionId = 35; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div id="special_island9" class="gridblock grid_special_island9 <?php echo $gameIsland9; ?>" data-islandNum="9" title="This island is worth 8 Reinforcement Points" <?php echo $gridIslandFunctions; ?>>
+            <div id="special_island9_pop" class="special_island9 special_island3x3 <?php echo $gameIsland9; ?>" data-islandNum="9" data-placementId="-1">
+                <div <?php echo $landPositionClass; ?> id="pos9a" data-positionId="103" <?php echo $landFunctions; ?>><?php $positionId = 103; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+                <div <?php echo $landPositionClass; ?> id="pos9b" data-positionId="104" <?php echo $landFunctions; ?>><?php $positionId = 104; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+                <div <?php echo $landPositionClass; ?> id="pos9c" data-positionId="105" <?php echo $landFunctions; ?>><?php $positionId = 105; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+                <div <?php echo $landPositionClass; ?> id="pos9d" data-positionId="106" <?php echo $landFunctions; ?>><?php $positionId = 106; include("backend/game/pieces/pieceDisplay.php"); ?></div>
                 <div class="gridblockTiny missileContainer" id="posM4" data-positionId="124"><?php $positionId = 124; include("backend/game/pieces/pieceDisplay.php"); ?></div>
             </div>
         </div>
-        <div class="gridblock water" data-positionId="36" onclick="waterClick();"><?php $positionId = 36; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-        <div class="gridblock water" data-positionId="37" onclick="waterClick();"><?php $positionId = 37; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-        <div id="special_island10" class="gridblock grid_special_island10 <?php echo $gameIsland10; ?>" title="This island is worth 5 Reinforcement Points" onclick="gridIslandClick(10);">
-            <div id="special_island10_pop" class="special_island10 special_island3x3 <?php echo $gameIsland10; ?>" data-islandNum="10">
-                <div class="gridblockTiny" id="pos10a" data-positionId="107"><?php $positionId = 107; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-                <div class="gridblockTiny" id="pos10b" data-positionId="108"><?php $positionId = 108; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-                <div class="gridblockTiny" id="pos10c" data-positionId="109"><?php $positionId = 109; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-                <div class="gridblockTiny" id="pos10d" data-positionId="110"><?php $positionId = 110; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div <?php echo $waterClass; ?> data-positionId="36" <?php echo $waterFunctions; ?>><?php $positionId = 36; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div <?php echo $waterClass; ?> data-positionId="37" <?php echo $waterFunctions; ?>><?php $positionId = 37; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div id="special_island10" class="gridblock grid_special_island10 <?php echo $gameIsland10; ?>" data-islandNum="10" title="This island is worth 5 Reinforcement Points" <?php echo $gridIslandFunctions; ?>>
+            <div id="special_island10_pop" class="special_island10 special_island3x3 <?php echo $gameIsland10; ?>" data-islandNum="10" data-placementId="-1">
+                <div <?php echo $landPositionClass; ?> id="pos10a" data-positionId="107" <?php echo $landFunctions; ?>><?php $positionId = 107; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+                <div <?php echo $landPositionClass; ?> id="pos10b" data-positionId="108" <?php echo $landFunctions; ?>><?php $positionId = 108; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+                <div <?php echo $landPositionClass; ?> id="pos10c" data-positionId="109" <?php echo $landFunctions; ?>><?php $positionId = 109; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+                <div <?php echo $landPositionClass; ?> id="pos10d" data-positionId="110" <?php echo $landFunctions; ?>><?php $positionId = 110; include("backend/game/pieces/pieceDisplay.php"); ?></div>
             </div>
         </div>
-        <div class="gridblock water" data-positionId="38" onclick="waterClick();"><?php $positionId = 38; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-        <div class="gridblock water" data-positionId="39" onclick="waterClick();"><?php $positionId = 39; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-        <div class="gridblock water" data-positionId="40" onclick="waterClick();"><?php $positionId = 40; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-        <div id="special_island11" class="gridblock grid_special_island11 <?php echo $gameIsland11; ?>" title="This island is worth 5 Reinforcement Points" onclick="gridIslandClick(11);">
-            <div id="special_island11_pop" class="special_island11 special_island3x3 <?php echo $gameIsland11; ?>" data-islandNum="11">
-                <div class="gridblockTiny" id="pos11a" data-positionId="111"><?php $positionId = 111; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-                <div class="gridblockTiny" id="pos11b" data-positionId="112"><?php $positionId = 112; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-                <div class="gridblockTiny" id="pos11c" data-positionId="113"><?php $positionId = 113; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div <?php echo $waterClass; ?> data-positionId="38" <?php echo $waterFunctions; ?>><?php $positionId = 38; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div <?php echo $waterClass; ?> data-positionId="39" <?php echo $waterFunctions; ?>><?php $positionId = 39; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div <?php echo $waterClass; ?> data-positionId="40" <?php echo $waterFunctions; ?>><?php $positionId = 40; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div id="special_island11" class="gridblock grid_special_island11 <?php echo $gameIsland11; ?>" data-islandNum="11" title="This island is worth 5 Reinforcement Points" <?php echo $gridIslandFunctions; ?>>
+            <div id="special_island11_pop" class="special_island11 special_island3x3 <?php echo $gameIsland11; ?>" data-islandNum="11" data-placementId="-1">
+                <div <?php echo $landPositionClass; ?> id="pos11a" data-positionId="111" <?php echo $landFunctions; ?>><?php $positionId = 111; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+                <div <?php echo $landPositionClass; ?> id="pos11b" data-positionId="112" <?php echo $landFunctions; ?>><?php $positionId = 112; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+                <div <?php echo $landPositionClass; ?> id="pos11c" data-positionId="113" <?php echo $landFunctions; ?>><?php $positionId = 113; include("backend/game/pieces/pieceDisplay.php"); ?></div>
             </div>
         </div>
-        <div class="gridblock water" data-positionId="41" onclick="waterClick();"><?php $positionId = 41; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-        <div class="gridblock water" data-positionId="42" onclick="waterClick();"><?php $positionId = 42; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-        <div id="special_island12" class="gridblock grid_special_island12 <?php echo $gameIsland12; ?>" title="This island is worth 5 Reinforcement Points" onclick="gridIslandClick(12);">
-            <div id="special_island12_pop" class="special_island12 special_island3x3 <?php echo $gameIsland12; ?>" data-islandNum="12">
-                <div class="gridblockTiny" id="pos12a" data-positionId="114"><?php $positionId = 114; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-                <div class="gridblockTiny" id="pos12b" data-positionId="115"><?php $positionId = 115; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-                <div class="gridblockTiny" id="pos12c" data-positionId="116"><?php $positionId = 116; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-                <div class="gridblockTiny" id="pos12d" data-positionId="117"><?php $positionId = 117; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div <?php echo $waterClass; ?> data-positionId="41" <?php echo $waterFunctions; ?>><?php $positionId = 41; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div <?php echo $waterClass; ?> data-positionId="42" <?php echo $waterFunctions; ?>><?php $positionId = 42; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div id="special_island12" class="gridblock grid_special_island12 <?php echo $gameIsland12; ?>" data-islandNum="12" title="This island is worth 5 Reinforcement Points" <?php echo $gridIslandFunctions; ?>>
+            <div id="special_island12_pop" class="special_island12 special_island3x3 <?php echo $gameIsland12; ?>" data-islandNum="12" data-placementId="-1">
+                <div <?php echo $landPositionClass; ?> id="pos12a" data-positionId="114" <?php echo $landFunctions; ?>><?php $positionId = 114; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+                <div <?php echo $landPositionClass; ?> id="pos12b" data-positionId="115" <?php echo $landFunctions; ?>><?php $positionId = 115; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+                <div <?php echo $landPositionClass; ?> id="pos12c" data-positionId="116" <?php echo $landFunctions; ?>><?php $positionId = 116; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+                <div <?php echo $landPositionClass; ?> id="pos12d" data-positionId="117" <?php echo $landFunctions; ?>><?php $positionId = 117; include("backend/game/pieces/pieceDisplay.php"); ?></div>
             </div>
         </div>
-        <div class="gridblock water" data-positionId="43" onclick="waterClick();"><?php $positionId = 43; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-        <div class="gridblock water" data-positionId="44" onclick="waterClick();"><?php $positionId = 44; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-        <div class="gridblock water" data-positionId="45" onclick="waterClick();"><?php $positionId = 45; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-        <div class="gridblock water" data-positionId="46" onclick="waterClick();"><?php $positionId = 46; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-        <div class="gridblock water" data-positionId="47" onclick="waterClick();"><?php $positionId = 47; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-        <div class="gridblock water" data-positionId="48" onclick="waterClick();"><?php $positionId = 48; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-        <div class="gridblock water" data-positionId="49" onclick="waterClick();"><?php $positionId = 49; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-        <div class="gridblock water" data-positionId="50" onclick="waterClick();"><?php $positionId = 50; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-        <div class="gridblock water" data-positionId="51" onclick="waterClick();"><?php $positionId = 51; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-        <div class="gridblock water" data-positionId="52" onclick="waterClick();"><?php $positionId = 52; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-        <div class="gridblock water" data-positionId="53" onclick="waterClick();"><?php $positionId = 53; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-        <div class="gridblock water" data-positionId="54" onclick="waterClick();"><?php $positionId = 54; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div <?php echo $waterClass; ?> data-positionId="43" <?php echo $waterFunctions; ?>><?php $positionId = 43; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div <?php echo $waterClass; ?> data-positionId="44" <?php echo $waterFunctions; ?>><?php $positionId = 44; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div <?php echo $waterClass; ?> data-positionId="45" <?php echo $waterFunctions; ?>><?php $positionId = 45; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div <?php echo $waterClass; ?> data-positionId="46" <?php echo $waterFunctions; ?>><?php $positionId = 46; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div <?php echo $waterClass; ?> data-positionId="47" <?php echo $waterFunctions; ?>><?php $positionId = 47; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div <?php echo $waterClass; ?> data-positionId="48" <?php echo $waterFunctions; ?>><?php $positionId = 48; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div <?php echo $waterClass; ?> data-positionId="49" <?php echo $waterFunctions; ?>><?php $positionId = 49; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div <?php echo $waterClass; ?> data-positionId="50" <?php echo $waterFunctions; ?>><?php $positionId = 50; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div <?php echo $waterClass; ?> data-positionId="51" <?php echo $waterFunctions; ?>><?php $positionId = 51; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div <?php echo $waterClass; ?> data-positionId="52" <?php echo $waterFunctions; ?>><?php $positionId = 52; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div <?php echo $waterClass; ?> data-positionId="53" <?php echo $waterFunctions; ?>><?php $positionId = 53; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+        <div <?php echo $waterClass; ?> data-positionId="54" <?php echo $waterFunctions; ?>><?php $positionId = 54; include("backend/game/pieces/pieceDisplay.php"); ?></div>
         <div id="battleZonePopup">
             <div id="unused_attacker" data-boxId="1"><?php $boxId = 1; include("backend/game/battles/battlePieceDisplay.php"); ?></div>
             <div id="unused_defender" data-boxId="2"><?php $boxId = 2; include("backend/game/battles/battlePieceDisplay.php"); ?></div>

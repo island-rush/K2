@@ -9,22 +9,24 @@ if (isset($positionId)) {
 
     if ($num_results > 0) {
         for ($i = 0; $i < $num_results; $i++) {
-            $r= $results->fetch_assoc();
+            $r = $results->fetch_assoc();
             $placementContainerId = (int) $r['placementContainerId'];
             if ($placementContainerId == $out_container) {
                 $placementId = (int) $r['placementId'];
                 $placementUnitId = (int) $r['placementUnitId'];
                 $placementTeamId = $r['placementTeamId'];
 
+                $pieceFunctions = ' draggable="true" ondragstart="pieceDragstart(event, this);" ';
+
                 //open the overall piece
-                echo "<div class='".$unitNames[$placementUnitId]." gamePiece ".$placementTeamId."' title='".$unitNames[$placementUnitId]."' data-placementId='".$placementId."'>";
+                echo "<div class='".$unitNames[$placementUnitId]." gamePiece ".$placementTeamId."' title='".$unitNames[$placementUnitId]."' data-placementId='".$placementId."' ".$pieceFunctions.">";
                 if ($placementUnitId == 0 || $placementUnitId == 3) {
                     if ($placementUnitId == 0) {
                         $classthing = "transportContainer";
                     } else {
                         $classthing = "aircraftCarrierContainer";
                     }
-                    echo "<div class='".$classthing."' data-positionContainerId='".$placementId."'>";  //open the container
+                    echo "<div class='".$classthing."' data-positionId='-1'>";  //open the container
                     $query2 = 'SELECT placementId, placementUnitId FROM placements WHERE (placementGameId = ?) AND (placementContainerId = ?)';
                     $query2 = $db->prepare($query2);
                     $query2->bind_param("ii", $gameId, $placementId);
@@ -36,7 +38,7 @@ if (isset($positionId)) {
                             $x = $results2->fetch_assoc();
                             $placementId2 = $x['placementId'];
                             $placementUnitId2 = $x['placementUnitId'];
-                            echo "<div class='".$unitNames[$placementUnitId2]." gamePiece ".$placementTeamId."' title='".$unitNames[$placementUnitId2]."' data-placementId='".$placementId2."'></div>";
+                            echo "<div class='".$unitNames[$placementUnitId2]." gamePiece ".$placementTeamId."' title='".$unitNames[$placementUnitId2]."' data-placementId='".$placementId2."' ".$pieceFunctions."></div>";
                         }
                     }
                     echo "</div>";  //end the container

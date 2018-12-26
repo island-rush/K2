@@ -25,7 +25,6 @@ while(true) {
             'updatePlacementId' => (string) $r['updatePlacementId'],
             'updateNewPositionId' => (string) $r['updateNewPositionId'],
             'updateNewContainerId' => (string) $r['updateNewContainerId'],
-            'updateNewMoves' => (string) $r['updateNewMoves'],
             'updateNewUnitId' => (string) $r['updateNewUnitId'],
             'updateBattlePieceState' => (string) $r['updateBattlePieceState'],
             'updateBattlePositionSelectedPieces' => (string) $r['updateBattlePositionSelectedPieces'],
