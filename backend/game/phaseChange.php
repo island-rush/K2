@@ -16,33 +16,36 @@ $gamePhase = $r['gamePhase'];
 $gameCurrentTeam = $r['gameCurrentTeam'];
 $gameBattleSection = $r['gameBattleSection'];
 
-if ($gameBattleSection == "none" && $myTeam == $gameCurrentTeam) {
-    $newPhaseNum = ($gamePhase + 1) % 7;
-    if ($newPhaseNum == 0) {
-        if ($myTeam == "Red") {
-            $newGameCurrentTeam = "Blue";
-        } else {
-            $newGameCurrentTeam = "Red";
-        }
-    } else {
-        $newGameCurrentTeam = $myTeam;
-    }
-    $query = 'UPDATE games SET gamePhase = ?, gameTurn = gameTurn + 1, gameCurrentTeam = ? WHERE (gameId = ?)';
-    $query = $db->prepare($query);
-    $query->bind_param("isi", $newPhaseNum, $newGameCurrentTeam, $gameId);
-    $query->execute();
-
-    $updateType = "phaseChange";
-    $query = 'INSERT INTO updates (updateGameId, updateType) VALUES (?, ?)';
-    $query = $db->prepare($query);
-    $query->bind_param("is", $gameId, $updateType);
-    $query->execute();
+if ($myTeam != $gameCurrentTeam) {
+    echo "Not your teams turn.";
+    exit;
+}
+if ($gameBattleSection != "none") {
+    echo "Cannot change phase during battle.";
+    exit;
 }
 
+$newPhaseNum = ($gamePhase + 1) % 7;
+if ($newPhaseNum == 0) {
+    if ($myTeam == "Red") {
+        $newGameCurrentTeam = "Blue";
+    } else {
+        $newGameCurrentTeam = "Red";
+    }
+} else {
+    $newGameCurrentTeam = $myTeam;
+}
 
+$query = 'UPDATE games SET gamePhase = ?, gameTurn = gameTurn + 1, gameCurrentTeam = ? WHERE (gameId = ?)';
+$query = $db->prepare($query);
+$query->bind_param("isi", $newPhaseNum, $newGameCurrentTeam, $gameId);
+$query->execute();
 
+$updateType = "phaseChange";
+$query = 'INSERT INTO updates (updateGameId, updateType) VALUES (?, ?)';
+$query = $db->prepare($query);
+$query->bind_param("is", $gameId, $updateType);
+$query->execute();
 
-
-
-
-
+echo "Changed Phase.";
+exit;

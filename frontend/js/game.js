@@ -304,6 +304,11 @@ function nextPhaseButtonFunction(){
 	event.preventDefault();
 	if (confirm("Are you sure you want to complete this phase?")) {
 		let phpUpdateBoard = new XMLHttpRequest();
+		phpUpdateBoard.onreadystatechange = function () {
+			if (this.readyState === 4 && this.status === 200) {
+				user_feedback.innerHTML = this.responseText;
+			}
+		};
 		phpUpdateBoard.open("GET", "backend/game/phaseChange.php", true);
 		phpUpdateBoard.send();
 	}
@@ -324,7 +329,14 @@ function changeSectionButtonFunction(){
 
 function undoButtonFunction(){
 	event.preventDefault();
-
+	let phpUpdateBoard = new XMLHttpRequest();
+	phpUpdateBoard.onreadystatechange = function () {
+		if (this.readyState === 4 && this.status === 200) {
+			user_feedback.innerHTML = this.responseText;
+		}
+	};
+	phpUpdateBoard.open("GET", "backend/game/pieces/pieceMoveUndo.php", true);
+	phpUpdateBoard.send();
 	event.stopPropagation();
 }
 

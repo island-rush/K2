@@ -4,7 +4,7 @@ include("../db.php");
 $gameId = $_SESSION['gameId'];
 $myTeam = $_SESSION['myTeam'];
 
-$query = 'SELECT * FROM GAMES WHERE gameId = ?';
+$query = 'SELECT gamePhase, gameCurrentTeam, gameRedRpoints, gameBlueRpoints, gameRedHpoints, gameBlueHpoints, gameBattleSection, gameBattleSubSection, gameBattleLastRoll, gameBattleLastMessage, gameBattlePosSelected FROM GAMES WHERE gameId = ?';
 $preparedQuery = $db->prepare($query);
 $preparedQuery->bind_param("i", $gameId);
 $preparedQuery->execute();
@@ -20,7 +20,8 @@ $gameBlueHpoints = $r['gameBlueHpoints'];
 $gameBattleSection = $r['gameBattleSection'];
 $gameBattleSubSection = $r['gameBattleSubSection'];
 $gameBattleLastRoll = $r['gameBattleLastRoll'];
-$gameBattleLastMessage = $r['gameBattleLastMessage'];
+
+$gameBattleLastMessage = $r['gameBattleLastMessage'];  //TODO: use these last few ones, send for div updates
 $gameBattlePosSelected = $r['gameBattlePosSelected'];
 
 $activated = 1;
