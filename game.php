@@ -29,9 +29,9 @@ $gameIsland12 = $r['gameIsland12'];
 $gameIsland13 = $r['gameIsland13'];
 $gameIsland14 = $r['gameIsland14'];
 
-//TODO: combine if no differences
+//TODO: combine if no differences (make water click to close stuff function call elsewhere have its own thing)?
 $waterFunctions = 'onclick="waterClick();" ondragover="positionDragover(event, this);" ondrop="positionDrop(event, this);"';
-$landFunctions = 'onclick="landClick();" ondragover="positionDragover(event, this);" ondrop="positionDrop(event, this);"';
+$landFunctions = 'onclick="landClick(event, callingElement);" ondragover="positionDragover(event, this);" ondrop="positionDrop(event, this);"';
 
 $gridIslandFunctions = 'onclick="gridIslandClick(event, this);"';
 $popIslandFunctions = "";
@@ -360,40 +360,40 @@ $waterClass = 'class="gridblock water"';
                             <td rowspan="2">Cyber</td>
                             <td title="A Cyber attack causes an enemy airfield to be completely shutdown. &#013;Aircraft may not leave or enter that airfield during the enemy turn.">Air Traffic Control Scramble</td>
                             <td>3</td>
-                            <td><button id="hybridAirfieldShutdown" onclick="hybridAirfieldShutdownButtonFunction();">Choose</button></td>
+                            <td><button id="hybridAirfieldShutdown" onclick="hybridDisableAirfield();">Choose</button></td>
                         </tr>
                         <tr>
                             <td title="Enemy island value counts towards your points for the next two turns. &#013;Enemy team does not earn any points from this island.">Bank Drain</td>
                             <td>4</td>
-                            <td><button id="hybridBankDrain" onclick="hybridBankDrainButtonFunction();">Choose</button></td>
+                            <td><button id="hybridBankDrain" onclick="hybridBankDrain();">Choose</button></td>
                         </tr>
                         <tr>
                             <td rowspan="2">Space</td>
                             <td title="Satellite technology has discovered how to temporarily shorten all &#013;logisical routes. For one turn, all your units get +1 moves.">Advanced Remote Sensing</td>
                             <td>8</td>
-                            <td><button id="hybridAddMove" onclick="hybridAddMoveButtonFunction();">Choose</button></td>
+                            <td><button id="hybridAddMove" onclick="hybridAddMove();">Choose</button></td>
                         </tr>
                         <tr>
                             <td title="Satellite technology allows for kinetic effects from space! &#013;Instantly destroy a unit on the board. &#013;(destroying a container destroys everything inside of it)">Rods from God</td>
                             <td>6</td>
-                            <td><button id="hybridDeletePiece" onclick="hybridDeletePieceButtonFunction();">Choose</button></td>
+                            <td><button id="hybridDeletePiece" onclick="hybridDeletePiece();">Choose</button></td>
                         </tr>
                         <tr>
                             <td rowspan="2" title="Using a nuclear option makes a team unable to use Humanitarian options for 3 turns">Nuclear*</td>
                             <td title="A high altitude ICBM detonation produces an electromagnetic pulse &#013;over all enemy aircraft, disabling them for their next turn.">Goldeneye</td>
                             <td>10</td>
-                            <td><button id="hybridAircraftDisable" onclick="hybridAircraftDisableButtonFunction();">Choose</button></td>
+                            <td><button id="hybridAircraftDisable" onclick="hybridDisableAircraft();">Choose</button></td>
                         </tr>
                         <tr>
                             <td title="An ICBM ground burst strike destroys a non-capital island. All units on island &#013;and adjacent sea zones are destroyed. The island will not be used for &#013;the rest of the game and does not contribute to points.">Nuclear Strike</td>
                             <td>12</td>
-                            <td><button id="hybridNukeIsland" onclick="hybridNukeIslandButtonFunction();">Choose</button></td>
+                            <td><button id="hybridNukeIsland" onclick="hybridNuke();">Choose</button></td>
                         </tr>
                         <tr>
                             <td>Humanitarian</td>
                             <td title="When a News alert notifies a team about a catastrophe in an area, &#013;teams have the option to provide humanitarian aid to that nation. &#013;Spend 3 HW points and receive 10 Reinforcement Points.">Humanitarian Option</td>
                             <td>3</td>
-                            <td><button id="hybridHumanitarian" onclick="hybridHumanitarianButtonFunction();">Choose</button></td>
+                            <td><button id="hybridHumanitarian" onclick="hybridHumanitarian();">Choose</button></td>
                         </tr>
                         </tbody>
                     </table>

@@ -15,12 +15,10 @@ while(true) {
     $query->execute();
     $results = $query->get_result();
     $num_results = $results->num_rows;
-
     if ($num_results > 0) {
         $r = $results->fetch_assoc();
-        $updateId = $r['updateId'];
         $arr = array(
-            'updateId' => (int) $updateId,
+            'updateId' => (int) $r['updateId'],
             'updateType' => (string) $r['updateType'],
             'updatePlacementId' => (string) $r['updatePlacementId'],
             'updateNewPositionId' => (string) $r['updateNewPositionId'],

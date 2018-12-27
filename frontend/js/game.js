@@ -4,6 +4,7 @@ console.log("Island Rush Game Javascript");
 //global variables and DOM caching
 let phaseNames = ['News', 'Buy Reinforcements', 'Combat', 'Fortify Move', 'Reinforcement Place', 'Hybrid War', 'Round Recap'];
 let unitNames = ['Transport', 'Submarine', 'Destroyer', 'AircraftCarrier', 'ArmyCompany', 'ArtilleryBattery', 'TankPlatoon', 'MarinePlatoon', 'MarineConvoy', 'AttackHelo', 'SAM', 'FighterSquadron', 'BomberSquadron', 'StealthBomberSquadron', 'Tanker', 'LandBasedSeaMissile'];
+let whole_game = document.getElementById("whole_game");
 let purchased_container = document.getElementById("purchased_container");
 let phase_indicator = document.getElementById("phase_indicator");
 let red_rPoints_indicator = document.getElementById("red_rPoints_indicator");
@@ -73,6 +74,12 @@ let gridIslands = [gridIsland1, gridIsland2, gridIsland3, gridIsland4, gridIslan
 
 let openContainerPiece = null;
 let pieceDragTimer;
+let hybridTimer;
+
+let hybridDeletePieceState = false;
+let hybridDisableAirfieldState = false;
+let hybridBankState = false;
+let hybridNukeState = false;
 //-------------------------------------------------------------------------------------------------------------------
 
 function getPanel(){
@@ -152,10 +159,6 @@ function ajaxUpdate(){
 					getPanel();
 				}
 
-				if (updateType === "userFeedback") {
-					user_feedback.innerHTML = decoded.updateBattlePiecesSelected;
-				}
-
 				if (updateType === "pieceMove") {
 					ajaxPieceMove(parseInt(decoded.updatePlacementId), parseInt(decoded.updateNewPositionId), parseInt(decoded.updateNewContainerId));
 				}
@@ -222,11 +225,66 @@ function closeContainer() {
 
 function gridIslandClick(event, callingElement){
 	event.preventDefault();
-	unpopIslands();  //close all open islands
-	closeContainer();
-	let islandNum = callingElement.getAttribute("data-islandNum");
-	popIslands[islandNum-1].style.display = "block";
-	gridIslands[islandNum-1].style.zIndex = 20;  //default for a gridblock is 10
+
+	if (hybridBankState) {
+		if (callingElement.classList[2] !== myTeam) {
+			callingElement.classList.add("selectedPos");
+			hybridTimer = setTimeout(function() {
+				if (confirm("Are you sure you want this island's points for next two turns?")) {
+					let islandNum = parseInt(callingElement.getAttribute("data-islandNum"));
+					let phpUpdateBoard = new XMLHttpRequest();
+					phpUpdateBoard.onreadystatechange = function () {
+						if (this.readyState === 4 && this.status === 200) {
+							user_feedback.innerHTML = this.responseText;
+						}
+					};
+					phpUpdateBoard.open("POST", "hybridBankDrain.php?islandNum=" + islandNum, true);
+					phpUpdateBoard.send();
+
+					whole_game.style.backgroundColor = "black";
+					hybridBankState = false;
+					control_button.disabled = false;
+					phase_button.disabled = false;
+					callingElement.classList.remove("selectedPos");  //could put this after the confirm if statement by itself
+				} else {
+					callingElement.classList.remove("selectedPos");
+				}
+			}, 50);
+		} else {
+			user_feedback.innerHTML = "Can't select Bank Option for your own island.";
+		}
+	} else if (hybridNukeState) {
+		callingElement.classList.add("selectedPos");
+		hybridTimer = setTimeout(function() {
+			if (confirm("Are you sure you want to nuke this island?")) {
+				let islandNum = parseInt(callingElement.getAttribute("data-islandNum"));
+
+				let phpUpdateBoard = new XMLHttpRequest();
+				phpUpdateBoard.onreadystatechange = function () {
+					if (this.readyState === 4 && this.status === 200) {
+						user_feedback.innerHTML = this.responseText;
+					}
+				};
+				phpUpdateBoard.open("POST", "hybridNuke.php?islandNum=" + islandNum, true);
+				phpUpdateBoard.send();
+
+				whole_game.style.backgroundColor = "black";
+				hybridNukeState = false;
+				control_button.disabled = false;
+				phase_button.disabled = false;
+				callingElement.classList.remove("selectedPos");
+			} else {
+				callingElement.classList.remove("selectedPos");
+			}
+		}, 50);
+	} else {
+		unpopIslands();  //close all open islands
+		closeContainer();
+		let islandNum = callingElement.getAttribute("data-islandNum");
+		popIslands[islandNum-1].style.display = "block";
+		gridIslands[islandNum-1].style.zIndex = 20;  //default for a gridblock is 10
+	}
+
 	event.stopPropagation();
 }
 
@@ -235,9 +293,41 @@ function waterClick(){
 	closeContainer();
 }
 
-function landClick() {
-	unpopIslands();
-	closeContainer();
+function landClick(event, callingElement) {
+	event.preventDefault();
+
+	if (hybridDisableAirfieldState) {
+		callingElement.classList.add("selectedPos");
+		let positionId = parseInt(callingElement.getAttribute("data-positionId"));
+		let listairfields = [56, 57, 78, 83, 89, 113, 116, 66, 68];
+		if (listairfields.includes(positionId)) {
+			hybridTimer = setTimeout(function() {
+				if (confirm("Is this the airfield you want to disable?")) {
+					let phpUpdateBoard = new XMLHttpRequest();
+					phpUpdateBoard.onreadystatechange = function () {
+						if (this.readyState === 4 && this.status === 200) {
+							user_feedback.innerHTML = this.responseText;
+						}
+					};
+					phpUpdateBoard.open("POST", "hybridDisableAirfield.php?positionId=" + positionId, true);
+					phpUpdateBoard.send();
+
+					callingElement.classList.remove("selectedPos");
+					whole_game.style.backgroundColor = "black";
+					hybridDisableAirfieldState = false;
+					control_button.disabled = false;
+					phase_button.disabled = false;
+				} else {
+					callingElement.classList.remove("selectedPos");
+				}
+			}, 50);
+		} else {
+			callingElement.classList.remove("selectedPos");
+			user_feedback.innerHTML = "Not a valid Airfield position.";
+		}
+	}
+
+	event.stopPropagation();
 }
 
 //TODO: actually figure out timing mechanics for dragging over and popping
@@ -335,23 +425,44 @@ function piecePurchase(unitId){
 function pieceClick(event, callingElement) {
 	event.preventDefault();
 
-	//clear other stuff and close other stuff
+	if (hybridDeletePieceState) {
+		callingElement.classList.add("selected");
+		hybridTimer = setTimeout(function() {
+			if (confirm("Is this the piece you want to delete?")) {
+				callingElement.classList.remove("selected");
+				let placementId = parseInt(callingElement.getAttribute("data-placementId"));
+				let phpUpdateBoard = new XMLHttpRequest();
+				phpUpdateBoard.onreadystatechange = function () {
+					if (this.readyState === 4 && this.status === 200) {
+						user_feedback.innerHTML = this.responseText;
+					}
+				};
+				phpUpdateBoard.open("POST", "hybridDeletePiece.php?placementId=" + placementId, true);
+				phpUpdateBoard.send();
 
-	unpopIslands();
-	closeContainer();
+				whole_game.style.backgroundColor = "black";
+				hybridDeletePieceState = false;
+				control_button.disabled = false;
+				phase_button.disabled = false;
+			} else {
+				callingElement.classList.remove("selected");
+			}
+		}, 50);
+	} else {
+		unpopIslands();
+		closeContainer();
 
-	let unitName = callingElement.classList[0];
-	let positionId = parseInt(callingElement.parentNode.getAttribute("data-positionId"));
+		let unitName = callingElement.classList[0];
+		let positionId = parseInt(callingElement.parentNode.getAttribute("data-positionId"));
 
-	openContainerPiece = callingElement;
+		openContainerPiece = callingElement;
 
-	//close other pieces / islands
-
-	if (unitName === "Transport" || unitName === "AircraftCarrier") {
-		if (positionId !== 118) {
-			callingElement.childNodes[0].style.display = "block";
-			callingElement.style.zIndex = 30;
-			callingElement.parentNode.style.zIndex = 70;
+		if (unitName === "Transport" || unitName === "AircraftCarrier") {
+			if (positionId !== 118) {
+				callingElement.childNodes[0].style.display = "block";
+				callingElement.style.zIndex = 30;
+				callingElement.parentNode.style.zIndex = 70;
+			}
 		}
 	}
 
@@ -428,41 +539,151 @@ function undoButtonFunction(){
 	event.stopPropagation();
 }
 
-function hybridAirfieldShutdownButtonFunction(){
-	event.preventDefault();
 
+
+
+
+
+function hybridAddMove() {
+	event.preventDefault();
+	if (confirm("Are you sure you want to use this hybrid option?")) {
+		let phpUpdateBoard = new XMLHttpRequest();
+		phpUpdateBoard.onreadystatechange = function () {
+			if (this.readyState === 4 && this.status === 200) {
+				user_feedback.innerHTML = this.responseText;
+			}
+		};
+		phpUpdateBoard.open("GET", "backend/game/hybrid/hybridAddMove.php", true);
+		phpUpdateBoard.send();
+	}
 	event.stopPropagation();
 }
-function hybridBankDrainButtonFunction(){
+function hybridHumanitarian() {
 	event.preventDefault();
-
+	if (confirm("Are you sure you want to use this hybrid option?")) {
+		let phpUpdateBoard = new XMLHttpRequest();
+		phpUpdateBoard.onreadystatechange = function () {
+			if (this.readyState === 4 && this.status === 200) {
+				user_feedback.innerHTML = this.responseText;
+			}
+		};
+		phpUpdateBoard.open("GET", "backend/game/hybrid/hybridHumanitarian.php", true);
+		phpUpdateBoard.send();
+	}
 	event.stopPropagation();
 }
-function hybridAddMoveButtonFunction(){
+function hybridDisableAircraft() {
 	event.preventDefault();
-
+	if (confirm("Are you sure you want to use this hybrid option?")) {
+		let phpUpdateBoard = new XMLHttpRequest();
+		phpUpdateBoard.onreadystatechange = function () {
+			if (this.readyState === 4 && this.status === 200) {
+				user_feedback.innerHTML = this.responseText;
+			}
+		};
+		phpUpdateBoard.open("GET", "backend/game/hybrid/hybridDisableAircraft.php", true);
+		phpUpdateBoard.send();
+	}
 	event.stopPropagation();
 }
-function hybridDeletePieceButtonFunction(){
-	event.preventDefault();
 
-	event.stopPropagation();
-}
-function hybridAircraftDisableButtonFunction(){
-	event.preventDefault();
 
-	event.stopPropagation();
-}
-function hybridNukeIslandButtonFunction(){
-	event.preventDefault();
 
-	event.stopPropagation();
-}
-function hybridHumanitarianButtonFunction(){
-	event.preventDefault();
 
-	event.stopPropagation();
+
+function hybridBankDrain() {
+	if (confirm("Are you sure you want use Bank Drain?")) {
+		let phpUpdateBoard = new XMLHttpRequest();
+		phpUpdateBoard.onreadystatechange = function () {
+			if (this.readyState === 4 && this.status === 200) {
+				user_feedback.innerHTML = this.responseText;
+				if (this.responseText === "Select Island to Drain.") {
+					hybridBankState = true;
+					unpopIslands();
+					popup.style.display = "none";
+					control_button.disabled = true;
+					phase_button.disabled = true;
+					whole_game.style.backgroundColor = "yellow";
+				}
+			}
+		};
+		phpUpdateBoard.open("GET", "backend/game/hybrid/hybridBankDrainRequest.php", true);
+		phpUpdateBoard.send();
+	}
 }
+
+
+function hybridDeletePiece() {
+	if (confirm("Are you sure you want use Rods from God?")) {
+		let phpUpdateBoard = new XMLHttpRequest();
+		phpUpdateBoard.onreadystatechange = function () {
+			if (this.readyState === 4 && this.status === 200) {
+				user_feedback.innerHTML = this.responseText;
+				if (this.responseText === "Select Piece to Delete.") {
+					hybridDeletePieceState = true;
+					unpopIslands();
+					popup.style.display = "none";
+					control_button.disabled = true;
+					phase_button.disabled = true;
+					whole_game.style.backgroundColor = "yellow";
+				}
+			}
+		};
+		phpUpdateBoard.open("GET", "backend/game/hybrid/hybridDeletePieceRequest.php", true);
+		phpUpdateBoard.send();
+	}
+}
+
+
+function hybridDisableAirfield() {
+	if (confirm("Are you sure you want use Air Traffic Control Scramble?")) {
+		let phpUpdateBoard = new XMLHttpRequest();
+		phpUpdateBoard.onreadystatechange = function () {
+			if (this.readyState === 4 && this.status === 200) {
+				user_feedback.innerHTML = this.responseText;
+				if (this.responseText === "Select Airfield to Disable.") {
+					hybridDisableAirfieldState = true;
+					unpopIslands();
+					popup.style.display = "none";
+					control_button.disabled = true;
+					phase_button.disabled = true;
+					whole_game.style.backgroundColor = "yellow";
+				}
+			}
+		};
+		phpUpdateBoard.open("GET", "backend/game/hybrid/hybridDisableAirfieldRequest.php", true);
+		phpUpdateBoard.send();
+	}
+}
+
+
+function hybridNuke() {
+	if (confirm("Are you sure you want use Nuclear Strike?")) {
+		let phpUpdateBoard = new XMLHttpRequest();
+		phpUpdateBoard.onreadystatechange = function () {
+			if (this.readyState === 4 && this.status === 200) {
+				user_feedback.innerHTML = this.responseText;
+				if (this.responseText === "Select Island to Nuke.") {
+					hybridNukeState = true;
+					unpopIslands();
+					popup.style.display = "none";
+					control_button.disabled = true;
+					phase_button.disabled = true;
+					whole_game.style.backgroundColor = "yellow";
+				}
+			}
+		};
+		phpUpdateBoard.open("GET", "backend/game/hybrid/hybridNukeRequest.php", true);
+		phpUpdateBoard.send();
+	}
+}
+
+
+
+
+
+
+
 
 function logout(){
 	event.preventDefault();
