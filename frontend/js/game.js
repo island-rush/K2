@@ -73,8 +73,11 @@ let gridIsland12 = document.getElementById("special_island12");
 let gridIslands = [gridIsland1, gridIsland2, gridIsland3, gridIsland4, gridIsland5, gridIsland6, gridIsland7, gridIsland8, gridIsland9, gridIsland10, gridIsland11, gridIsland12];
 
 let openContainerPiece = null;
+let openPopupIslandNum = 0;
+
 let pieceDragTimer;
 let hybridTimer;
+let islandTimer;
 
 let hybridDeletePieceState = false;
 let hybridDisableAirfieldState = false;
@@ -206,11 +209,11 @@ function ajaxPieceRemove(placementId) {
 }
 //----------------------------------------------------------------
 
-
 function unpopIslands() {
-	for (let x = 0; x < popIslands.length; x++) {
-		popIslands[x].style.display = "none";
-		popIslands[x].parentNode.style.zIndex = 10;  //10 is the default
+	if (openPopupIslandNum !== 0) {
+		popIslands[openPopupIslandNum-1].style.display = "none";
+		gridIslands[openPopupIslandNum-1].style.zIndex = 10;
+		openPopupIslandNum = 0;
 	}
 }
 
@@ -283,6 +286,7 @@ function gridIslandClick(event, callingElement){
 		let islandNum = callingElement.getAttribute("data-islandNum");
 		popIslands[islandNum-1].style.display = "block";
 		gridIslands[islandNum-1].style.zIndex = 20;  //default for a gridblock is 10
+		openPopupIslandNum = islandNum;
 	}
 
 	event.stopPropagation();
@@ -344,6 +348,39 @@ function containerDragleave(event, callingElement) {
 	event.stopPropagation();
 }
 
+function islandDragenter(event, callingElement) {
+	event.preventDefault();
+	clearTimeout(islandTimer);
+	islandTimer = setTimeout(function() { gridIslandClick(event, callingElement);}, 1000);
+	event.stopPropagation();
+}
+
+function islandDragleave(event, callingElement) {
+	event.preventDefault();
+	clearTimeout(islandTimer);
+	event.stopPropagation();
+}
+
+function popupDragleave(event, callingElement) {
+	event.preventDefault();
+	clearTimeout(islandTimer);
+	islandTimer = setTimeout(function() { unpopIslands();}, 1000);
+	event.stopPropagation();
+}
+
+function popupDragover(event, callingElement) {
+	event.preventDefault();
+	clearTimeout(islandTimer);
+	event.stopPropagation();
+}
+
+function popupDragenter(event, callingElement) {
+	event.preventDefault();
+	clearTimeout(islandTimer);
+	// callingElement.classList.add("mouseOver");
+	event.stopPropagation();
+}
+
 function pieceDragenter(event, callingElement) {
 	event.preventDefault();
 	clearTimeout(pieceDragTimer);
@@ -390,10 +427,6 @@ function positionDrop(event, callingElement){
 	phpUpdateBoard.send();
 	event.stopPropagation();
 }
-
-
-
-
 
 function pieceTrash(event, callingElement) {
 	event.preventDefault();
@@ -455,10 +488,11 @@ function pieceClick(event, callingElement) {
 		let unitName = callingElement.classList[0];
 		let positionId = parseInt(callingElement.parentNode.getAttribute("data-positionId"));
 
-		openContainerPiece = callingElement;
+
 
 		if (unitName === "Transport" || unitName === "AircraftCarrier") {
 			if (positionId !== 118) {
+				openContainerPiece = callingElement;
 				callingElement.childNodes[0].style.display = "block";
 				callingElement.style.zIndex = 30;
 				callingElement.parentNode.style.zIndex = 70;
@@ -474,11 +508,6 @@ function pieceDragstart(event, callingElement){
 	event.dataTransfer.setData("placementId", callingElement.getAttribute("data-placementId"));
 	event.stopPropagation();
 }
-
-
-
-
-
 
 function showDice(diceNumber){
 	dice[0].style.display = "none";
@@ -539,11 +568,6 @@ function undoButtonFunction(){
 	event.stopPropagation();
 }
 
-
-
-
-
-
 function hybridAddMove() {
 	event.preventDefault();
 	if (confirm("Are you sure you want to use this hybrid option?")) {
@@ -586,11 +610,6 @@ function hybridDisableAircraft() {
 	}
 	event.stopPropagation();
 }
-
-
-
-
-
 function hybridBankDrain() {
 	if (confirm("Are you sure you want use Bank Drain?")) {
 		let phpUpdateBoard = new XMLHttpRequest();
@@ -611,8 +630,6 @@ function hybridBankDrain() {
 		phpUpdateBoard.send();
 	}
 }
-
-
 function hybridDeletePiece() {
 	if (confirm("Are you sure you want use Rods from God?")) {
 		let phpUpdateBoard = new XMLHttpRequest();
@@ -633,8 +650,6 @@ function hybridDeletePiece() {
 		phpUpdateBoard.send();
 	}
 }
-
-
 function hybridDisableAirfield() {
 	if (confirm("Are you sure you want use Air Traffic Control Scramble?")) {
 		let phpUpdateBoard = new XMLHttpRequest();
@@ -655,8 +670,6 @@ function hybridDisableAirfield() {
 		phpUpdateBoard.send();
 	}
 }
-
-
 function hybridNuke() {
 	if (confirm("Are you sure you want use Nuclear Strike?")) {
 		let phpUpdateBoard = new XMLHttpRequest();
@@ -678,22 +691,9 @@ function hybridNuke() {
 	}
 }
 
-
-
-
-
-
-
-
 function logout(){
 	event.preventDefault();
 	window.location.replace("backend/game/logout.php");
 	event.stopPropagation();
 }
 //----------------------------------------------------------------
-
-
-function toggleHybridMenu() {
-
-}
-

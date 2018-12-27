@@ -15,7 +15,7 @@ control button functions
 -start battle
 
 
-battles
+battles******
 
 -battle pieces
 -battle attack
@@ -23,18 +23,6 @@ battles
 -battle buttons
 
 
-hybrid warfare buttons
-
-these need to know what was selected / allow selection of piece / position
--piece
--airfield
--nuke
--bank drain
-
-
 admin newsalert switching
 other admin stuff seen (what game / section)
-
-
-
 
