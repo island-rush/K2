@@ -83,9 +83,13 @@ let hybridDeletePieceState = false;
 let hybridDisableAirfieldState = false;
 let hybridBankState = false;
 let hybridNukeState = false;
+
+let selectPosState = false;
+let selectPiecesState = false;
+let battleAdjacentPlacementIds = [];
 //-------------------------------------------------------------------------------------------------------------------
 
-function getPanel(){
+function getBoard(){
 	let phpPhaseChange = new XMLHttpRequest();
 	phpPhaseChange.onreadystatechange = function () {
 		if (this.readyState === 4 && this.status === 200) {
@@ -104,9 +108,14 @@ function getPanel(){
 			newsBodySubText.innerHTML = decoded.newsEffectText;
 			if (decoded.news_popped) {
 				popup.style.display = "block";
-				popupBodyNews.style.display = "block";
 			} else {
 				popup.style.display = "none";
+			}
+			if (decoded.gamePhase === 0) {
+				popupBodyHybridMenu.style.display = "none";
+				popupBodyNews.style.display = "block";
+			} else {
+				popupBodyHybridMenu.style.display = "block";
 				popupBodyNews.style.display = "none";
 			}
 			if (decoded.battle_popped) {
@@ -124,13 +133,39 @@ function getPanel(){
 			attackButton.innerHTML = decoded.attack_button_text;
 			changeSectionButton.disabled = decoded.change_section_button_disabled;
 			changeSectionButton.innerHTML = decoded.change_section_button_text;
-			// user_feedback.innerHTML = decoded.user_feedback;  //TODO: use phase change to update points, overrides other user feedback
+			if (decoded.gameBattleSection === "selectPos" || decoded.gameBattleSection === "selectPieces") {
+				whole_game.style.backgroundColor = "yellow";
+				if (decoded.gameBattleSection === "selectPos") {
+					selectPosState = true;
+					selectPiecesState = false;
+					center_attacker.innerHTML = "";  //clear out old battle piece html if not already done
+					center_defender.innerHTML = "";
+					used_attacker.innerHTML = "";
+					used_defender.innerHTML = "";
+					unused_attacker.innerHTML = "";
+					unused_defender.innerHTML = "";
+				} else {
+					selectPosState = false;
+					selectPiecesState = true;
+				}
+			} else {
+				selectPosState = false;
+				selectPiecesState = false;
+				whole_game.style.backgroundColor = "black";
+			}
+			if (decoded.gameBattleSection !== "none" && decoded.gameBattleSection !== "selectPos") {
+				document.querySelector("[data-positionId='" + decoded.gameBattlePosSelected + "']").classList.add("selectedPos");
+			} else {
+				clearSelectedPosition();
+			}
+			clearSelectedPieces();
+			battleAdjacentPlacementIds = decoded.battleAdjacentPlacementIds;
 		}
 	};
 	phpPhaseChange.open("GET", "backend/game/getBoard.php", true);
 	phpPhaseChange.send();
 }
-getPanel();
+getBoard();
 
 // Ajax functions --------------------------------------------------------
 function ajaxUpdate(){
@@ -142,34 +177,38 @@ function ajaxUpdate(){
 			} else {
 				let decoded = JSON.parse(this.responseText);
 				lastUpdateId = decoded.updateId;
-				let updateType = decoded.updateType;
-
-				if (updateType === "logout") {
-					alert("Teacher has disabled the game...logging out.");  //TODO: don't log out spectators
-					logout();
+				switch (decoded.updateType) {
+					case "logout":
+						alert("Teacher has disabled the game...logging out.");  //TODO: don't log out spectators
+						logout();
+						break;
+					case "getBoard":
+						getBoard();
+						break;
+					case "islandOwnerChange":
+						ajaxIslandOwnerChange(parseInt(decoded.updateIsland), decoded.updateIslandTeam);
+						break;
+					case "piecePurchase":
+						purchased_container.innerHTML += decoded.updateBattlePiecesSelected;
+						getBoard();
+						break;
+					case "pieceMove":
+						ajaxPieceMove(parseInt(decoded.updatePlacementId), parseInt(decoded.updateNewPositionId), parseInt(decoded.updateNewContainerId));
+						break;
+					case "pieceRemove":
+						ajaxPieceRemove(parseInt(decoded.updatePlacementId));
+						break;
+					case "piecesSelected":
+						unused_attacker.innerHTML = decoded.updateBattlePiecesSelected;
+						getBoard();
+						break;
+					case "posSelected":
+						unused_defender.innerHTML = decoded.updateBattlePiecesSelected;
+						getBoard();
+						break;
+					default:
+						alert("Error with ajax call, unknown updateType " + decoded.updateType);
 				}
-
-				if (updateType === "phaseChange") {
-					getPanel();
-				}
-
-				if (updateType === "islandOwnerChange") {
-					ajaxIslandOwnerChange(parseInt(decoded.updateIsland), decoded.updateIslandTeam);
-				}
-
-				if (updateType === "piecePurchase") {
-					purchased_container.innerHTML += decoded.updateBattlePiecesSelected;
-					getPanel();
-				}
-
-				if (updateType === "pieceMove") {
-					ajaxPieceMove(parseInt(decoded.updatePlacementId), parseInt(decoded.updateNewPositionId), parseInt(decoded.updateNewContainerId));
-				}
-
-				if (updateType === "pieceRemove") {
-					ajaxPieceRemove(parseInt(decoded.updatePlacementId));
-				}
-
 				window.setTimeout("ajaxUpdate();", smallDelay);
 			}
 		}
@@ -189,7 +228,6 @@ function ajaxPieceMove(placementId, toPositionId, toContainerId) {
 	}
 	newLocation.append(gamePiece);
 }
-
 function ajaxIslandOwnerChange(islandNum, newTeamId) {
 	let gridIsland = gridIslands[islandNum-1];
 	let popIsland = popIslands[islandNum-1];
@@ -202,13 +240,12 @@ function ajaxIslandOwnerChange(islandNum, newTeamId) {
 	popIsland.classList.remove(oldTeamId);
 	popIsland.classList.add(newTeamId);
 }
-
 function ajaxPieceRemove(placementId) {
 	//TODO: make all document selectors check for null returns before .removing (see updatePieceDelete() in K2)
 	document.querySelector("[data-placementId='" + placementId + "']").remove();
 }
-//----------------------------------------------------------------
 
+// Functions for user interaction and piece dragging ----------------------------------------------------------------
 function unpopIslands() {
 	if (openPopupIslandNum !== 0) {
 		popIslands[openPopupIslandNum-1].style.display = "none";
@@ -216,7 +253,6 @@ function unpopIslands() {
 		openPopupIslandNum = 0;
 	}
 }
-
 function closeContainer() {
 	if (openContainerPiece != null) {
 		openContainerPiece.firstChild.style.display = "none";
@@ -225,6 +261,128 @@ function closeContainer() {
 		openContainerPiece = null;
 	}
 }
+function containerDragenter(event, callingElement) {
+	event.preventDefault();
+	clearTimeout(pieceDragTimer);
+	event.stopPropagation();
+}
+function containerDragleave(event, callingElement) {
+	event.preventDefault();
+	clearTimeout(pieceDragTimer);
+	pieceDragTimer = setTimeout(function() { waterClick();}, 1000);
+	event.stopPropagation();
+}
+function islandDragenter(event, callingElement) {
+	event.preventDefault();
+	clearTimeout(islandTimer);
+	islandTimer = setTimeout(function() { gridIslandClick(event, callingElement);}, 1000);
+	event.stopPropagation();
+}
+function islandDragleave(event, callingElement) {
+	event.preventDefault();
+	clearTimeout(islandTimer);
+	event.stopPropagation();
+}
+function popupDragleave(event, callingElement) {
+	event.preventDefault();
+	clearTimeout(islandTimer);
+	islandTimer = setTimeout(function() { unpopIslands();}, 1000);
+	event.stopPropagation();
+}
+function popupDragover(event, callingElement) {
+	event.preventDefault();
+	clearTimeout(islandTimer);
+	event.stopPropagation();
+}
+function popupDragenter(event, callingElement) {
+	event.preventDefault();
+	clearTimeout(islandTimer);
+	// callingElement.classList.add("mouseOver");
+	event.stopPropagation();
+}
+function pieceDragenter(event, callingElement) {
+	event.preventDefault();
+	clearTimeout(pieceDragTimer);
+	let positionId = parseInt(callingElement.parentNode.getAttribute("data-positionId"));
+	let unitName = callingElement.classList[0];
+	if (unitName === "Transport" || unitName === "AircraftCarrier") {
+		if (positionId !== 118) {
+			clearTimeout(pieceDragTimer);
+			pieceDragTimer = setTimeout(function() { pieceClick(event, callingElement);}, 1000);
+		}
+	}
+	event.stopPropagation();
+}
+function pieceDragleave(event, callingElement){
+	event.preventDefault();
+
+	event.stopPropagation();
+}
+function positionDragover(event, callingElement){
+	event.preventDefault();
+	//TODO: client side checks to prevent dragging pieces
+	//Can't Drop into something draggable (other pieces) (containers are non-draggable)
+	if (callingElement.getAttribute("draggable") === "true") {
+		event.dataTransfer.dropEffect = "none";
+	} else {
+		event.dataTransfer.dropEffect = "all";
+	}
+}
+function positionDrop(event, callingElement){
+	event.preventDefault();
+	let placementId = event.dataTransfer.getData("placementId");  //what piece was dropped
+	let positionId = parseInt(callingElement.getAttribute("data-positionId"));  //-1 if going into container
+	let containerId = parseInt(callingElement.parentNode.getAttribute("data-placementId"));  //-1 if going into position
+	let phpUpdateBoard = new XMLHttpRequest();
+	phpUpdateBoard.onreadystatechange = function () {
+		if (this.readyState === 4 && this.status === 200) {
+			user_feedback.innerHTML = this.responseText;
+		}
+	};
+	phpUpdateBoard.open("GET", "backend/game/pieces/pieceMove.php?placementId=" + placementId + "&positionId=" + positionId + "&containerId=" + containerId, true);
+	phpUpdateBoard.send();
+	event.stopPropagation();
+}
+function pieceTrash(event, callingElement) {
+	event.preventDefault();
+	let placementId = event.dataTransfer.getData("placementId");  //what piece was dropped
+	let phpUpdateBoard = new XMLHttpRequest();
+	phpUpdateBoard.onreadystatechange = function () {
+		if (this.readyState === 4 && this.status === 200) {
+			user_feedback.innerHTML = this.responseText;
+		}
+	};
+	phpUpdateBoard.open("GET", "backend/game/pieces/pieceTrash.php?placementId=" + placementId, true);
+	phpUpdateBoard.send();
+	event.stopPropagation();
+}
+function piecePurchase(unitId){
+	event.preventDefault();
+	let phpUpdateBoard = new XMLHttpRequest();
+	phpUpdateBoard.onreadystatechange = function () {
+		if (this.readyState === 4 && this.status === 200) {
+			user_feedback.innerHTML = this.responseText;
+		}
+	};
+	phpUpdateBoard.open("GET", "backend/game/pieces/piecePurchase.php?unitId=" + unitId, true);
+	phpUpdateBoard.send();
+	event.stopPropagation();
+}
+function pieceDragstart(event, callingElement){
+	//only need the placementId to know what is being dragged, server side will handle everything else
+	event.dataTransfer.setData("placementId", callingElement.getAttribute("data-placementId"));
+	event.stopPropagation();
+}
+function showDice(diceNumber){
+	dice[0].style.display = "none";
+	dice[1].style.display = "none";
+	dice[2].style.display = "none";
+	dice[3].style.display = "none";
+	dice[4].style.display = "none";
+	dice[5].style.display = "none";
+	dice[diceNumber-1].style.display = "block";
+}
+
 
 function gridIslandClick(event, callingElement){
 	event.preventDefault();
@@ -291,15 +449,87 @@ function gridIslandClick(event, callingElement){
 
 	event.stopPropagation();
 }
-
-function waterClick(){
-	unpopIslands();
-	closeContainer();
-}
-
-function landClick(event, callingElement) {
+function waterClick(event, callingElement){
 	event.preventDefault();
 
+	if (selectPosState) {
+		clearSelectedPosition();
+		callingElement.classList.add("selectedPos");
+	}
+
+	unpopIslands();
+	closeContainer();
+
+
+
+	event.stopPropagation();
+}
+function pieceClick(event, callingElement) {
+	event.preventDefault();
+
+	if (hybridDeletePieceState) {
+		callingElement.classList.add("selected");
+		hybridTimer = setTimeout(function() {
+			if (confirm("Is this the piece you want to delete?")) {
+				callingElement.classList.remove("selected");
+				let placementId = parseInt(callingElement.getAttribute("data-placementId"));
+				let phpUpdateBoard = new XMLHttpRequest();
+				phpUpdateBoard.onreadystatechange = function () {
+					if (this.readyState === 4 && this.status === 200) {
+						user_feedback.innerHTML = this.responseText;
+					}
+				};
+				phpUpdateBoard.open("POST", "hybridDeletePiece.php?placementId=" + placementId, true);
+				phpUpdateBoard.send();
+
+				whole_game.style.backgroundColor = "black";
+				hybridDeletePieceState = false;
+				control_button.disabled = false;
+				phase_button.disabled = false;
+			} else {
+				callingElement.classList.remove("selected");
+			}
+		}, 50);
+	} else {
+
+		if (selectPosState) {
+			clearSelectedPosition();
+			callingElement.parentNode.classList.add("selectedPos");
+		} else {
+			if (selectPiecesState) {
+				let placementId = parseInt(callingElement.getAttribute("data-placementId"));
+				if (battleAdjacentPlacementIds.includes(placementId)) {
+					if (callingElement.classList.contains("selected")) {
+						callingElement.classList.remove("selected");
+					} else {
+						callingElement.classList.add("selected");
+					}
+				}
+			} else {
+				unpopIslands();
+				closeContainer();
+
+				let unitName = callingElement.classList[0];
+				let positionId = parseInt(callingElement.parentNode.getAttribute("data-positionId"));
+
+
+
+				if (unitName === "Transport" || unitName === "AircraftCarrier") {
+					if (positionId !== 118) {
+						openContainerPiece = callingElement;
+						callingElement.childNodes[0].style.display = "block";
+						callingElement.style.zIndex = 30;
+						callingElement.parentNode.style.zIndex = 70;
+					}
+				}
+			}
+		}
+	}
+
+	event.stopPropagation();
+}
+function landClick(event, callingElement) {
+	event.preventDefault();
 	if (hybridDisableAirfieldState) {
 		callingElement.classList.add("selectedPos");
 		let positionId = parseInt(callingElement.getAttribute("data-positionId"));
@@ -329,205 +559,38 @@ function landClick(event, callingElement) {
 			callingElement.classList.remove("selectedPos");
 			user_feedback.innerHTML = "Not a valid Airfield position.";
 		}
-	}
-
-	event.stopPropagation();
-}
-
-//TODO: actually figure out timing mechanics for dragging over and popping
-function containerDragenter(event, callingElement) {
-	event.preventDefault();
-	clearTimeout(pieceDragTimer);
-	event.stopPropagation();
-}
-
-function containerDragleave(event, callingElement) {
-	event.preventDefault();
-	clearTimeout(pieceDragTimer);
-	pieceDragTimer = setTimeout(function() { waterClick();}, 1000);
-	event.stopPropagation();
-}
-
-function islandDragenter(event, callingElement) {
-	event.preventDefault();
-	clearTimeout(islandTimer);
-	islandTimer = setTimeout(function() { gridIslandClick(event, callingElement);}, 1000);
-	event.stopPropagation();
-}
-
-function islandDragleave(event, callingElement) {
-	event.preventDefault();
-	clearTimeout(islandTimer);
-	event.stopPropagation();
-}
-
-function popupDragleave(event, callingElement) {
-	event.preventDefault();
-	clearTimeout(islandTimer);
-	islandTimer = setTimeout(function() { unpopIslands();}, 1000);
-	event.stopPropagation();
-}
-
-function popupDragover(event, callingElement) {
-	event.preventDefault();
-	clearTimeout(islandTimer);
-	event.stopPropagation();
-}
-
-function popupDragenter(event, callingElement) {
-	event.preventDefault();
-	clearTimeout(islandTimer);
-	// callingElement.classList.add("mouseOver");
-	event.stopPropagation();
-}
-
-function pieceDragenter(event, callingElement) {
-	event.preventDefault();
-	clearTimeout(pieceDragTimer);
-	let positionId = parseInt(callingElement.parentNode.getAttribute("data-positionId"));
-	let unitName = callingElement.classList[0];
-	if (unitName === "Transport" || unitName === "AircraftCarrier") {
-		if (positionId !== 118) {
-			clearTimeout(pieceDragTimer);
-			pieceDragTimer = setTimeout(function() { pieceClick(event, callingElement);}, 1000);
-		}
-	}
-	event.stopPropagation();
-}
-
-function pieceDragleave(event, callingElement){
-	event.preventDefault();
-
-	event.stopPropagation();
-}
-
-function positionDragover(event, callingElement){
-	event.preventDefault();
-	//TODO: client side checks to prevent dragging pieces
-	//Can't Drop into something draggable (other pieces) (containers are non-draggable)
-	if (callingElement.getAttribute("draggable") === "true") {
-		event.dataTransfer.dropEffect = "none";
 	} else {
-		event.dataTransfer.dropEffect = "all";
-	}
-}
-
-function positionDrop(event, callingElement){
-	event.preventDefault();
-	let placementId = event.dataTransfer.getData("placementId");  //what piece was dropped
-	let positionId = parseInt(callingElement.getAttribute("data-positionId"));  //-1 if going into container
-	let containerId = parseInt(callingElement.parentNode.getAttribute("data-placementId"));  //-1 if going into position
-	let phpUpdateBoard = new XMLHttpRequest();
-	phpUpdateBoard.onreadystatechange = function () {
-		if (this.readyState === 4 && this.status === 200) {
-			user_feedback.innerHTML = this.responseText;
-		}
-	};
-	phpUpdateBoard.open("GET", "backend/game/pieces/pieceMove.php?placementId=" + placementId + "&positionId=" + positionId + "&containerId=" + containerId, true);
-	phpUpdateBoard.send();
-	event.stopPropagation();
-}
-
-function pieceTrash(event, callingElement) {
-	event.preventDefault();
-	let placementId = event.dataTransfer.getData("placementId");  //what piece was dropped
-	let phpUpdateBoard = new XMLHttpRequest();
-	phpUpdateBoard.onreadystatechange = function () {
-		if (this.readyState === 4 && this.status === 200) {
-			user_feedback.innerHTML = this.responseText;
-		}
-	};
-	phpUpdateBoard.open("GET", "backend/game/pieces/pieceTrash.php?placementId=" + placementId, true);
-	phpUpdateBoard.send();
-	event.stopPropagation();
-}
-
-function piecePurchase(unitId){
-	event.preventDefault();
-	let phpUpdateBoard = new XMLHttpRequest();
-	phpUpdateBoard.onreadystatechange = function () {
-		if (this.readyState === 4 && this.status === 200) {
-			user_feedback.innerHTML = this.responseText;
-		}
-	};
-	phpUpdateBoard.open("GET", "backend/game/pieces/piecePurchase.php?unitId=" + unitId, true);
-	phpUpdateBoard.send();
-	event.stopPropagation();
-}
-
-function pieceClick(event, callingElement) {
-	event.preventDefault();
-
-	if (hybridDeletePieceState) {
-		callingElement.classList.add("selected");
-		hybridTimer = setTimeout(function() {
-			if (confirm("Is this the piece you want to delete?")) {
-				callingElement.classList.remove("selected");
-				let placementId = parseInt(callingElement.getAttribute("data-placementId"));
-				let phpUpdateBoard = new XMLHttpRequest();
-				phpUpdateBoard.onreadystatechange = function () {
-					if (this.readyState === 4 && this.status === 200) {
-						user_feedback.innerHTML = this.responseText;
-					}
-				};
-				phpUpdateBoard.open("POST", "hybridDeletePiece.php?placementId=" + placementId, true);
-				phpUpdateBoard.send();
-
-				whole_game.style.backgroundColor = "black";
-				hybridDeletePieceState = false;
-				control_button.disabled = false;
-				phase_button.disabled = false;
-			} else {
-				callingElement.classList.remove("selected");
-			}
-		}, 50);
-	} else {
-		unpopIslands();
-		closeContainer();
-
-		let unitName = callingElement.classList[0];
-		let positionId = parseInt(callingElement.parentNode.getAttribute("data-positionId"));
-
-
-
-		if (unitName === "Transport" || unitName === "AircraftCarrier") {
-			if (positionId !== 118) {
-				openContainerPiece = callingElement;
-				callingElement.childNodes[0].style.display = "block";
-				callingElement.style.zIndex = 30;
-				callingElement.parentNode.style.zIndex = 70;
-			}
+		if (selectPosState) {
+			clearSelectedPosition();
+			callingElement.classList.add("selectedPos");
 		}
 	}
-
 	event.stopPropagation();
-}
-
-function pieceDragstart(event, callingElement){
-	//only need the placementId to know what is being dragged, server side will handle everything else
-	event.dataTransfer.setData("placementId", callingElement.getAttribute("data-placementId"));
-	event.stopPropagation();
-}
-
-function showDice(diceNumber){
-	dice[0].style.display = "none";
-	dice[1].style.display = "none";
-	dice[2].style.display = "none";
-	dice[3].style.display = "none";
-	dice[4].style.display = "none";
-	dice[5].style.display = "none";
-	dice[diceNumber-1].style.display = "block";
 }
 
 //button functions---------------------------------------------------
 function controlButtonFunction() {
 	event.preventDefault();
-
-
-
+	unpopIslands();
+	closeContainer();
+	switch (control_button.innerHTML) {
+		case "Select Pos":
+			battleSelectPosStart();
+			break;
+		case "Select Pieces":
+			battleSelectPiecesStart();
+			break;
+		case "Start Battle":
+			battleStart();
+			break;
+		case "Hybrid Tool":
+			hybridPopupToggle();
+			break;
+		default:
+			alert("no function");
+	}
 	event.stopPropagation();
 }
-
 function nextPhaseButtonFunction(){
 	event.preventDefault();
 	if (confirm("Are you sure you want to complete this phase?")) {
@@ -542,19 +605,6 @@ function nextPhaseButtonFunction(){
 	}
 	event.stopPropagation();
 }
-
-function attackButtonFunction(){
-	event.preventDefault();
-
-	event.stopPropagation();
-}
-
-function changeSectionButtonFunction(){
-	event.preventDefault();
-
-	event.stopPropagation();
-}
-
 function undoButtonFunction(){
 	event.preventDefault();
 	let phpUpdateBoard = new XMLHttpRequest();
@@ -567,7 +617,14 @@ function undoButtonFunction(){
 	phpUpdateBoard.send();
 	event.stopPropagation();
 }
-
+function hybridPopupToggle() {
+	if(popup.style.display === "block"){
+		popup.style.display = "none";
+	}
+	else{
+		popup.style.display = "block";
+	}
+}
 function hybridAddMove() {
 	event.preventDefault();
 	if (confirm("Are you sure you want to use this hybrid option?")) {
@@ -690,10 +747,97 @@ function hybridNuke() {
 		phpUpdateBoard.send();
 	}
 }
-
 function logout(){
 	event.preventDefault();
 	window.location.replace("backend/game/logout.php");
 	event.stopPropagation();
 }
 //----------------------------------------------------------------
+
+function battleSelectPosStart() {
+	if (confirm("Are you sure you want to start a battle")) {
+		let phpUpdateBoard = new XMLHttpRequest();
+		phpUpdateBoard.onreadystatechange = function () {
+			if (this.readyState === 4 && this.status === 200) {
+				user_feedback.innerHTML = this.responseText;
+			}
+		};
+		phpUpdateBoard.open("GET", "backend/game/battles/battleSelectPosStart.php", true);
+		phpUpdateBoard.send();
+	}
+}
+function battleSelectPiecesStart() {
+	if (document.getElementsByClassName("selectedPos").length === 1) {
+		if (confirm("Are you sure this is the position you want?")) {
+			let positionId = parseInt(document.getElementsByClassName("selectedPos")[0].getAttribute("data-positionId"));
+			let phpUpdateBoard = new XMLHttpRequest();
+			phpUpdateBoard.onreadystatechange = function () {
+				if (this.readyState === 4 && this.status === 200) {
+					user_feedback.innerHTML = this.responseText;
+				}
+			};
+			phpUpdateBoard.open("GET", "backend/game/battles/battleSelectPiecesStart.php?positionId=" + positionId, true);
+			phpUpdateBoard.send();
+		}
+	} else {
+		user_feedback.innerHTML = "Did not select a position.";
+	}
+}
+function clearSelectedPosition() {
+	let highlighted_things = document.getElementsByClassName("selectedPos");
+	while (highlighted_things.length) {
+		highlighted_things[0].classList.remove("selectedPos");
+	}
+}
+function clearSelectedPieces() {
+	let highlighted_things = document.getElementsByClassName("selected");
+	while (highlighted_things.length) {
+		highlighted_things[0].classList.remove("selected");
+	}
+}
+function battleStart() {
+	if (confirm("Are you sure you selected the correct pieces?")) {
+		let allPieces = document.getElementsByClassName("selected");
+		let selectedPieces = [];
+		for (let x = 0; x < allPieces.length; x++) {
+			selectedPieces.push(parseInt(allPieces[x].getAttribute("data-placementId")));
+		}
+		let phpUpdateBoard = new XMLHttpRequest();
+		phpUpdateBoard.onreadystatechange = function () {
+			if (this.readyState === 4 && this.status === 200) {
+				user_feedback.innerHTML = this.responseText;
+			}
+		};
+		phpUpdateBoard.open("GET", "backend/game/battles/battleStart.php?selectedPieces=" + JSON.stringify(selectedPieces), true);
+		phpUpdateBoard.send();
+	}
+}
+
+function battlePieceClick(event, callingElement) {
+	event.preventDefault();
+	let battlePieceId = parseInt(callingElement.getAttribute("data-battlePieceId"));
+	let phpUpdateBoard = new XMLHttpRequest();
+	phpUpdateBoard.onreadystatechange = function () {
+		if (this.readyState === 4 && this.status === 200) {
+			user_feedback.innerHTML = this.responseText;
+		}
+	};
+	phpUpdateBoard.open("GET", "backend/game/battles/battlePieceClick.php?battlePieceId=" + battlePieceId, true);
+	phpUpdateBoard.send();
+	event.stopPropagation();
+}
+
+function battleActionPopupButtonClick() {
+
+}
+
+function attackButtonFunction(){
+
+}
+
+function changeSectionButtonFunction(){
+
+}
+
+
+

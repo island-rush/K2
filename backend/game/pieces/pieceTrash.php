@@ -56,7 +56,7 @@ $query = $db->prepare($query);
 $query->bind_param("isi", $gameId, $updateType, $placementId);
 $query->execute();
 
-$updateType = "phaseChange";
+$updateType = "getBoard";
 $query = 'INSERT INTO updates (updateGameId, updateType) VALUES (?, ?)';
 $query = $db->prepare($query);
 $query->bind_param("is", $gameId, $updateType);

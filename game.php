@@ -5,7 +5,6 @@ include("backend/db.php");
 $gameId = $_SESSION['gameId'];
 $myTeam = $_SESSION['myTeam'];
 
-$out_container = -1;
 $unitNames = ['Transport', 'Submarine', 'Destroyer', 'AircraftCarrier', 'ArmyCompany', 'ArtilleryBattery', 'TankPlatoon', 'MarinePlatoon', 'MarineConvoy', 'AttackHelo', 'SAM', 'FighterSquadron', 'BomberSquadron', 'StealthBomberSquadron', 'Tanker', 'LandBasedSeaMissile'];
 
 $query = "SELECT gameIsland1, gameIsland2, gameIsland3, gameIsland4, gameIsland5, gameIsland6, gameIsland7, gameIsland8, gameIsland9, gameIsland10, gameIsland11, gameIsland12, gameIsland13, gameIsland14 FROM GAMES WHERE gameId = ?";
@@ -30,8 +29,8 @@ $gameIsland13 = $r['gameIsland13'];
 $gameIsland14 = $r['gameIsland14'];
 
 //TODO: combine if no differences (make water click to close stuff function call elsewhere have its own thing)?
-$waterFunctions = 'onclick="waterClick();" ondragover="positionDragover(event, this);" ondrop="positionDrop(event, this);"';
-$landFunctions = 'onclick="landClick(event, callingElement);" ondragover="positionDragover(event, this);" ondrop="positionDrop(event, this);"';
+$waterFunctions = 'onclick="waterClick(event, this);" ondragover="positionDragover(event, this);" ondrop="positionDrop(event, this);"';
+$landFunctions = 'onclick="landClick(event, this);" ondragover="positionDragover(event, this);" ondrop="positionDrop(event, this);"';
 
 $gridIslandFunctions = 'onclick="gridIslandClick(event, this);" ondragenter="islandDragenter(event, this);" ondragleave="islandDragleave(event, this);"   ';
 $popIslandFunctions = ' ondragenter="popupDragenter(event, this);" ondragleave="popupDragleave(event, this);" ondragover="popupDragover(event, this);"';
@@ -331,7 +330,7 @@ $waterClass = 'class="gridblock water"';
                         <div id="dice_image6" class="dice_image"></div>
                     </div>
                     <div id="lastBattleMessage">Loading...</div>
-                    <button id="actionPopupButton">Loading...</button>
+                    <button id="actionPopupButton" disabled onclick="battleActionPopupButtonClick();">Loading...</button>
                 </div>
             </div>
         </div>

@@ -1,6 +1,6 @@
 <?php
 session_start();
-include("../db.php");
+include("../../db.php");
 
 $gameId = $_SESSION['gameId'];
 $myTeam = $_SESSION['myTeam'];
@@ -17,35 +17,30 @@ $gameCurrentTeam = $r['gameCurrentTeam'];
 $gameBattleSection = $r['gameBattleSection'];
 
 if ($myTeam != $gameCurrentTeam) {
-    echo "Not your teams turn.";
+    echo "It is not your team's turn.";
+    exit;
+}
+if ($gamePhase != 2) {
+    echo "It is not the right phase for this.";
     exit;
 }
 if ($gameBattleSection != "none") {
-    echo "Cannot change phase during battle.";
+    echo "No battles must be occurring for this.";
     exit;
 }
 
-$newPhaseNum = ($gamePhase + 1) % 7;
-if ($newPhaseNum == 0) {
-    if ($myTeam == "Red") {
-        $newGameCurrentTeam = "Blue";
-    } else {
-        $newGameCurrentTeam = "Red";
-    }
-} else {
-    $newGameCurrentTeam = $myTeam;
-}
-
-$query = 'UPDATE games SET gamePhase = ?, gameTurn = gameTurn + 1, gameCurrentTeam = ? WHERE (gameId = ?)';
+$newBattleSection = "selectPos";
+$query = 'UPDATE games SET gameBattleSection = ? WHERE gameId = ?';
 $query = $db->prepare($query);
-$query->bind_param("isi", $newPhaseNum, $newGameCurrentTeam, $gameId);
+$query->bind_param("si", $newBattleSection, $gameId);
 $query->execute();
 
 $updateType = "getBoard";
-$query = 'INSERT INTO updates (updateGameId, updateType) VALUES (?, ?)';
+$query = 'INSERT INTO updates (updateGameId, updateType) VALUES (?, ?)';  //need to make board look like selecting stuff
 $query = $db->prepare($query);
 $query->bind_param("is", $gameId, $updateType);
 $query->execute();
 
-echo "Changed Phase.";
+echo "Select Position for Battle";
 exit;
+

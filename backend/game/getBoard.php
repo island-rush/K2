@@ -20,9 +20,8 @@ $gameBlueHpoints = $r['gameBlueHpoints'];
 $gameBattleSection = $r['gameBattleSection'];
 $gameBattleSubSection = $r['gameBattleSubSection'];
 $gameBattleLastRoll = $r['gameBattleLastRoll'];
-
-$gameBattleLastMessage = $r['gameBattleLastMessage'];  //TODO: use these last few ones, send for div updates
 $gameBattlePosSelected = $r['gameBattlePosSelected'];
+$gameBattleLastMessage = $r['gameBattleLastMessage'];
 
 $activated = 1;
 $zero = 0;
@@ -59,7 +58,7 @@ if (($myTeam != $gameCurrentTeam) || $gameBattleSection == "attack" || $gameBatt
     $control_button_disabled = false;
 }
 
-//control button text
+//control button text / fucnction
 if ($gameBattleSection == "none" && $gamePhase == 2) {
     $control_button_text = "Select Pos";
 } elseif ($gameBattleSection == "selectPos") {
@@ -138,9 +137,36 @@ if ($gameBattleSection == "attack") {
     $change_section_button_text = "End Battle";
 }
 
-//what should the user feedback say
-$user_feedback = "Click to advance the phase when complete.";
-
+//battle adjacent pieces for selection
+$battleAdjacentPlacementIds = [];
+if ($gameBattleSection == "selectPieces" && $myTeam == $gameCurrentTeam) {  //only give adjacent array to selecting team
+    $adjacentPositions = [];
+    $n = sizeof($_SESSION['dist'][0]);
+    for ($j = 0; $j < $n; $j++) {
+        if ($n != $gameBattlePosSelected) {
+            if ($_SESSION['dist'][$gameBattlePosSelected][$j] <= 1) {
+                array_push($adjacentPositions, $j);
+            }
+        }
+    }
+    for ($x = 0; $x < sizeof($adjacentPositions); $x++) {
+        $thisPositionId = $adjacentPositions[$x];
+        $query = 'SELECT placementId FROM placements WHERE placementBattleUsed = 0 AND placementPositionId = ? AND placementTeamId = ? AND placementGameId = ? AND placementContainerId = -1 AND placementUnitId < 11';
+        if ($thisPositionId == $gameBattlePosSelected) {
+            $query = 'SELECT placementId FROM placements WHERE placementBattleUsed = 0 AND placementPositionId = ? AND placementTeamId = ? AND placementGameId = ? AND placementContainerId = -1 AND placementUnitId < 15';
+        }
+        $query = $db->prepare($query);
+        $query->bind_param("isi", $thisPositionId, $myTeam, $gameId);
+        $query->execute();
+        $results = $query->get_result();
+        $num_results = $results->num_rows;
+        for ($i = 0; $i < $num_results; $i++) {
+            $r = $results->fetch_assoc();
+            $thisPlacementId = $r['placementId'];
+            array_push($battleAdjacentPlacementIds, $thisPlacementId);
+        }
+    }
+}
 
 $arr = array(
     'gamePhase' => (int) $gamePhase,
@@ -163,7 +189,9 @@ $arr = array(
     'attack_button_text' => $attack_button_text,
     'change_section_button_disabled' => $change_section_button_disabled,
     'change_section_button_text' => $change_section_button_text,
-    'user_feedback' => (string) $user_feedback
+    'gameBattleSection' => $gameBattleSection,
+    'gameBattlePosSelected' => $gameBattlePosSelected,
+    'battleAdjacentPlacementIds' => $battleAdjacentPlacementIds
 );
 
 echo json_encode($arr);

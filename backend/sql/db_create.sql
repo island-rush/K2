@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS `games`(
   `gameBattleSubSection` varchar(20) NOT NULL DEFAULT 'choosing_pieces', -- "choosing_pieces", "attacked_popup", "defense_popup"
   `gameBattleTurn` int(3) NOT NULL DEFAULT 0,  -- put in to kick out aircraft after 2 turns
   `gameBattleLastRoll` int(1) NOT NULL DEFAULT 1, -- 1 for default (or no roll to display anymore/reset), 1-6 for roll
-  `gameBattleLastMessage` varchar(50) DEFAULT '', -- used for explaining what happened "red killed blue's fighter with fighter" ex...
+  `gameBattleLastMessage` varchar(50) DEFAULT 'DEFAULT LAST MESSAGE', -- used for explaining what happened "red killed blue's fighter with fighter" ex...
   `gameBattlePosSelected` int(8) NOT NULL DEFAULT -1, -- positionId chosen by attacker (999999 default)
   
   `gameIsland1` varchar(10) NOT NULL DEFAULT 'Red',
@@ -129,7 +129,7 @@ CREATE TABLE IF NOT EXISTS `battlePieces`(
 	`battlePieceId` int(5) NOT NULL,  -- piece must already exist, this refers to the placementId
     `battleGameId` int(5) NOT NULL,
 	`battlePieceState` int(4) NOT NULL,  -- "unused_attacker" (0), "used_defender", "selected..." (in battle center), "destroyed?" (this maybe not used, piece will be deleted here and also from real board)
-    `battlePieceWasHit` int(1) NOT NULL, -- 0 for false, 1 for true
+    `battlePieceWasHit` int(1) NOT NULL DEFAULT 0, -- 0 for false, 1 for true
     PRIMARY KEY(`battlePieceId`)
 );
 
