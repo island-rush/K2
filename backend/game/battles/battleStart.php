@@ -80,7 +80,7 @@ for ($i = 0; $i < sizeof($selectedPieces); $i++) {
 }
 
 $updateType = "piecesSelected";
-$query = 'INSERT INTO updates (updateGameId, updateType, updateBattlePiecesSelected) VALUES (?, ?, ?)';
+$query = 'INSERT INTO updates (updateGameId, updateType, updateHTML) VALUES (?, ?, ?)';
 $query = $db->prepare($query);
 $query->bind_param("iss", $gameId, $updateType, $piecesSelectedHTML);
 $query->execute();

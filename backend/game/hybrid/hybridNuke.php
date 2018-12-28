@@ -55,22 +55,20 @@ for ($x = 0; $x < sizeof($thisIslandSpots); $x++) {
     $query->execute();
     $results = $query->get_result();
     $num_results = $results->num_rows;
-    if ($num_results > 0) {
-        for ($i = 0; $i < $num_results; $i++) {
-            $b = $results->fetch_assoc();
-            $placementId = $b['placementId'];
+    for ($i = 0; $i < $num_results; $i++) {
+        $b = $results->fetch_assoc();
+        $placementId = $b['placementId'];
 
-            $query2 = 'DELETE FROM placements WHERE placementId = ?';
-            $query2= $db->prepare($query2);
-            $query2->bind_param("i", $placementId);
-            $query2->execute();
+        $query2 = 'DELETE FROM placements WHERE placementId = ?';
+        $query2= $db->prepare($query2);
+        $query2->bind_param("i", $placementId);
+        $query2->execute();
 
-            $updateType = "pieceRemove";
-            $query = 'INSERT INTO updates (updateGameId, updateType, updatePlacementId) VALUES (?, ?, ?)';
-            $query = $db->prepare($query);
-            $query->bind_param("isi", $gameId, $updateType, $placementId);
-            $query->execute();
-        }
+        $updateType = "pieceRemove";
+        $query = 'INSERT INTO updates (updateGameId, updateType, updatePlacementId) VALUES (?, ?, ?)';
+        $query = $db->prepare($query);
+        $query->bind_param("isi", $gameId, $updateType, $placementId);
+        $query->execute();
     }
 }
 $order = 0;

@@ -109,12 +109,10 @@ if ($newContainerId != -1) {
     $preparedQuery->execute();
     $results = $preparedQuery->get_result();
     $num_results = $results->num_rows;
-    if ($num_results > 0) {
-        for ($i = 0; $i < $num_results; $i++) {
-            $r = $results->fetch_assoc();
-            $thisPieceInsideTheContainer_UnitId = $r['placementUnitId'];
-            array_push($containerContents_UnitIds, $thisPieceInsideTheContainer_UnitId);
-        }
+    for ($i = 0; $i < $num_results; $i++) {
+        $r = $results->fetch_assoc();
+        $thisPieceInsideTheContainer_UnitId = $r['placementUnitId'];
+        array_push($containerContents_UnitIds, $thisPieceInsideTheContainer_UnitId);
     }
     if ($containerUnitId == 0) {  //Transport
         $people = [4, 7];
@@ -188,12 +186,10 @@ if ($newContainerId != -1) {
             }
         }
         $listEnemyPiecesInPosition_UnitIds = [];  //checking blockade
-        if ($num_results > 0) {
-            for ($i = 0; $i < $num_results; $i++) {
-                $r = $results->fetch_assoc();
-                $thisPieceInPosition_UnitId = $r['placementUnitId'];
-                array_push($listEnemyPiecesInPosition_UnitIds, $thisPieceInPosition_UnitId);
-            }
+        for ($i = 0; $i < $num_results; $i++) {
+            $r = $results->fetch_assoc();
+            $thisPieceInPosition_UnitId = $r['placementUnitId'];
+            array_push($listEnemyPiecesInPosition_UnitIds, $thisPieceInPosition_UnitId);
         }
         if ($placementUnitId == 1 && in_array(1, $listEnemyPiecesInPosition_UnitIds)) {  //subs block subs
             echo "Blockaded by another sub.";
@@ -229,28 +225,26 @@ $query->bind_param("iii", $gameId, $one, $one);
 $query->execute();
 $results = $query->get_result();
 $num_results = $results->num_rows;
-if ($num_results > 0) {
-    for ($i = 0; $i < $num_results; $i++) {
-        $r = $results->fetch_assoc();
-        $newsTeam = $r['newsTeam'];
-        if ($newsTeam == $myTeam || $newsTeam == "All") {
-            $newsEffect = $r['newsEffect'];
-            if ($newsEffect == "disable") {
-                $newsPieces = $r['newsPieces'];
-                $newsZone = $r['newsZone'];
-                $islandPositions = [[75, 76, 77, 78], [79, 80, 81, 82, 121], [83, 84, 85], [86, 87, 88, 89], [90, 91, 92, 93], [94, 95, 96, 122], [97, 98, 99, 123], [100, 101, 102], [103, 104, 105, 106, 124], [107, 108, 109, 110], [111, 112, 113], [114, 115, 116, 117], [55, 56, 57, 58, 59, 60, 61, 62, 63, 64], [65, 66, 67, 68, 69, 70, 71, 72, 73, 74]];
-                if ($newsZone == 200 ||
-                    ($newsZone == $newPositionId && $newPositionId < 100) ||
-                    ($newsZone == $oldPositionId && $oldPositionId < 100) ||
-                    (in_array(($newPositionId), ($islandPositions[$newsZone-101]))) ||
-                    (in_array(($oldPositionId), ($islandPositions[$newsZone-101]))) ||
-                    (($newsZone > 1000) && (($newsZone - 1000 == $newPositionId) || ($newsZone - 1000 == $oldPositionId)))) {
-                    $decoded = json_decode($newsPieces, true);
-                    if ((int) $decoded[$placementUnitName] == 1) {
-                        if ((int) $oldPositionId != 118){  //purchased is exempt
-                            echo "News Alert Prevented the Move.";
-                            exit;
-                        }
+for ($i = 0; $i < $num_results; $i++) {
+    $r = $results->fetch_assoc();
+    $newsTeam = $r['newsTeam'];
+    if ($newsTeam == $myTeam || $newsTeam == "All") {
+        $newsEffect = $r['newsEffect'];
+        if ($newsEffect == "disable") {
+            $newsPieces = $r['newsPieces'];
+            $newsZone = $r['newsZone'];
+            $islandPositions = [[75, 76, 77, 78], [79, 80, 81, 82, 121], [83, 84, 85], [86, 87, 88, 89], [90, 91, 92, 93], [94, 95, 96, 122], [97, 98, 99, 123], [100, 101, 102], [103, 104, 105, 106, 124], [107, 108, 109, 110], [111, 112, 113], [114, 115, 116, 117], [55, 56, 57, 58, 59, 60, 61, 62, 63, 64], [65, 66, 67, 68, 69, 70, 71, 72, 73, 74]];
+            if ($newsZone == 200 ||
+                ($newsZone == $newPositionId && $newPositionId < 100) ||
+                ($newsZone == $oldPositionId && $oldPositionId < 100) ||
+                (in_array(($newPositionId), ($islandPositions[$newsZone-101]))) ||
+                (in_array(($oldPositionId), ($islandPositions[$newsZone-101]))) ||
+                (($newsZone > 1000) && (($newsZone - 1000 == $newPositionId) || ($newsZone - 1000 == $oldPositionId)))) {
+                $decoded = json_decode($newsPieces, true);
+                if ((int) $decoded[$placementUnitName] == 1) {
+                    if ((int) $oldPositionId != 118){  //purchased is exempt
+                        echo "News Alert Prevented the Move.";
+                        exit;
                     }
                 }
             }
@@ -389,7 +383,7 @@ if ($killed == 1) {
 
                 $islandToChange = $index + 1;
                 $updateType = "islandOwnerChange";
-                $query = 'INSERT INTO updates (updateGameId, updateType, updateIsland, updateIslandTeam) VALUES (?, ?, ?, ?)';
+                $query = 'INSERT INTO updates (updateGameId, updateType, updatePlacementId, updateHTML) VALUES (?, ?, ?, ?)';
                 $query = $db->prepare($query);
                 $query->bind_param("isis", $gameId, $updateType, $islandToChange, $myTeam);
                 $query->execute();

@@ -68,7 +68,7 @@ if ($placementUnitId == 0 || $placementUnitId == 3) {
 $pieceHTML = $pieceHTML."</div>";  //end the overall piece
 
 $updateType = "piecePurchase";
-$query = 'INSERT INTO updates (updateGameId, updateType, updateBattlePiecesSelected) VALUES (?, ?, ?)';
+$query = 'INSERT INTO updates (updateGameId, updateType, updateHTML) VALUES (?, ?, ?)';
 $query = $db->prepare($query);
 $query->bind_param("iss", $gameId, $updateType, $pieceHTML);
 $query->execute();

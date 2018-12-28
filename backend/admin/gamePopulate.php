@@ -22,7 +22,6 @@ $query = $db->prepare($query);
 $query->bind_param("is", $gameId, $updateType);
 $query->execute();
 
-
 //delete the game table + all other tables
 $query = "DELETE FROM placements WHERE placementGameId = ?";
 $preparedQuery = $db->prepare($query);

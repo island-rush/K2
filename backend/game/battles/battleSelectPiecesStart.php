@@ -46,6 +46,12 @@ $query->execute();
 $results = $query->get_result();
 $num_results = $results->num_rows;
 
+if ($myTeam == "Red") {
+    $otherTeam = "Blue";
+} else {
+    $otherTeam = "Red";
+}
+
 $unitNames = ['Transport', 'Submarine', 'Destroyer', 'AircraftCarrier', 'ArmyCompany', 'ArtilleryBattery', 'TankPlatoon', 'MarinePlatoon', 'MarineConvoy', 'AttackHelo', 'SAM', 'FighterSquadron', 'BomberSquadron', 'StealthBomberSquadron', 'Tanker', 'LandBasedSeaMissile'];
 $piecesGeneratedHTML = "";
 for ($i = 0; $i < $num_results; $i++) {
@@ -59,11 +65,11 @@ for ($i = 0; $i < $num_results; $i++) {
     $query2->bind_param("iii", $placementId, $gameId, $pieceState);
     $query2->execute();
 
-    $piecesGeneratedHTML = $piecesGeneratedHTML."<div class='".$unitNames[$placementUnitId]." gamePiece ".$myTeam."' title='".$unitNames[$placementUnitId]."' data-battlePieceId='".$placementId."' onclick='battlePieceClick(event, this)'></div>";
+    $piecesGeneratedHTML = $piecesGeneratedHTML."<div class='".$unitNames[$placementUnitId]." gamePiece ".$otherTeam."' title='".$unitNames[$placementUnitId]."' data-battlePieceId='".$placementId."' onclick='battlePieceClick(event, this)'></div>";
 }
 
 $updateType = "posSelected";
-$query = 'INSERT INTO updates (updateGameId, updateType, updateBattlePiecesSelected) VALUES (?, ?, ?)';
+$query = 'INSERT INTO updates (updateGameId, updateType, updateHTML) VALUES (?, ?, ?)';
 $query = $db->prepare($query);
 $query->bind_param("iss", $gameId, $updateType, $piecesGeneratedHTML);
 $query->execute();

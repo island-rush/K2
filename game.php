@@ -58,7 +58,7 @@ $waterClass = 'class="gridblock water"';
             if ($num_results8 == 0) {
                 echo 0;
             } else {
-                $r8= $results8->fetch_assoc();
+                $r8 = $results8->fetch_assoc();
                 echo $r8['updateId'];
             }?>;
     </script>
@@ -121,7 +121,7 @@ $waterClass = 'class="gridblock water"';
                 <button id="control_button" disabled onclick="controlButtonFunction();">Loading...</button>
             </div>
             <div id="user_feedback_container">
-                <div id="user_feedback">User Feedback Loading...</div>
+                <div id="user_feedback">User Feedback</div>
             </div>
             <div id="phase_button_container">
                 <button id="phase_button" class="<?php echo 'phase_'.$_SESSION['myTeam']; ?>" disabled onclick="nextPhaseButtonFunction();">Next Phase</button>
@@ -310,10 +310,10 @@ $waterClass = 'class="gridblock water"';
         <div id="battleZonePopup">
             <div id="unused_attacker" data-boxId="1"><?php $boxId = 1; include("backend/game/battles/battlePieceDisplay.php"); ?></div>
             <div id="unused_defender" data-boxId="2"><?php $boxId = 2; include("backend/game/battles/battlePieceDisplay.php"); ?></div>
-            <div id="used_attacker" data-boxId="3"><?php $boxId = 3; include("backend/game/battles/battlePieceDisplay.php"); ?></div>
-            <div id="used_defender" data-boxId="4"><?php $boxId = 4; include("backend/game/battles/battlePieceDisplay.php"); ?></div>
-            <div id="center_attacker" data-boxId="5"><?php $boxId = 5; include("backend/game/battles/battlePieceDisplay.php"); ?></div>
-            <div id="center_defender" data-boxId="6"><?php $boxId = 6; include("backend/game/battles/battlePieceDisplay.php"); ?></div>
+            <div id="used_attacker" data-boxId="3"><?php $boxId = 5; include("backend/game/battles/battlePieceDisplay.php"); ?></div>
+            <div id="used_defender" data-boxId="4"><?php $boxId = 6; include("backend/game/battles/battlePieceDisplay.php"); ?></div>
+            <div id="center_attacker" data-boxId="5"><?php $boxId = 3; include("backend/game/battles/battlePieceDisplay.php"); ?></div>
+            <div id="center_defender" data-boxId="6"><?php $boxId = 4; include("backend/game/battles/battlePieceDisplay.php"); ?></div>
             <div id="battle_outcome"></div>
             <div id="battle_buttons">
                 <button id="attackButton" disabled onclick="attackButtonFunction();">Loading...</button>
@@ -403,8 +403,6 @@ $waterClass = 'class="gridblock water"';
         </div>
     </div>
 </div>
-
-
 <script src="frontend/js/game.js"></script>
 </body>
 </html>

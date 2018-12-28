@@ -23,7 +23,7 @@ session_abort();
 <table border="0" cellpadding="30" cellspacing="10">
     <tr>
         <td>
-            <H3>Game Login</H3>
+            <H3>Player Login</H3>
             <form name="gameLogin" method="post" id="gameLogin" action="backend/game/loginVerify.php">
                 <table border="0" cellpadding="3" cellspacing="1">
                     <tr>

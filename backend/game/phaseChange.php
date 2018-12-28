@@ -36,7 +36,7 @@ if ($newPhaseNum == 0) {
     $newGameCurrentTeam = $myTeam;
 }
 
-$query = 'UPDATE games SET gamePhase = ?, gameTurn = gameTurn + 1, gameCurrentTeam = ? WHERE (gameId = ?)';
+$query = 'UPDATE games SET gamePhase = ?, gameCurrentTeam = ? WHERE (gameId = ?)';
 $query = $db->prepare($query);
 $query->bind_param("isi", $newPhaseNum, $newGameCurrentTeam, $gameId);
 $query->execute();

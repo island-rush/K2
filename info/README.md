@@ -4,14 +4,25 @@ Fix Kulpable 2 by Re-Writing it without bugs
 
 TODO:
 
-battles******
+kicking out planes (battle)
 
--battle attack
--battle defense bonus
--battle buttons
+newsalert functionality (phase change)
 
-admin newsalert switching
-other admin stuff seen (what game / section)
+bombardment (battle?)
+
+refueling (phase change)
+
+deleting planes if not on airfield (phase change)
+
+island capture after battle
+
+delete reinforcements after not placing
+
+admin newsalert switching (admin)
+
+boosted attack
+
+
 
 
 

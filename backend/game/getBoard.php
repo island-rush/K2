@@ -35,17 +35,17 @@ $r2 = $results2->fetch_assoc();
 $newsText = $r2['newsText'];
 $newsEffectText = $r2['newsEffectText'];
 
-$location5 = 5;
-$location6 = 6;
+$location3 = 3;
+$location4 = 4;
 $query3 = "SELECT battlePieceId FROM battlePieces WHERE battleGameId = ? AND (battlePieceState = ? OR battlePieceState = ?)";
 $preparedQuery3 = $db->prepare($query3);
-$preparedQuery3->bind_param("iii", $gameId, $location5, $location6);
+$preparedQuery3->bind_param("iii", $gameId, $location3, $location4);
 $preparedQuery3->execute();
 $results3 = $preparedQuery3->get_result();
 $numResults3 = $results3->num_rows;
 
 //undo button disabled
-if (($myTeam != "Spec") && (($gamePhase == 2 || $gamePhase == 3 || $gamePhase == 4) && ($myTeam == $gameCurrentTeam))) {
+if (($myTeam != "Spec") && (($gamePhase == 2 || $gamePhase == 3 || $gamePhase == 4) && ($myTeam == $gameCurrentTeam)) && $gameBattleSection == "none") {
     $undo_disabled = false;
 } else {
     $undo_disabled = true;
@@ -60,11 +60,11 @@ if (($myTeam != $gameCurrentTeam) || $gameBattleSection == "attack" || $gameBatt
 
 //control button text / fucnction
 if ($gameBattleSection == "none" && $gamePhase == 2) {
-    $control_button_text = "Select Pos";
-} elseif ($gameBattleSection == "selectPos") {
-    $control_button_text = "Select Pieces";
-} elseif ($gameBattleSection == "selectPieces") {
     $control_button_text = "Start Battle";
+} elseif ($gameBattleSection == "selectPos") {
+    $control_button_text = "Done Selecting Pos";
+} elseif ($gameBattleSection == "selectPieces") {
+    $control_button_text = "Done Selecting Pieces";
 } elseif ($gamePhase == 5) {
     $control_button_text = "Hybrid Tool";
 } else {
@@ -111,7 +111,11 @@ if (($myTeam != "Spec") && ((($gameBattleSection == "attack" || $gameBattleSecti
     if ($numResults3 == 2) {  //both piece in the center
         $attack_button_disabled = false;
     } else {
-        $attack_button_disabled = true;
+        if ($gameBattleSection == "askRepeat") {
+            $attack_button_disabled = false;
+        } else {
+            $attack_button_disabled = true;
+        }
     }
     $change_section_button_disabled = false;
 } else {
@@ -168,6 +172,22 @@ if ($gameBattleSection == "selectPieces" && $myTeam == $gameCurrentTeam) {  //on
     }
 }
 
+if ($gameBattleSubSection == "continue_choosing") {
+    $actionPopupButtonText = "Click to go back to choosing.";
+    if (($gameBattleSection == "attack" && $myTeam == $gameCurrentTeam) || ($gameBattleSection == "counter" && $myTeam != $gameCurrentTeam)) {
+        $actionPopupButtonDisabled = false;
+    } else {
+        $actionPopupButtonDisabled = true;
+    }
+} else {
+    $actionPopupButtonText = "Click to roll Defense Bonus.";
+    if (($gameBattleSection == "attack" && $myTeam == $gameCurrentTeam)) {
+        $actionPopupButtonDisabled = true;  //wouldn't get defense bonus from counter, only in attack section
+    } else {
+        $actionPopupButtonDisabled = false;
+    }
+}
+
 $arr = array(
     'gamePhase' => (int) $gamePhase,
     'gameRedRpoints' => (int) $gameRedRpoints,
@@ -185,6 +205,9 @@ $arr = array(
     'battle_popped' => $battle_popped,
     'battle_action_popped' => $battle_action_popped,
     'gameBattleLastRoll' => $gameBattleLastRoll,
+    'gameBattleLastMessage' => $gameBattleLastMessage,
+    'actionPopupButtonDisabled' => $actionPopupButtonDisabled,
+    'actionPopupButtonText' => $actionPopupButtonText,
     'attack_button_disabled' => $attack_button_disabled,
     'attack_button_text' => $attack_button_text,
     'change_section_button_disabled' => $change_section_button_disabled,

@@ -25,7 +25,6 @@ CREATE TABLE IF NOT EXISTS `games`(
   `gameBlueJoined` int(1) NOT NULL DEFAULT 0,
   
   `gameCurrentTeam`  varchar(5) NOT NULL DEFAULT 'Blue', -- 'Red' or 'Blue'
-  `gameTurn` int(4) NOT NULL DEFAULT 0, -- 0, 1, 2, 3...
   `gamePhase`  int(1) NOT NULL DEFAULT 0, --  0 = news, 1 = reinforcements...
   
   `gameRedRpoints` int(5) NOT NULL DEFAULT 10,
@@ -144,12 +143,7 @@ CREATE TABLE IF NOT EXISTS `updates`(
 	`updatePlacementId` int(4) DEFAULT 0,
 	`updateNewPositionId` int(4) DEFAULT 0,
 	`updateNewContainerId` int(4) DEFAULT 0,
-	`updateNewUnitId` int(4) DEFAULT 16,
-    `updateBattlePieceState` int(2) DEFAULT 8,
-    `updateBattlePositionSelectedPieces` varchar(16000) DEFAULT 'defaultString',
-    `updateBattlePiecesSelected` varchar(16000) DEFAULT 'defaultString',
-    `updateIsland` varchar(20) DEFAULT 'special_default15',
-    `updateIslandTeam` varchar(10) DEFAULT 'purple',
+    `updateHTML` varchar(16000) DEFAULT 'defaultString',
 	PRIMARY KEY(`updateId`)
  ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
  

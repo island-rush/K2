@@ -22,6 +22,7 @@ let used_attacker = document.getElementById("used_attacker");
 let used_defender = document.getElementById("used_defender");
 let center_attacker = document.getElementById("center_attacker");
 let center_defender = document.getElementById("center_defender");
+let battleStates = [unused_attacker, unused_defender, center_attacker, center_defender, used_attacker, used_defender];
 let attackButton = document.getElementById("attackButton");
 let changeSectionButton = document.getElementById("changeSectionButton");
 let battleActionPopup = document.getElementById("battleActionPopup");
@@ -86,6 +87,7 @@ let hybridNukeState = false;
 
 let selectPosState = false;
 let selectPiecesState = false;
+
 let battleAdjacentPlacementIds = [];
 //-------------------------------------------------------------------------------------------------------------------
 
@@ -128,7 +130,13 @@ function getBoard(){
 			} else {
 				battleActionPopup.style.display = "none";
 			}
-			showDice(decoded.gameBattleLastRoll);
+			showDice(parseInt(decoded.gameBattleLastRoll));
+
+			lastBattleMessage.innerHTML = decoded.gameBattleLastMessage;
+
+			actionPopupButton.disabled = decoded.actionPopupButtonDisabled;
+			actionPopupButton.innerHTML = decoded.actionPopupButtonText;
+
 			attackButton.disabled = decoded.attack_button_disabled;
 			attackButton.innerHTML = decoded.attack_button_text;
 			changeSectionButton.disabled = decoded.change_section_button_disabled;
@@ -169,6 +177,7 @@ getBoard();
 
 // Ajax functions --------------------------------------------------------
 function ajaxUpdate(){
+	//TODO: reevaluate what is actually needed in the update table database format (island could be put somewhere else, rename the piecesSelected)
 	let phpUpdateBoard = new XMLHttpRequest();
 	phpUpdateBoard.onreadystatechange = function () {
 		if (this.readyState === 4 && this.status === 200) {
@@ -186,10 +195,10 @@ function ajaxUpdate(){
 						getBoard();
 						break;
 					case "islandOwnerChange":
-						ajaxIslandOwnerChange(parseInt(decoded.updateIsland), decoded.updateIslandTeam);
+						ajaxIslandOwnerChange(parseInt(decoded.updatePlacementId), decoded.updateHTML);
 						break;
 					case "piecePurchase":
-						purchased_container.innerHTML += decoded.updateBattlePiecesSelected;
+						purchased_container.innerHTML += decoded.updateHTML;
 						getBoard();
 						break;
 					case "pieceMove":
@@ -199,12 +208,18 @@ function ajaxUpdate(){
 						ajaxPieceRemove(parseInt(decoded.updatePlacementId));
 						break;
 					case "piecesSelected":
-						unused_attacker.innerHTML = decoded.updateBattlePiecesSelected;
+						unused_attacker.innerHTML = decoded.updateHTML;
 						getBoard();
 						break;
 					case "posSelected":
-						unused_defender.innerHTML = decoded.updateBattlePiecesSelected;
+						unused_defender.innerHTML = decoded.updateHTML;
 						getBoard();
+						break;
+					case "battleMove":
+						ajaxBattlePieceMove(parseInt(decoded.updatePlacementId), parseInt(decoded.updateNewPositionId));
+						break;
+					case "battleRemove":
+						ajaxBattlePieceRemove(parseInt(decoded.updatePlacementId));
 						break;
 					default:
 						alert("Error with ajax call, unknown updateType " + decoded.updateType);
@@ -228,6 +243,17 @@ function ajaxPieceMove(placementId, toPositionId, toContainerId) {
 	}
 	newLocation.append(gamePiece);
 }
+function ajaxPieceRemove(placementId) {
+	//TODO: make all document selectors check for null returns before .removing (see updatePieceDelete() in K2)
+	document.querySelector("[data-placementId='" + placementId + "']").remove();
+}
+function ajaxBattlePieceMove(battlePieceId, battlePieceNewState) {
+	let battlePiece = document.querySelector("[data-battlePieceId='" + battlePieceId + "']");
+	battleStates[battlePieceNewState-1].append(battlePiece);
+}
+function ajaxBattlePieceRemove(battlePieceId) {
+	document.querySelector("[data-battlePieceId='" + battlePieceId + "']").remove();
+}
 function ajaxIslandOwnerChange(islandNum, newTeamId) {
 	let gridIsland = gridIslands[islandNum-1];
 	let popIsland = popIslands[islandNum-1];
@@ -239,10 +265,6 @@ function ajaxIslandOwnerChange(islandNum, newTeamId) {
 	gridIsland.classList.add(newTeamId);
 	popIsland.classList.remove(oldTeamId);
 	popIsland.classList.add(newTeamId);
-}
-function ajaxPieceRemove(placementId) {
-	//TODO: make all document selectors check for null returns before .removing (see updatePieceDelete() in K2)
-	document.querySelector("[data-placementId='" + placementId + "']").remove();
 }
 
 // Functions for user interaction and piece dragging ----------------------------------------------------------------
@@ -382,7 +404,6 @@ function showDice(diceNumber){
 	dice[5].style.display = "none";
 	dice[diceNumber-1].style.display = "block";
 }
-
 
 function gridIslandClick(event, callingElement){
 	event.preventDefault();
@@ -574,13 +595,13 @@ function controlButtonFunction() {
 	unpopIslands();
 	closeContainer();
 	switch (control_button.innerHTML) {
-		case "Select Pos":
+		case "Start Battle":
 			battleSelectPosStart();
 			break;
-		case "Select Pieces":
+		case "Done Selecting Pos":
 			battleSelectPiecesStart();
 			break;
-		case "Start Battle":
+		case "Done Selecting Pieces":
 			battleStart();
 			break;
 		case "Hybrid Tool":
@@ -812,7 +833,6 @@ function battleStart() {
 		phpUpdateBoard.send();
 	}
 }
-
 function battlePieceClick(event, callingElement) {
 	event.preventDefault();
 	let battlePieceId = parseInt(callingElement.getAttribute("data-battlePieceId"));
@@ -820,24 +840,49 @@ function battlePieceClick(event, callingElement) {
 	phpUpdateBoard.onreadystatechange = function () {
 		if (this.readyState === 4 && this.status === 200) {
 			user_feedback.innerHTML = this.responseText;
+			attackButton.disabled = this.responseText !== "Click Attack to Attack!";
 		}
 	};
 	phpUpdateBoard.open("GET", "backend/game/battles/battlePieceClick.php?battlePieceId=" + battlePieceId, true);
 	phpUpdateBoard.send();
 	event.stopPropagation();
 }
-
-function battleActionPopupButtonClick() {
-
+function changeSectionButtonFunction(){
+	let phpUpdateBoard = new XMLHttpRequest();
+	phpUpdateBoard.onreadystatechange = function () {
+		if (this.readyState === 4 && this.status === 200) {
+			user_feedback.innerHTML = this.responseText;
+		}
+	};
+	phpUpdateBoard.open("GET", "backend/game/battles/battleChangeSectionButton.php", true);
+	phpUpdateBoard.send();
 }
+
+
+
 
 function attackButtonFunction(){
-
+	let phpUpdateBoard = new XMLHttpRequest();
+	phpUpdateBoard.onreadystatechange = function () {
+		if (this.readyState === 4 && this.status === 200) {
+			user_feedback.innerHTML = this.responseText;
+		}
+	};
+	phpUpdateBoard.open("GET", "backend/game/battles/battleAttackButton.php", true);
+	phpUpdateBoard.send();
 }
 
-function changeSectionButtonFunction(){
-
+function battleActionPopupButtonClick() {
+	let phpUpdateBoard = new XMLHttpRequest();
+	phpUpdateBoard.onreadystatechange = function () {
+		if (this.readyState === 4 && this.status === 200) {
+			user_feedback.innerHTML = this.responseText;
+		}
+	};
+	phpUpdateBoard.open("GET", "backend/game/battles/battleActionPopupButton.php", true);
+	phpUpdateBoard.send();
 }
+
 
 
 

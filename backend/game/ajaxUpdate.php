@@ -23,12 +23,7 @@ while(true) {
             'updatePlacementId' => (string) $r['updatePlacementId'],
             'updateNewPositionId' => (string) $r['updateNewPositionId'],
             'updateNewContainerId' => (string) $r['updateNewContainerId'],
-            'updateNewUnitId' => (string) $r['updateNewUnitId'],
-            'updateBattlePieceState' => (string) $r['updateBattlePieceState'],
-            'updateBattlePositionSelectedPieces' => (string) $r['updateBattlePositionSelectedPieces'],
-            'updateBattlePiecesSelected' => (string) $r['updateBattlePiecesSelected'],
-            'updateIsland' => (string) $r['updateIsland'],
-            'updateIslandTeam' => (string) $r['updateIslandTeam']
+            'updateHTML' => (string) $r['updateHTML'],
         );
         echo json_encode($arr);
         break;
