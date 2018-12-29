@@ -478,6 +478,7 @@ function waterClick(event, callingElement){
 		callingElement.classList.add("selectedPos");
 	}
 
+	clearHighlighted();
 	unpopIslands();
 	closeContainer();
 
@@ -547,6 +548,8 @@ function pieceClick(event, callingElement) {
 		}
 	}
 
+	clearHighlighted();
+
 	event.stopPropagation();
 }
 function landClick(event, callingElement) {
@@ -586,7 +589,34 @@ function landClick(event, callingElement) {
 			callingElement.classList.add("selectedPos");
 		}
 	}
+
+	clearHighlighted();
+
 	event.stopPropagation();
+}
+
+function doubleClick(event, callingElement) {
+	event.preventDefault();
+	clearHighlighted();
+	let positionId = parseInt(callingElement.getAttribute("data-positionId"));
+	let phpAvailableMoves = new XMLHttpRequest();
+	phpAvailableMoves.onreadystatechange = function () {
+		if (this.readyState === 4 && this.status === 200) {
+			let positionsArray = JSON.parse(this.responseText);
+			for (let g = 0; g < positionsArray.length; g++) {
+				document.querySelectorAll("[data-positionId='" + positionsArray[g] + "']")[0].classList.add("highlighted");
+			}
+		}
+	};
+	phpAvailableMoves.open("GET", "backend/game/adjacentPositions.php?positionId=" + positionId, true);
+	phpAvailableMoves.send();
+	event.stopPropagation();
+}
+function clearHighlighted() {
+	let highlighted_things = document.getElementsByClassName("highlighted");
+	while (highlighted_things.length) {
+		highlighted_things[0].classList.remove("highlighted");
+	}
 }
 
 //button functions---------------------------------------------------
@@ -857,10 +887,6 @@ function changeSectionButtonFunction(){
 	phpUpdateBoard.open("GET", "backend/game/battles/battleChangeSectionButton.php", true);
 	phpUpdateBoard.send();
 }
-
-
-
-
 function attackButtonFunction(){
 	let phpUpdateBoard = new XMLHttpRequest();
 	phpUpdateBoard.onreadystatechange = function () {
@@ -871,7 +897,6 @@ function attackButtonFunction(){
 	phpUpdateBoard.open("GET", "backend/game/battles/battleAttackButton.php", true);
 	phpUpdateBoard.send();
 }
-
 function battleActionPopupButtonClick() {
 	let phpUpdateBoard = new XMLHttpRequest();
 	phpUpdateBoard.onreadystatechange = function () {
@@ -882,7 +907,4 @@ function battleActionPopupButtonClick() {
 	phpUpdateBoard.open("GET", "backend/game/battles/battleActionPopupButton.php", true);
 	phpUpdateBoard.send();
 }
-
-
-
 

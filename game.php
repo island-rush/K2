@@ -29,8 +29,8 @@ $gameIsland13 = $r['gameIsland13'];
 $gameIsland14 = $r['gameIsland14'];
 
 //TODO: combine if no differences (make water click to close stuff function call elsewhere have its own thing)?
-$waterFunctions = 'onclick="waterClick(event, this);" ondragover="positionDragover(event, this);" ondrop="positionDrop(event, this);"';
-$landFunctions = 'onclick="landClick(event, this);" ondragover="positionDragover(event, this);" ondrop="positionDrop(event, this);"';
+$waterFunctions = 'onclick="waterClick(event, this);" ondblclick="doubleClick(event, this);" ondragover="positionDragover(event, this);" ondrop="positionDrop(event, this);"';
+$landFunctions = 'onclick="landClick(event, this);" ondblclick="doubleClick(event, this);" ondragover="positionDragover(event, this);" ondrop="positionDrop(event, this);"';
 
 $gridIslandFunctions = 'onclick="gridIslandClick(event, this);" ondragenter="islandDragenter(event, this);" ondragleave="islandDragleave(event, this);"   ';
 $popIslandFunctions = ' ondragenter="popupDragenter(event, this);" ondragleave="popupDragleave(event, this);" ondragover="popupDragover(event, this);"';

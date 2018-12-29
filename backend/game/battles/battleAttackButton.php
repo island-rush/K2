@@ -5,7 +5,7 @@ include("../../db.php");
 $gameId = $_SESSION['gameId'];
 $myTeam = $_SESSION['myTeam'];
 
-$query = 'SELECT gamePhase, gameCurrentTeam, gameBattleSection, gameBattleSubSection FROM GAMES WHERE gameId = ?';
+$query = 'SELECT gamePhase, gameCurrentTeam, gameBattleSection, gameBattleSubSection, gameBattleTurn FROM GAMES WHERE gameId = ?';
 $preparedQuery = $db->prepare($query);
 $preparedQuery->bind_param("i", $gameId);
 $preparedQuery->execute();
@@ -16,6 +16,7 @@ $gamePhase = $r['gamePhase'];
 $gameCurrentTeam = $r['gameCurrentTeam'];
 $gameBattleSection = $r['gameBattleSection'];
 $gameBattleSubSection = $r['gameBattleSubSection'];
+$gameBattleTurn = $r['gameBattleTurn'];
 
 if ($gamePhase != 2) {
     echo "It is not the right phase for this.";
@@ -48,9 +49,7 @@ if ($gameBattleSection == "attack" || $gameBattleSection == "counter") {
         exit;
     }
 
-//    $lastRoll = rand(1, 6);  //TODO: Make this the main one
-//    $lastRoll = 1;
-    $lastRoll = 6;
+    $lastRoll = rand(1, 6);
 
     $r = $results->fetch_assoc();
     $attackId = $r['placementId'];
@@ -97,8 +96,32 @@ if ($gameBattleSection == "attack" || $gameBattleSection == "counter") {
     echo "Attacked!";
     exit;
 } else {  //askRepeat, change the battle section to attack again (assume no pieces in center)
+    //kick out planes
+    if ($gameBattleTurn == 1) {
+        $query = 'SELECT battlePieceId FROM battlePieces RIGHT JOIN placements ON battlePieceId WHERE battlePieceId = placementId AND battleGameId = ? AND (battlePieceState = 1 or battlePieceState = 3 or battlePieceState = 5) AND (placementUnitId > 10)';
+        $preparedQuery = $db->prepare($query);
+        $preparedQuery->bind_param("i", $gameId);
+        $preparedQuery->execute();
+        $results = $preparedQuery->get_result();
+        $numResults = $results->num_rows;
+        for ($i = 0; $i < $numResults; $i++) {
+            $r = $results->fetch_assoc();
+            $battlePieceId = $r['battlePieceId'];
+            $query = 'DELETE FROM battlePieces WHERE battlePieceId = ?';
+            $query = $db->prepare($query);
+            $query->bind_param("i", $battlePieceId);
+            $query->execute();
+
+            $updateType = "battleRemove";
+            $query = 'INSERT INTO updates (updateGameId, updateType, updatePlacementId) VALUES (?, ?, ?)';
+            $query = $db->prepare($query);
+            $query->bind_param("isi", $gameId, $updateType, $battlePieceId);
+            $query->execute();
+        }
+    }
+
     $newSection = "attack";
-    $query = 'UPDATE games SET gameBattleSection = ? WHERE gameId = ?';
+    $query = 'UPDATE games SET gameBattleSection = ?, gameBattleTurn = gameBattleTurn + 1 WHERE gameId = ?';
     $preparedQuery = $db->prepare($query);
     $preparedQuery->bind_param("si", $newSection, $gameId);
     $preparedQuery->execute();

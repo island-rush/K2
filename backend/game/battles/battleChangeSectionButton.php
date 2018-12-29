@@ -5,7 +5,7 @@ include("../../db.php");
 $gameId = $_SESSION['gameId'];
 $myTeam = $_SESSION['myTeam'];
 
-$query = 'SELECT gamePhase, gameCurrentTeam, gameBattleSection, gameBattleSubSection FROM GAMES WHERE gameId = ?';
+$query = 'SELECT gamePhase, gameCurrentTeam, gameBattleSection, gameBattleSubSection, gameBattlePosSelected FROM GAMES WHERE gameId = ?';
 $preparedQuery = $db->prepare($query);
 $preparedQuery->bind_param("i", $gameId);
 $preparedQuery->execute();
@@ -16,6 +16,7 @@ $gamePhase = $r['gamePhase'];
 $gameCurrentTeam = $r['gameCurrentTeam'];
 $gameBattleSection = $r['gameBattleSection'];
 $gameBattleSubSection = $r['gameBattleSubSection'];
+$gameBattlePosSelected = $r['gameBattlePosSelected'];
 
 if ($gamePhase != 2) {
     echo "It is not the right phase for this.";
@@ -112,6 +113,43 @@ if ($gameBattleSection == "attack" || $gameBattleSection == "counter") {
     $preparedQuery->bind_param("sssi", $newSection, $newBattleSubSection, $newBattleLastMessage, $gameId);
     $preparedQuery->execute();
 
+    $flagPositions = [75, 79, 85, 86, 90, 94, 97, 100, 103, 107, 111, 114, 55, 65];
+    if (in_array($gameBattlePosSelected, $flagPositions)) {
+        $islandNum = array_search($gameBattlePosSelected, $flagPositions) + 1;
+        $query = 'SELECT gameIsland' . $islandNum . ' FROM GAMES WHERE gameId = ?';
+        $preparedQuery = $db->prepare($query);
+        $preparedQuery->bind_param("i", $gameId);
+        $preparedQuery->execute();
+        $results = $preparedQuery->get_result();
+        $r = $results->fetch_assoc();
+        $islandOwner = $r['gameIsland' . $islandNum];
+        if ($islandOwner != $myTeam) {
+            $query = 'SELECT placementId FROM placements WHERE placementPositionId = ? AND placementTeamId != ?';  //get the other pieces that are there
+            $preparedQuery = $db->prepare($query);
+            $preparedQuery->bind_param("is", $gameBattlePosSelected, $myTeam);
+            $preparedQuery->execute();
+            $results = $preparedQuery->get_result();
+            $num_results = $results->num_rows;
+            if ($num_results == 0) {
+                $query = 'UPDATE games SET gameIsland' . $islandNum . ' = ?, game' . $myTeam . 'Hpoints = game' . $myTeam . 'Hpoints + 1 WHERE gameId = ?';
+                $query = $db->prepare($query);
+                $query->bind_param("si", $myTeam, $gameId);
+                $query->execute();
+
+                $updateType = "islandOwnerChange";
+                $query = 'INSERT INTO updates (updateGameId, updateType, updatePlacementId, updateHTML) VALUES (?, ?, ?, ?)';
+                $query = $db->prepare($query);
+                $query->bind_param("isis", $gameId, $updateType, $islandNum, $myTeam);
+                $query->execute();
+
+                $query = 'DELETE FROM movements WHERE movementGameId = ?';
+                $query = $db->prepare($query);
+                $query->bind_param("i", $gameId);
+                $query->execute();
+            }
+        }
+    }
+
     $updateType = "getBoard";
     $query = 'INSERT INTO updates (updateGameId, updateType) VALUES (?, ?)';  //need to make board look like selecting stuff
     $query = $db->prepare($query);
@@ -121,6 +159,4 @@ if ($gameBattleSection == "attack" || $gameBattleSection == "counter") {
     echo "Battle Ended.";
     exit;
 }
-
-
 

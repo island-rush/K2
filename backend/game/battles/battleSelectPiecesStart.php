@@ -5,7 +5,7 @@ include("../../db.php");
 $gameId = $_SESSION['gameId'];
 $myTeam = $_SESSION['myTeam'];
 
-$positionId = (int) $_REQUEST['positionId'];
+$positionId = (int) htmlentities($_REQUEST['positionId']);
 
 $query = 'SELECT gamePhase, gameCurrentTeam, gameBattleSection, gameBattlePosSelected FROM GAMES WHERE gameId = ?';
 $preparedQuery = $db->prepare($query);

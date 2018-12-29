@@ -25,6 +25,7 @@ CREATE TABLE IF NOT EXISTS `games`(
   `gameBlueJoined` int(1) NOT NULL DEFAULT 0,
   
   `gameCurrentTeam`  varchar(5) NOT NULL DEFAULT 'Blue', -- 'Red' or 'Blue'
+  `gameTurn` int(4) NOT NULL DEFAULT 0, 
   `gamePhase`  int(1) NOT NULL DEFAULT 0, --  0 = news, 1 = reinforcements...
   
   `gameRedRpoints` int(5) NOT NULL DEFAULT 10,

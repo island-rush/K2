@@ -5,7 +5,7 @@ include("../../db.php");
 $gameId = $_SESSION['gameId'];
 $myTeam = $_SESSION['myTeam'];
 
-$islandNum = (int) $_REQUEST['islandNum'];
+$islandNum = (int) htmlentities($_REQUEST['islandNum']);
 
 $query = 'SELECT gamePhase, gameCurrentTeam, game'.$myTeam.'Hpoints, gameIsland'.$islandNum.' FROM GAMES WHERE gameId = ?';
 $preparedQuery = $db->prepare($query);
@@ -37,13 +37,13 @@ if ($gameIslandOwner == $myTeam) {
 }
 
 $order = 0;
-$bank = "bankAdd";
+$bankDrain = "bankDrain";
 $zone = $islandNum + 100;
 $length = 5;
 $activated = 1;
 $query = 'INSERT INTO newsAlerts (newsGameId, newsOrder, newsTeam, newsEffect, newsZone, newsLength, newsActivated) VALUES(?, ?, ?, ?, ?, ?, ?)';
 $query = $db->prepare($query);
-$query->bind_param("iissiii",$gameId, $order, $myTeam, $bank, $zone, $length, $activated);
+$query->bind_param("iissiii",$gameId, $order, $myTeam, $bankDrain, $zone, $length, $activated);
 $query->execute();
 
 $query = 'UPDATE games SET game'.$myTeam.'Hpoints = game'.$myTeam.'Hpoints - 4 WHERE gameId = ?';

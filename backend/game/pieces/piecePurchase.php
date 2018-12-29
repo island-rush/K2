@@ -5,7 +5,7 @@ include("../../db.php");
 $gameId = $_SESSION['gameId'];
 $myTeam = $_SESSION['myTeam'];
 
-$placementUnitId = $_REQUEST['unitId'];
+$placementUnitId = (int) htmlentities($_REQUEST['unitId']);
 $costs = [8, 8, 10, 15, 4, 5, 6, 5, 8, 7, 8, 12, 12, 15, 11, 10];
 
 $query = 'SELECT gamePhase, gameCurrentTeam, game'.$myTeam.'Rpoints FROM GAMES WHERE gameId = ?';

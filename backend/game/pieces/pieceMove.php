@@ -5,9 +5,9 @@ include("../../db.php");
 $gameId = $_SESSION['gameId'];
 $myTeam = $_SESSION['myTeam'];
 
-$placementId = (int) $_REQUEST['placementId'];  //piece that was moved
-$newPositionId = (int) $_REQUEST['positionId'];  //could be -1
-$newContainerId = (int) $_REQUEST['containerId'];  //could be -1
+$placementId = (int) htmlentities($_REQUEST['placementId']);  //piece that was moved
+$newPositionId = (int) htmlentities($_REQUEST['positionId']);  //could be -1
+$newContainerId = (int) htmlentities($_REQUEST['containerId']);  //could be -1
 
 //current game state
 $query = 'SELECT gamePhase, gameCurrentTeam, gameBattleSection, gameIsland1, gameIsland2, gameIsland3, gameIsland4, gameIsland5, gameIsland6, gameIsland7, gameIsland8, gameIsland9, gameIsland10, gameIsland11, gameIsland12, gameIsland13, gameIsland14 FROM GAMES WHERE gameId = ?';

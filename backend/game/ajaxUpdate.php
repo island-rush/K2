@@ -1,8 +1,8 @@
 <?php
 set_time_limit(0);
 
-$gameId = $_REQUEST['gameId'];
-$lastUpdateId = $_REQUEST['lastUpdateId'];
+$gameId = (int) htmlentities($_REQUEST['gameId']);
+$lastUpdateId = (int) htmlentities($_REQUEST['lastUpdateId']);
 
 include("../db.php");
 
