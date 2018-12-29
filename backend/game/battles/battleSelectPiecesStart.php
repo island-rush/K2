@@ -7,7 +7,7 @@ $myTeam = $_SESSION['myTeam'];
 
 $positionId = (int) htmlentities($_REQUEST['positionId']);
 
-$query = 'SELECT gamePhase, gameCurrentTeam, gameBattleSection, gameBattlePosSelected FROM GAMES WHERE gameId = ?';
+$query = 'SELECT gamePhase, gameCurrentTeam, gameBattleSection FROM GAMES WHERE gameId = ?';
 $preparedQuery = $db->prepare($query);
 $preparedQuery->bind_param("i", $gameId);
 $preparedQuery->execute();
@@ -17,7 +17,6 @@ $r = $results->fetch_assoc();
 $gamePhase = $r['gamePhase'];
 $gameCurrentTeam = $r['gameCurrentTeam'];
 $gameBattleSection = $r['gameBattleSection'];
-$gameBattlePosSelected = (int) $r['gameBattlePosSelected'];
 
 if ($myTeam != $gameCurrentTeam) {
     echo "It is not your team's turn.";
@@ -37,7 +36,7 @@ if ($positionId < 0 || $positionId > 117) {
 }
 
 $query = 'SELECT placementId, placementUnitId FROM placements WHERE placementGameId = ? AND placementPositionId = ? AND placementTeamId != ?';
-if ($gameBattlePosSelected <= 54) {  //exclude land units in a transport when in water, but include fighters inside carrier
+if ($positionId <= 54) {  //exclude land units in a transport when in water, but include fighters inside carrier
     $query = 'SELECT placementId, placementUnitId FROM placements WHERE placementGameId = ? AND placementPositionId = ? AND placementTeamId != ? AND placementUnitId != 4 AND placementUnitId != 5 AND placementUnitId != 6 AND placementUnitId != 7 AND placementUnitId != 8 AND placementUnitId != 15';
 }
 $query = $db->prepare($query);

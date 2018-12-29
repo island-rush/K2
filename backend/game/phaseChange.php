@@ -32,31 +32,6 @@ $gameIsland12 = $r['gameIsland12'];
 $gameIsland13 = $r['gameIsland13'];
 $gameIsland14 = $r['gameIsland14'];
 
-$airFieldSpots = [];  //can only remain on the airfield if you own the island
-if ($gameIsland1 == $myTeam) {
-    array_push($airFieldSpots, 78);
-}
-if ($gameIsland3 == $myTeam) {
-    array_push($airFieldSpots, 83);
-}
-if ($gameIsland4 == $myTeam) {
-    array_push($airFieldSpots, 89);
-}
-if ($gameIsland11 == $myTeam) {
-    array_push($airFieldSpots, 113);
-}
-if ($gameIsland12 == $myTeam) {
-    array_push($airFieldSpots, 116);
-}
-if ($gameIsland13 == $myTeam) {
-    array_push($airFieldSpots, 57);
-    array_push($airFieldSpots, 56);
-}
-if ($gameIsland14 == $myTeam) {
-    array_push($airFieldSpots, 66);
-    array_push($airFieldSpots, 68);
-}
-
 if ($myTeam != $gameCurrentTeam) {
     echo "Not your teams turn.";
     exit;
@@ -77,19 +52,88 @@ if ($newPhaseNum == 0) {
     $newGameCurrentTeam = $myTeam;
 }
 
-
 switch ($newPhaseNum) {
+    case 0:  //News Alerts
+        $query = "SELECT newsId, newsEffect, newsZone, newsRollValue, newsTeam FROM newsAlerts WHERE newsGameId = ? AND newsActivated = 0 AND newsLength != 0 ORDER BY newsOrder";
+        $preparedQuery = $db->prepare($query);
+        $preparedQuery->bind_param("i", $gameId);
+        $preparedQuery->execute();
+        $results = $preparedQuery->get_result();
+        $r = $results->fetch_assoc();
 
-    case 0:  //News Alert
-        //News Alert
-        //do news alerts
+        $newsId = $r['newsId'];
+        $newsEffect = $r['newsEffect'];
+        $newsZone = $r['newsZone'];
+        $newsRollValue = $r['newsRollValue'];
+        $newsTeam = $r['newsTeam'];
 
+        $decrementValue = 1;
+        $query = 'UPDATE newsAlerts SET newsLength = newsLength - 1 WHERE (newsGameId = ?) AND (newsActivated = 1) AND (newsLength != 0)';
+        $query = $db->prepare($query);
+        $query->bind_param("i", $gameId);
+        $query->execute();
 
+        $query = 'UPDATE newsAlerts SET newsActivated = 1 WHERE (newsId = ?)';
+        $query = $db->prepare($query);
+        $query->bind_param("i", $newsId);
+        $query->execute();
 
+        if ($newsEffect == "rollDie") {
+            $islandSpots = [[75, 76, 77, 78], [79, 80, 81, 82], [83, 84, 85], [86, 87, 88, 89], [90, 91, 92, 93], [94, 95, 96], [97, 98, 99], [100, 101, 102], [103, 104, 105, 106], [107, 108, 109, 110], [111, 112, 113], [114, 115, 116, 117], [55, 56, 57, 58, 59, 60, 61, 62, 63, 64], [65, 66, 67, 68, 69, 70, 71, 72, 73, 74]];
+            $islandIndex = $newsZone - 101;
+            $thisIslandSpots = $islandSpots[$islandIndex];
+            for ($x = 0; $x < sizeof($thisIslandSpots); $x++) {
+                if ($newsTeam == "All") {
+                    $team1 = "Red";
+                    $team2 = "Blue";
+                } else {
+                    $team1 = $newsTeam;
+                    $team2 = $newsTeam;
+                }
+                $query = "SELECT placementId, placementUnitId FROM placements WHERE placementGameId = ? AND placementPositionId = ? AND (placementTeamId = ? OR placementTeamId = ?)";
+                $preparedQuery = $db->prepare($query);
+                $preparedQuery->bind_param("iiss", $gameId, $thisIslandSpots[$x], $team1, $team2);
+                $preparedQuery->execute();
+                $results = $preparedQuery->get_result();
+                $num_results = $results->num_rows;
+                for ($i = 0; $i < $num_results; $i++) {
+                    $r = $results->fetch_assoc();
+                    $RandRoll = rand(1, 6);
+                    if ($RandRoll < $newsRollValue) {
+                        $placementId = $r['placementId'];
+                        $query = 'DELETE FROM placements WHERE placementId = ?';
+                        $query = $db->prepare($query);
+                        $query->bind_param("i", $placementId);
+                        $query->execute();
 
+                        $query = 'DELETE FROM placements WHERE placementContainerId = ?';
+                        $query = $db->prepare($query);
+                        $query->bind_param("i", $placementId);
+                        $query->execute();
 
+                        $updateType = "pieceRemove";
+                        $query = 'INSERT INTO updates (updateGameId, updateType, updatePlacementId) VALUES (?, ?, ?)';
+                        $query = $db->prepare($query);
+                        $query->bind_param("isi", $gameId, $updateType, $placementId);
+                        $query->execute();
+                    }
+                }
+            }
+        }
 
-
+        $moveEffect = "addMove";
+        $query4 = "SELECT newsId FROM newsAlerts WHERE newsGameId = ? AND newsActivated = 1 AND newsLength = 1 AND newsTeam = ? AND newsEffect = ? ORDER BY newsOrder";
+        $preparedQuery4 = $db->prepare($query4);
+        $preparedQuery4->bind_param("iss", $gameId, $myTeam, $moveEffect);
+        $preparedQuery4->execute();
+        $results = $preparedQuery4->get_result();
+        $num_results = $results->num_rows;
+        for ($x = 0; $x < $num_results; $x++) {
+            $query4 = "UPDATE placements SET placementCurrentMoves = placementCurrentMoves + 1 WHERE placementGameId = ? AND placementTeamId = ?";
+            $preparedQuery4 = $db->prepare($query4);
+            $preparedQuery4->bind_param("is", $gameId, $myTeam);
+            $preparedQuery4->execute();
+        }
         break;
     case 1:  //Buy Reinforcements
         //give the points for island ownership to this team (except if newsalert from bank drain prevents it)
@@ -252,7 +296,7 @@ switch ($newPhaseNum) {
         $query->execute();
         break;
     default:
-        echo "Failed to switch phase. (number outside range)";  //unlikely to occur, we mod phase number above
+        echo "Failed to switch phase. (number outside phase range)";  //unlikely to occur, we mod phase number above
         exit;
 }
 

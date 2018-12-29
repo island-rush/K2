@@ -153,7 +153,7 @@ CREATE TABLE IF NOT EXISTS `updates`(
  
  -- Table of news alerts (not yet fully implemented)
 CREATE TABLE IF NOT EXISTS `newsAlerts`(
-  `newsId` int(5) NOT NULL AUTO_INCREMENT,
+  `newsId` int(8) NOT NULL AUTO_INCREMENT,
   `newsGameId` int(5) NOT NULL,
   `newsOrder` int(5) NOT NULL,  -- what index is this in the list of this game's news alerts
   `newsTeam` varchar(10) NOT NULL DEFAULT 'nothing', -- 'Red', 'Blue', 'All'. Defaults to 'nothing' for effect=nothing

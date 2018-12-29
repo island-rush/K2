@@ -9,6 +9,8 @@ SELECT * FROM GAMES WHERE gameId = 1;
 
 SELECT gameBattleTurn FROM games WHERE gameId = 1;
 
+SELECT * FROM battlePieces;
+
 SELECT * FROM battlePieces NATURAL JOIN placements WHERE battleGameId = 1 AND placementId = battlePieceId;
 
 SELECT * FROM placements;
