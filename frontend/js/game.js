@@ -1,7 +1,6 @@
 // Javascript File for Island Rush Game (Main game page)
 console.log("Island Rush Game Javascript");
 
-//global variables and DOM caching
 let phaseNames = ['News', 'Buy Reinforcements', 'Combat', 'Fortify Move', 'Reinforcement Place', 'Hybrid War', 'Round Recap'];
 let unitNames = ['Transport', 'Submarine', 'Destroyer', 'AircraftCarrier', 'ArmyCompany', 'ArtilleryBattery', 'TankPlatoon', 'MarinePlatoon', 'MarineConvoy', 'AttackHelo', 'SAM', 'FighterSquadron', 'BomberSquadron', 'StealthBomberSquadron', 'Tanker', 'LandBasedSeaMissile'];
 let whole_game = document.getElementById("whole_game");
@@ -35,16 +34,12 @@ let dice_image4 = document.getElementById("dice_image4");
 let dice_image5 = document.getElementById("dice_image5");
 let dice_image6 = document.getElementById("dice_image6");
 let dice = [dice_image1, dice_image2, dice_image3, dice_image4, dice_image5, dice_image6];
-
-let smallDelay = 50;
-
 let popupTitle = document.getElementById("popupTitle");
 let newsBodyText = document.getElementById("newsBodyText");
 let newsBodySubText = document.getElementById("newsBodySubText");
 let popupBodyNews = document.getElementById("popupBodyNews");
 let popupBodyHybridMenu = document.getElementById("popupBodyHybridMenu");
 let popup = document.getElementById("popup");
-
 let popIsland1 = document.getElementById("special_island1_pop");
 let popIsland2 = document.getElementById("special_island2_pop");
 let popIsland3 = document.getElementById("special_island3_pop");
@@ -58,7 +53,6 @@ let popIsland10 = document.getElementById("special_island10_pop");
 let popIsland11 = document.getElementById("special_island11_pop");
 let popIsland12 = document.getElementById("special_island12_pop");
 let popIslands = [popIsland1, popIsland2, popIsland3, popIsland4, popIsland5, popIsland6, popIsland7, popIsland8, popIsland9, popIsland10, popIsland11, popIsland12];
-
 let gridIsland1 = document.getElementById("special_island1");
 let gridIsland2 = document.getElementById("special_island2");
 let gridIsland3 = document.getElementById("special_island3");
@@ -72,23 +66,19 @@ let gridIsland10 = document.getElementById("special_island10");
 let gridIsland11 = document.getElementById("special_island11");
 let gridIsland12 = document.getElementById("special_island12");
 let gridIslands = [gridIsland1, gridIsland2, gridIsland3, gridIsland4, gridIsland5, gridIsland6, gridIsland7, gridIsland8, gridIsland9, gridIsland10, gridIsland11, gridIsland12];
-
 let openContainerPiece = null;
 let openPopupIslandNum = 0;
-
 let pieceDragTimer;
 let hybridTimer;
 let islandTimer;
-
 let hybridDeletePieceState = false;
 let hybridDisableAirfieldState = false;
 let hybridBankState = false;
 let hybridNukeState = false;
-
 let selectPosState = false;
 let selectPiecesState = false;
-
 let battleAdjacentPlacementIds = [];
+
 //-------------------------------------------------------------------------------------------------------------------
 
 function getBoard(){
@@ -131,12 +121,9 @@ function getBoard(){
 				battleActionPopup.style.display = "none";
 			}
 			showDice(parseInt(decoded.gameBattleLastRoll));
-
 			lastBattleMessage.innerHTML = decoded.gameBattleLastMessage;
-
 			actionPopupButton.disabled = decoded.actionPopupButtonDisabled;
 			actionPopupButton.innerHTML = decoded.actionPopupButtonText;
-
 			attackButton.disabled = decoded.attack_button_disabled;
 			attackButton.innerHTML = decoded.attack_button_text;
 			changeSectionButton.disabled = decoded.change_section_button_disabled;
@@ -175,14 +162,12 @@ function getBoard(){
 }
 getBoard();
 
-// Ajax functions --------------------------------------------------------
 function ajaxUpdate(){
-	//TODO: reevaluate what is actually needed in the update table database format (island could be put somewhere else, rename the piecesSelected)
 	let phpUpdateBoard = new XMLHttpRequest();
 	phpUpdateBoard.onreadystatechange = function () {
 		if (this.readyState === 4 && this.status === 200) {
 			if (this.responseText === "TIMEOUT") {
-				window.setTimeout("ajaxUpdate();", smallDelay);
+				window.setTimeout("ajaxUpdate();", 50);
 			} else {
 				let decoded = JSON.parse(this.responseText);
 				lastUpdateId = decoded.updateId;
@@ -202,7 +187,7 @@ function ajaxUpdate(){
 						getBoard();
 						break;
 					case "pieceMove":
-						ajaxPieceMove(parseInt(decoded.updatePlacementId), parseInt(decoded.updateNewPositionId), parseInt(decoded.updateNewContainerId));
+						ajaxPieceMove(parseInt(decoded.updatePlacementId), parseInt(decoded.updateNewPositionId), parseInt(decoded.updateNewContainerId), decoded.updateHTML);
 						break;
 					case "pieceRemove":
 						ajaxPieceRemove(parseInt(decoded.updatePlacementId));
@@ -221,10 +206,13 @@ function ajaxUpdate(){
 					case "battleRemove":
 						ajaxBattlePieceRemove(parseInt(decoded.updatePlacementId));
 						break;
+					case "updateTitle":
+						ajaxUpdateTitle(parseInt(decoded.updatePlacementId), decoded.updateHTML);
+						break;
 					default:
 						alert("Error with ajax call, unknown updateType " + decoded.updateType);
 				}
-				window.setTimeout("ajaxUpdate();", smallDelay);
+				window.setTimeout("ajaxUpdate();", 50);
 			}
 		}
 	};
@@ -233,8 +221,9 @@ function ajaxUpdate(){
 }
 ajaxUpdate();
 
-function ajaxPieceMove(placementId, toPositionId, toContainerId) {
+function ajaxPieceMove(placementId, toPositionId, toContainerId, newTitle) {
 	let gamePiece = document.querySelector("[data-placementId='" + placementId + "']");
+	gamePiece.setAttribute("title", newTitle);
 	let newLocation;
 	if (toContainerId === -1) {
 		newLocation = document.querySelector("[data-positionId='" + toPositionId + "']");
@@ -266,8 +255,11 @@ function ajaxIslandOwnerChange(islandNum, newTeamId) {
 	popIsland.classList.remove(oldTeamId);
 	popIsland.classList.add(newTeamId);
 }
+function ajaxUpdateTitle(placementId, newTitle) {
+	let gamePiece = document.querySelector("[data-placementId='" + placementId + "']");
+	gamePiece.setAttribute("title", newTitle);
+}
 
-// Functions for user interaction and piece dragging ----------------------------------------------------------------
 function unpopIslands() {
 	if (openPopupIslandNum !== 0) {
 		popIslands[openPopupIslandNum-1].style.display = "none";
@@ -283,6 +275,25 @@ function closeContainer() {
 		openContainerPiece = null;
 	}
 }
+function clearHighlighted() {
+	let highlighted_things = document.getElementsByClassName("highlighted");
+	while (highlighted_things.length) {
+		highlighted_things[0].classList.remove("highlighted");
+	}
+}
+function clearSelectedPosition() {
+	let highlighted_things = document.getElementsByClassName("selectedPos");
+	while (highlighted_things.length) {
+		highlighted_things[0].classList.remove("selectedPos");
+	}
+}
+function clearSelectedPieces() {
+	let highlighted_things = document.getElementsByClassName("selected");
+	while (highlighted_things.length) {
+		highlighted_things[0].classList.remove("selected");
+	}
+}
+
 function containerDragenter(event, callingElement) {
 	event.preventDefault();
 	clearTimeout(pieceDragTimer);
@@ -319,27 +330,9 @@ function popupDragover(event, callingElement) {
 function popupDragenter(event, callingElement) {
 	event.preventDefault();
 	clearTimeout(islandTimer);
-	// callingElement.classList.add("mouseOver");
 	event.stopPropagation();
 }
-function pieceDragenter(event, callingElement) {
-	event.preventDefault();
-	clearTimeout(pieceDragTimer);
-	let positionId = parseInt(callingElement.parentNode.getAttribute("data-positionId"));
-	let unitName = callingElement.classList[0];
-	if (unitName === "Transport" || unitName === "AircraftCarrier") {
-		if (positionId !== 118) {
-			clearTimeout(pieceDragTimer);
-			pieceDragTimer = setTimeout(function() { pieceClick(event, callingElement);}, 1000);
-		}
-	}
-	event.stopPropagation();
-}
-function pieceDragleave(event, callingElement){
-	event.preventDefault();
 
-	event.stopPropagation();
-}
 function positionDragover(event, callingElement){
 	event.preventDefault();
 	//TODO: client side checks to prevent dragging pieces
@@ -363,6 +356,25 @@ function positionDrop(event, callingElement){
 	};
 	phpUpdateBoard.open("GET", "backend/game/pieces/pieceMove.php?placementId=" + placementId + "&positionId=" + positionId + "&containerId=" + containerId, true);
 	phpUpdateBoard.send();
+	event.stopPropagation();
+}
+
+function pieceDragenter(event, callingElement) {
+	event.preventDefault();
+	clearTimeout(pieceDragTimer);
+	let positionId = parseInt(callingElement.parentNode.getAttribute("data-positionId"));
+	let unitName = callingElement.classList[0];
+	if (unitName === "Transport" || unitName === "AircraftCarrier") {
+		if (positionId !== 118) {
+			clearTimeout(pieceDragTimer);
+			pieceDragTimer = setTimeout(function() { pieceClick(event, callingElement);}, 1000);
+		}
+	}
+	event.stopPropagation();
+}
+function pieceDragleave(event, callingElement){
+	event.preventDefault();
+
 	event.stopPropagation();
 }
 function pieceTrash(event, callingElement) {
@@ -391,10 +403,10 @@ function piecePurchase(unitId){
 	event.stopPropagation();
 }
 function pieceDragstart(event, callingElement){
-	//only need the placementId to know what is being dragged, server side will handle everything else
 	event.dataTransfer.setData("placementId", callingElement.getAttribute("data-placementId"));
 	event.stopPropagation();
 }
+
 function showDice(diceNumber){
 	dice[0].style.display = "none";
 	dice[1].style.display = "none";
@@ -407,7 +419,6 @@ function showDice(diceNumber){
 
 function gridIslandClick(event, callingElement){
 	event.preventDefault();
-
 	if (hybridBankState) {
 		if (callingElement.classList[2] !== myTeam) {
 			callingElement.classList.add("selectedPos");
@@ -467,28 +478,21 @@ function gridIslandClick(event, callingElement){
 		gridIslands[islandNum-1].style.zIndex = 20;  //default for a gridblock is 10
 		openPopupIslandNum = islandNum;
 	}
-
 	event.stopPropagation();
 }
 function waterClick(event, callingElement){
 	event.preventDefault();
-
 	if (selectPosState) {
 		clearSelectedPosition();
 		callingElement.classList.add("selectedPos");
 	}
-
 	clearHighlighted();
 	unpopIslands();
 	closeContainer();
-
-
-
 	event.stopPropagation();
 }
 function pieceClick(event, callingElement) {
 	event.preventDefault();
-
 	if (hybridDeletePieceState) {
 		callingElement.classList.add("selected");
 		hybridTimer = setTimeout(function() {
@@ -513,7 +517,6 @@ function pieceClick(event, callingElement) {
 			}
 		}, 50);
 	} else {
-
 		if (selectPosState) {
 			clearSelectedPosition();
 			callingElement.parentNode.classList.add("selectedPos");
@@ -530,12 +533,8 @@ function pieceClick(event, callingElement) {
 			} else {
 				unpopIslands();
 				closeContainer();
-
 				let unitName = callingElement.classList[0];
 				let positionId = parseInt(callingElement.parentNode.getAttribute("data-positionId"));
-
-
-
 				if (unitName === "Transport" || unitName === "AircraftCarrier") {
 					if (positionId !== 118) {
 						openContainerPiece = callingElement;
@@ -547,9 +546,7 @@ function pieceClick(event, callingElement) {
 			}
 		}
 	}
-
 	clearHighlighted();
-
 	event.stopPropagation();
 }
 function landClick(event, callingElement) {
@@ -589,12 +586,9 @@ function landClick(event, callingElement) {
 			callingElement.classList.add("selectedPos");
 		}
 	}
-
 	clearHighlighted();
-
 	event.stopPropagation();
 }
-
 function doubleClick(event, callingElement) {
 	event.preventDefault();
 	clearHighlighted();
@@ -612,14 +606,7 @@ function doubleClick(event, callingElement) {
 	phpAvailableMoves.send();
 	event.stopPropagation();
 }
-function clearHighlighted() {
-	let highlighted_things = document.getElementsByClassName("highlighted");
-	while (highlighted_things.length) {
-		highlighted_things[0].classList.remove("highlighted");
-	}
-}
 
-//button functions---------------------------------------------------
 function controlButtonFunction() {
 	event.preventDefault();
 	unpopIslands();
@@ -668,6 +655,7 @@ function undoButtonFunction(){
 	phpUpdateBoard.send();
 	event.stopPropagation();
 }
+
 function hybridPopupToggle() {
 	if(popup.style.display === "block"){
 		popup.style.display = "none";
@@ -798,12 +786,12 @@ function hybridNuke() {
 		phpUpdateBoard.send();
 	}
 }
+
 function logout(){
 	event.preventDefault();
 	window.location.replace("backend/game/logout.php");
 	event.stopPropagation();
 }
-//----------------------------------------------------------------
 
 function battleSelectPosStart() {
 	if (confirm("Are you sure you want to start a battle")) {
@@ -832,18 +820,6 @@ function battleSelectPiecesStart() {
 		}
 	} else {
 		user_feedback.innerHTML = "Did not select a position.";
-	}
-}
-function clearSelectedPosition() {
-	let highlighted_things = document.getElementsByClassName("selectedPos");
-	while (highlighted_things.length) {
-		highlighted_things[0].classList.remove("selectedPos");
-	}
-}
-function clearSelectedPieces() {
-	let highlighted_things = document.getElementsByClassName("selected");
-	while (highlighted_things.length) {
-		highlighted_things[0].classList.remove("selected");
 	}
 }
 function battleStart() {
@@ -907,4 +883,3 @@ function battleActionPopupButtonClick() {
 	phpUpdateBoard.open("GET", "backend/game/battles/battleActionPopupButton.php", true);
 	phpUpdateBoard.send();
 }
-

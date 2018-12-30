@@ -26,7 +26,6 @@ if ($gameBattleSubSection == "choosing_pieces") {
     exit;
 }
 
-
 if ($gameBattleSubSection == "defense_bonus") {
     if ($myTeam == $gameCurrentTeam) {
         echo "Not allowed to defense bonus.";
@@ -45,8 +44,6 @@ if ($gameBattleSubSection == "defense_bonus") {
     }
 
     $lastRoll = rand(1, 6);
-//    $lastRoll = 1;
-//    $lastRoll = 6;
 
     $r = $results->fetch_assoc();
     $attackId = $r['placementId'];  //4
@@ -89,6 +86,7 @@ if ($gameBattleSubSection == "defense_bonus") {
     $query->execute();
 
     echo "Attacked!";
+    exit;
 } else {
     if (($gameBattleSection == "attack" && $myTeam != $gameCurrentTeam) || ($gameBattleSection == "counter" && $myTeam == $gameCurrentTeam)) {
         echo "Not your turn to go back to choosing.";

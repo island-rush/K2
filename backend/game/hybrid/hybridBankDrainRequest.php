@@ -31,4 +31,3 @@ if ($points < 4) {
 
 echo "Select Island to Drain.";
 exit;
-

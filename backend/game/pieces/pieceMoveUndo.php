@@ -52,10 +52,26 @@ if ($num_results > 0) {
     $query->bind_param("i", $movementId);
     $query->execute();
 
-    $updateType = "pieceMove";
-    $query = 'INSERT INTO updates (updateGameId, updateType, updatePlacementId, updateNewPositionId, updateNewContainerId) VALUES (?, ?, ?, ?, ?)';
+    $query = 'SELECT placementUnitId, placementCurrentMoves, placementBattleUsed FROM placements WHERE placementId = ?';
     $query = $db->prepare($query);
-    $query->bind_param("isiii", $gameId, $updateType, $movementPlacementId, $movementFromPosition, $movementFromContainer);
+    $query->bind_param("i", $movementPlacementId);
+    $query->execute();
+    $results = $query->get_result();
+    $r = $results->fetch_assoc();
+    $placementUnitId = $r['placementUnitId'];
+    $placementCurrentMoves = $r['placementCurrentMoves'];
+    $placementBattleUsed = $r['placementBattleUsed'];
+    $unitNames = ['Transport', 'Submarine', 'Destroyer', 'AircraftCarrier', 'ArmyCompany', 'ArtilleryBattery', 'TankPlatoon', 'MarinePlatoon', 'MarineConvoy', 'AttackHelo', 'SAM', 'FighterSquadron', 'BomberSquadron', 'StealthBomberSquadron', 'Tanker', 'LandBasedSeaMissile'];
+
+    $battleUsedText = "";
+    if ($placementBattleUsed == 1) {
+        $battleUsedText = "\nUsed in Attack";
+    }
+    $newTitle = $unitNames[$placementUnitId]."\nMoves: ".$placementCurrentMoves.$battleUsedText;
+    $updateType = "pieceMove";
+    $query = 'INSERT INTO updates (updateGameId, updateType, updatePlacementId, updateNewPositionId, updateNewContainerId, updateHTML) VALUES (?, ?, ?, ?, ?, ?)';
+    $query = $db->prepare($query);
+    $query->bind_param("isiiis", $gameId, $updateType, $movementPlacementId, $movementFromPosition, $movementFromContainer, $newTitle);
     $query->execute();
 
     echo "Movement Undone.";
@@ -64,3 +80,4 @@ if ($num_results > 0) {
     echo "No more undo's can be made.";
     exit;
 }
+

@@ -2,6 +2,11 @@
 session_start();
 include("backend/db.php");
 
+if (!isset($_SESSION['gameId']) && !isset($_SESSION['myTeam'])) {
+    header("location:home.php?err=5");
+    exit;
+}
+
 $gameId = $_SESSION['gameId'];
 $myTeam = $_SESSION['myTeam'];
 
@@ -13,29 +18,26 @@ $preparedQuery->bind_param("i", $gameId);
 $preparedQuery->execute();
 $results = $preparedQuery->get_result();
 $r = $results->fetch_assoc();
-$gameIsland1 = $r['gameIsland1'];
-$gameIsland2 = $r['gameIsland2'];
-$gameIsland3 = $r['gameIsland3'];
-$gameIsland4 = $r['gameIsland4'];
-$gameIsland5 = $r['gameIsland5'];
-$gameIsland6 = $r['gameIsland6'];
-$gameIsland7 = $r['gameIsland7'];
-$gameIsland8 = $r['gameIsland8'];
-$gameIsland9 = $r['gameIsland9'];
-$gameIsland10 = $r['gameIsland10'];
-$gameIsland11 = $r['gameIsland11'];
-$gameIsland12 = $r['gameIsland12'];
-$gameIsland13 = $r['gameIsland13'];
-$gameIsland14 = $r['gameIsland14'];
+$gameIsland1 = htmlentities($r['gameIsland1']);
+$gameIsland2 = htmlentities($r['gameIsland2']);
+$gameIsland3 = htmlentities($r['gameIsland3']);
+$gameIsland4 = htmlentities($r['gameIsland4']);
+$gameIsland5 = htmlentities($r['gameIsland5']);
+$gameIsland6 = htmlentities($r['gameIsland6']);
+$gameIsland7 = htmlentities($r['gameIsland7']);
+$gameIsland8 = htmlentities($r['gameIsland8']);
+$gameIsland9 = htmlentities($r['gameIsland9']);
+$gameIsland10 = htmlentities($r['gameIsland10']);
+$gameIsland11 = htmlentities($r['gameIsland11']);
+$gameIsland12 = htmlentities($r['gameIsland12']);
+$gameIsland13 = htmlentities($r['gameIsland13']);
+$gameIsland14 = htmlentities($r['gameIsland14']);
 
-//TODO: combine if no differences (make water click to close stuff function call elsewhere have its own thing)?
 $waterFunctions = 'onclick="waterClick(event, this);" ondblclick="doubleClick(event, this);" ondragover="positionDragover(event, this);" ondrop="positionDrop(event, this);"';
 $landFunctions = 'onclick="landClick(event, this);" ondblclick="doubleClick(event, this);" ondragover="positionDragover(event, this);" ondrop="positionDrop(event, this);"';
-
 $gridIslandFunctions = 'onclick="gridIslandClick(event, this);" ondragenter="islandDragenter(event, this);" ondragleave="islandDragleave(event, this);"   ';
 $popIslandFunctions = ' ondragenter="popupDragenter(event, this);" ondragleave="popupDragleave(event, this);" ondragover="popupDragover(event, this);"';
 $trashBoxFunctions = 'ondragover="positionDragover(event, this);" ondrop="pieceTrash(event, this);"';
-
 $landPositionClass = 'class="gridblockTiny"';
 $waterClass = 'class="gridblock water"';
 ?>
@@ -59,7 +61,7 @@ $waterClass = 'class="gridblock water"';
                 echo 0;
             } else {
                 $r8 = $results8->fetch_assoc();
-                echo $r8['updateId'];
+                echo htmlentities($r8['updateId']);
             }?>;
     </script>
 </head>
@@ -67,7 +69,7 @@ $waterClass = 'class="gridblock water"';
 <body>
 <div id="whole_game">
     <div id="side_panel">
-        <div id="titlebar">Logged into: <?php echo $_SESSION['gameSection']." - ".$_SESSION['gameInstructor']." - ".$_SESSION['myTeam']; ?><br>Reinforcement Shop</div>
+        <div id="titlebar">Logged into: <?php echo htmlentities($_SESSION['gameSection'])." - ".htmlentities($_SESSION['gameInstructor'])." - ".htmlentities($_SESSION['myTeam']); ?><br>Reinforcement Shop</div>
         <div id="purchase_buttons_container">
             <div class="purchase_square Transport" title="Transport&#013;Cost: 8&#013;Moves: 2" id="Transport" data-unitId="0" onclick="piecePurchase(0);"></div>
             <div class="purchase_square Submarine" title="Submarine&#013;Cost: 8&#013;Moves: 2" id="Submarine" data-unitId="1" onclick="piecePurchase(1);"></div>
@@ -124,7 +126,7 @@ $waterClass = 'class="gridblock water"';
                 <div id="user_feedback">User Feedback</div>
             </div>
             <div id="phase_button_container">
-                <button id="phase_button" class="<?php echo 'phase_'.$_SESSION['myTeam']; ?>" disabled onclick="nextPhaseButtonFunction();">Next Phase</button>
+                <button id="phase_button" class="<?php echo 'phase_'.htmlentities($_SESSION['myTeam']); ?>" disabled onclick="nextPhaseButtonFunction();">Next Phase</button>
             </div>
         </div>
     </div>

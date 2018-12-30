@@ -5,7 +5,7 @@ include("../../db.php");
 $gameId = $_SESSION['gameId'];
 $myTeam = $_SESSION['myTeam'];
 
-$positionId = (int) htmlentities($_REQUEST['positionId']) + 1000;
+$positionId = (int) ($_REQUEST['positionId'] + 1000);
 
 $query = 'SELECT gamePhase, gameCurrentTeam, game'.$myTeam.'Hpoints FROM GAMES WHERE gameId = ?';
 $preparedQuery = $db->prepare($query);
@@ -30,6 +30,7 @@ if ($points < 3) {
     echo "Not enough hybrid points.";
     exit;
 }
+
 $listairfields = [56, 57, 78, 83, 89, 113, 116, 66, 68];
 if (!in_array($positionId, $listairfields)) {
     echo "Not a valid Airfield position.";

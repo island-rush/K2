@@ -1,5 +1,4 @@
 <?php
-//Session Stuff
 session_abort();
 ?>
 
@@ -8,7 +7,10 @@ session_abort();
 <head>
     <meta charset="UTF-8">
     <title>Island Rush</title>
-    <link rel="stylesheet" type="text/css" href="frontend/css/home.css">
+    <link rel="stylesheet" type="text/css" href="frontend/css/main.css">
+    <script>
+		console.log("Home Page Javascript");
+    </script>
 </head>
 
 <body>
@@ -16,9 +18,8 @@ session_abort();
 
 <nav>
     <a class="active" href="home.php">Home</a>
-    <a href="rulebook.php">Rule Book</a>
+    <a href="rulebook.html">Rule Book</a>
 </nav>
-
 
 <table border="0" cellpadding="30" cellspacing="10">
     <tr>
@@ -84,11 +85,5 @@ session_abort();
     </tr>
 </table>
 
-
-
-
-
-<script src="frontend/js/home.js"></script>
 </body>
-
 </html>

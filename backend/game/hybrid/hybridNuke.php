@@ -5,7 +5,7 @@ include("../../db.php");
 $gameId = $_SESSION['gameId'];
 $myTeam = $_SESSION['myTeam'];
 
-$islandNum = (int) htmlentities($_REQUEST['islandNum']);
+$islandNum = (int) $_REQUEST['islandNum'];
 
 $query = 'SELECT gamePhase, gameCurrentTeam, game'.$myTeam.'Hpoints FROM GAMES WHERE gameId = ?';
 $preparedQuery = $db->prepare($query);
@@ -115,3 +115,4 @@ $query->execute();
 
 echo "Nuked the Island.";
 exit;
+

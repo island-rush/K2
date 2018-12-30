@@ -1,76 +1,56 @@
 -- Database Creation for K2.5
 
-
--- -----------------------------------------------------------------------------
 DROP DATABASE IF EXISTS islandRushDB2;
 CREATE DATABASE islandRushDB2;
 USE islandRushDB2;
-
 SET SQL_SAFE_UPDATES = 0;
--- -----------------------------------------------------------------------------
 
-
-
--- Table of Games
 CREATE TABLE IF NOT EXISTS `games`(
-  `gameId` int(5) NOT NULL AUTO_INCREMENT,
-  
-  `gameSection` varchar(10) NOT NULL,  -- 'M1A', 'T7C'
-  `gameInstructor` varchar(50) NOT NULL,  -- "Lastname"
-  `gameAdminPassword` varchar(50) NOT NULL DEFAULT 'c4a276e907f10b988d593fcd573a3cba',  -- "password"
-  
-  `gameActive` int(1) NOT NULL DEFAULT 0, -- 1 or 0
-  
-  `gameRedJoined` int(1) NOT NULL DEFAULT 0, -- 0 or 1 (1 = joined)
+  `gameId` int(3) NOT NULL AUTO_INCREMENT,
+  `gameSection` varchar(5) NOT NULL,
+  `gameInstructor` varchar(32) NOT NULL,
+  `gameAdminPassword` varchar(32) NOT NULL DEFAULT 'c4a276e907f10b988d593fcd573a3cba',
+  `gameActive` int(1) NOT NULL DEFAULT 0,
+  `gameRedJoined` int(1) NOT NULL DEFAULT 0,
   `gameBlueJoined` int(1) NOT NULL DEFAULT 0,
-  
-  `gameCurrentTeam`  varchar(5) NOT NULL DEFAULT 'Blue', -- 'Red' or 'Blue'
+  `gameCurrentTeam`  varchar(4) NOT NULL DEFAULT 'Blue',
   `gameTurn` int(4) NOT NULL DEFAULT 0, 
-  `gamePhase`  int(1) NOT NULL DEFAULT 0, --  0 = news, 1 = reinforcements...
-  
-  `gameRedRpoints` int(5) NOT NULL DEFAULT 10,
-  `gameBlueRpoints` int(5) NOT NULL DEFAULT 60,
-  `gameRedHpoints` int(5) NOT NULL DEFAULT 0,
-  `gameBlueHpoints` int(5) NOT NULL DEFAULT 0,
-
-  `gameBattleSection` varchar(20) NOT NULL DEFAULT 'none',  -- "none" (no popup), "attack", "counter", "askRepeat"......"selectPos", "selectPieces"?
-  `gameBattleSubSection` varchar(20) NOT NULL DEFAULT 'choosing_pieces', -- "choosing_pieces", "attacked_popup", "defense_popup"
-  `gameBattleTurn` int(3) NOT NULL DEFAULT 0,  -- put in to kick out aircraft after 2 turns
-  `gameBattleLastRoll` int(1) NOT NULL DEFAULT 1, -- 1 for default (or no roll to display anymore/reset), 1-6 for roll
-  `gameBattleLastMessage` varchar(50) DEFAULT 'DEFAULT LAST MESSAGE', -- used for explaining what happened "red killed blue's fighter with fighter" ex...
-  `gameBattlePosSelected` int(8) NOT NULL DEFAULT -1, -- positionId chosen by attacker (999999 default)
-  
-  `gameIsland1` varchar(10) NOT NULL DEFAULT 'Red',
-  `gameIsland2` varchar(10) NOT NULL DEFAULT 'Red',
-  `gameIsland3` varchar(10) NOT NULL DEFAULT 'Red',
-  `gameIsland4` varchar(10) NOT NULL DEFAULT 'Red',
-  `gameIsland5` varchar(10) NOT NULL DEFAULT 'Red',
-  `gameIsland6` varchar(10) NOT NULL DEFAULT 'Red',
-  `gameIsland7` varchar(10) NOT NULL DEFAULT 'Red',
-  `gameIsland8` varchar(10) NOT NULL DEFAULT 'Red',
-  `gameIsland9` varchar(10) NOT NULL DEFAULT 'Red',
-  `gameIsland10` varchar(10) NOT NULL DEFAULT 'Red',
-  `gameIsland11` varchar(10) NOT NULL DEFAULT 'Red',
-  `gameIsland12` varchar(10) NOT NULL DEFAULT 'Red',
-  `gameIsland13` varchar(10) NOT NULL DEFAULT 'Red',
-  `gameIsland14` varchar(10) NOT NULL DEFAULT 'Blue',
+  `gamePhase`  int(1) NOT NULL DEFAULT 0,
+  `gameRedRpoints` int(4) NOT NULL DEFAULT 10,
+  `gameBlueRpoints` int(4) NOT NULL DEFAULT 60,
+  `gameRedHpoints` int(3) NOT NULL DEFAULT 0,
+  `gameBlueHpoints` int(3) NOT NULL DEFAULT 0,
+  `gameBattleSection` varchar(10) NOT NULL DEFAULT 'none',
+  `gameBattleSubSection` varchar(20) NOT NULL DEFAULT 'choosing_pieces',
+  `gameBattleTurn` int(3) NOT NULL DEFAULT 0,
+  `gameBattleLastRoll` int(1) NOT NULL DEFAULT 1,
+  `gameBattleLastMessage` varchar(80) DEFAULT 'DEFAULT LAST MESSAGE',
+  `gameBattlePosSelected` int(4) NOT NULL DEFAULT -1,
+  `gameIsland1` varchar(5) NOT NULL DEFAULT 'Red',
+  `gameIsland2` varchar(5) NOT NULL DEFAULT 'Red',
+  `gameIsland3` varchar(5) NOT NULL DEFAULT 'Red',
+  `gameIsland4` varchar(5) NOT NULL DEFAULT 'Red',
+  `gameIsland5` varchar(5) NOT NULL DEFAULT 'Red',
+  `gameIsland6` varchar(5) NOT NULL DEFAULT 'Red',
+  `gameIsland7` varchar(5) NOT NULL DEFAULT 'Red',
+  `gameIsland8` varchar(5) NOT NULL DEFAULT 'Red',
+  `gameIsland9` varchar(5) NOT NULL DEFAULT 'Red',
+  `gameIsland10` varchar(5) NOT NULL DEFAULT 'Red',
+  `gameIsland11` varchar(5) NOT NULL DEFAULT 'Red',
+  `gameIsland12` varchar(5) NOT NULL DEFAULT 'Red',
+  `gameIsland13` varchar(5) NOT NULL DEFAULT 'Red',
+  `gameIsland14` varchar(5) NOT NULL DEFAULT 'Blue',
     PRIMARY KEY(`gameId`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
 
-
-
--- Insert games into the database
 INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword, gameActive) VALUES ('M1A1', 'Adolph', 	'5f4dcc3b5aa765d61d8327deb882cf99', 1);
 
-
-
--- Table of Units (static)
 CREATE TABLE IF NOT EXISTS `units`(
-	`unitId` int(5) NOT NULL ,
-    `unitName` varchar(30) NOT NULL,
-    `unitTerrain` varchar(20) NOT NULL,
-    `unitMoves` int(3) NOT NULL,
-    `unitCost` int(3) NOT NULL,
+	`unitId` int(2) NOT NULL ,
+    `unitName` varchar(25) NOT NULL,
+    `unitTerrain` varchar(8) NOT NULL,
+    `unitMoves` int(2) NOT NULL,
+    `unitCost` int(2) NOT NULL,
     PRIMARY KEY(`unitId`)
 );
 INSERT INTO `units` VALUES (0, 'Transport', 'water', 2, 8);
@@ -90,85 +70,62 @@ INSERT INTO `units` VALUES (13, 'StealthBomberSquadron', 'air', 5, 15);
 INSERT INTO `units` VALUES (14, 'Tanker', 'air', 5, 11);
 INSERT INTO `units` VALUES (15, 'LandBasedSeaMissile', 'missile', 0, 10);
 
-
-
-
--- Table of game pieces and where they are in each game
 CREATE TABLE IF NOT EXISTS `placements`(
-	`placementId` int(16) NOT NULL AUTO_INCREMENT,
-    `placementGameId` int(5) NOT NULL,
-    `placementUnitId` int(5) NOT NULL,
-    `placementTeamId` varchar(10) NOT NULL,  -- "Red" or "Blue"
-	`placementContainerId` int(16) NOT NULL DEFAULT -1,  -- placementId of the container its in (-1 used instead of null)
-    `placementCurrentMoves` int(3) NOT NULL,
-    `placementPositionId` int(4) NOT NULL,  -- references what spot its in on the board (map is available in resources / gameInfo)
-    `placementBattleUsed` int(1) NOT NULL DEFAULT 0, -- 0 for not yet used, 1 for used
+	`placementId` int(8) NOT NULL AUTO_INCREMENT,
+    `placementGameId` int(3) NOT NULL,
+    `placementUnitId` int(2) NOT NULL,
+    `placementTeamId` varchar(5) NOT NULL,
+	`placementContainerId` int(8) NOT NULL DEFAULT -1,
+    `placementCurrentMoves` int(2) NOT NULL,
+    `placementPositionId` int(3) NOT NULL,
+    `placementBattleUsed` int(1) NOT NULL DEFAULT 0,
     PRIMARY KEY(`placementId`),
     FOREIGN KEY (placementUnitId) REFERENCES units(unitId),
     FOREIGN KEY (placementGameId) REFERENCES games(gameId)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
 
-
-
--- Table of Movements
 CREATE TABLE IF NOT EXISTS `movements`(
 	`movementId` int(16) NOT NULL AUTO_INCREMENT,
     `movementGameId` int(5) NOT NULL,
-    `movementFromPosition` int(4) NOT NULL,
-    `movementFromContainer` int(16),
-    `movementNowPlacement` int(16) NOT NULL,  -- placement contains current position/container
+    `movementFromPosition` int(3) NOT NULL,
+    `movementFromContainer` int(8),
+    `movementNowPlacement` int(8) NOT NULL,
     PRIMARY KEY(`movementId`),
     FOREIGN KEY (movementGameId) REFERENCES games(gameId)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
 
-
-
-
--- Table of pieces involved in battles (duplicate pieces with battle only info)
 CREATE TABLE IF NOT EXISTS `battlePieces`(
-	`battlePieceId` int(5) NOT NULL,  -- piece must already exist, this refers to the placementId
-    `battleGameId` int(5) NOT NULL,
-	`battlePieceState` int(4) NOT NULL,  -- "unused_attacker" (0), "used_defender", "selected..." (in battle center), "destroyed?" (this maybe not used, piece will be deleted here and also from real board)
-    `battlePieceWasHit` int(1) NOT NULL DEFAULT 0, -- 0 for false, 1 for true
+	`battlePieceId` int(8) NOT NULL,
+    `battleGameId` int(3) NOT NULL,
+	`battlePieceState` int(1) NOT NULL,
+    `battlePieceWasHit` int(1) NOT NULL DEFAULT 0,
     PRIMARY KEY(`battlePieceId`)
 );
 
-
-
-
--- Table of board updates to send to other client (piece stuff mostly)
 CREATE TABLE IF NOT EXISTS `updates`(
 	`updateId` int(16) NOT NULL AUTO_INCREMENT,
 	`updateGameId` int(5) NOT NULL,
-	`updateType` varchar(30), -- phaseChange,
-	`updatePlacementId` int(4) DEFAULT 0,
-	`updateNewPositionId` int(4) DEFAULT 0,
-	`updateNewContainerId` int(4) DEFAULT 0,
+	`updateType` varchar(15), -- phaseChange,
+	`updatePlacementId` int(8) DEFAULT 0,
+	`updateNewPositionId` int(3) DEFAULT 0,
+	`updateNewContainerId` int(8) DEFAULT 0,
     `updateHTML` varchar(16000) DEFAULT 'defaultString',
 	PRIMARY KEY(`updateId`)
  ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
  
- 
- 
- 
- -- Table of news alerts (not yet fully implemented)
 CREATE TABLE IF NOT EXISTS `newsAlerts`(
   `newsId` int(8) NOT NULL AUTO_INCREMENT,
-  `newsGameId` int(5) NOT NULL,
-  `newsOrder` int(5) NOT NULL,  -- what index is this in the list of this game's news alerts
-  `newsTeam` varchar(10) NOT NULL DEFAULT 'nothing', -- 'Red', 'Blue', 'All'. Defaults to 'nothing' for effect=nothing
-  `newsPieces` varchar(350) NOT NULL DEFAULT 'nothing', -- "{transport: 0, submarine: 1, destroyer: 0, ...}"  a JSON string. -access with  newsPieces->>'$.tank'. Defaults to 'nothing' for effect=nothing
-  `newsEffect` varchar(20) NOT NULL, -- 'disable', 'rollDie', 'nothing',  ...
-  `newsRollValue` varchar(2) NOT NULL DEFAULT 0, -- {1,2,3,4,5,6} default 0 but it isnt looked at unless effect=rollDie
-  `newsZone` int(10) NOT NULL DEFAULT 666, -- {0-54, 101-114, 200} for sea zones 0-54, whole island 1-14, or all zones 200. if effect=nothing, default to 666.
-  `newsLength` int(10) NOT NULL DEFAULT 1, -- 1,2,3 (amount of turns the effect lasts)
-  `newsHumanitarian` int(2) NOT NULL DEFAULT 0, -- 1 or 0
-  `newsText` varchar(200) NOT NULL DEFAULT 'default string', -- the message that displays with the alert
-  `newsEffectText` varchar(200) NOT NULL DEFAULT 'default string', -- the message about the action of the effect
-  `newsActivated` int(2) NOT NULL DEFAULT 0, -- if the news alert has been 'pulled' (activated) yet. defaults to unused=0.
+  `newsGameId` int(3) NOT NULL,
+  `newsOrder` int(3) NOT NULL,
+  `newsTeam` varchar(10) NOT NULL DEFAULT 'nothing',
+  `newsPieces` varchar(350) NOT NULL DEFAULT 'nothing',
+  `newsEffect` varchar(20) NOT NULL,
+  `newsRollValue` varchar(2) NOT NULL DEFAULT 0,
+  `newsZone` int(5) NOT NULL DEFAULT 666,
+  `newsLength` int(10) NOT NULL DEFAULT 1,
+  `newsHumanitarian` int(1) NOT NULL DEFAULT 0,
+  `newsText` varchar(200) NOT NULL DEFAULT 'default string',
+  `newsEffectText` varchar(200) NOT NULL DEFAULT 'default string',
+  `newsActivated` int(1) NOT NULL DEFAULT 0,
   PRIMARY KEY(`newsId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
-
-
-
-

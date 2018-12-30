@@ -11,5 +11,3 @@ for ($j = 0; $j < sizeof($_SESSION['dist'][0]); $j++) {
 }
 
 echo json_encode($array1);
-
-

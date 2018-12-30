@@ -5,7 +5,7 @@ include("../../db.php");
 $gameId = $_SESSION['gameId'];
 $myTeam = $_SESSION['myTeam'];
 
-$battlePieceId = (int) htmlentities($_REQUEST['battlePieceId']);
+$battlePieceId = (int) $_REQUEST['battlePieceId'];
 
 $query = 'SELECT gamePhase, gameCurrentTeam, gameBattleSection, gameBattleSubSection FROM GAMES WHERE gameId = ?';
 $preparedQuery = $db->prepare($query);
@@ -83,7 +83,6 @@ if ($battlePieceState == 3 || $battlePieceState == 4) {
     $query->execute();
 }
 
-//need to check that both pieces are in the center to enable the button for the person? (or send a getBoard update to check)
 $query3 = "SELECT battlePieceId FROM battlePieces WHERE battleGameId = ? AND (battlePieceState = 3 OR battlePieceState = 4)";
 $preparedQuery3 = $db->prepare($query3);
 $preparedQuery3->bind_param("i", $gameId);

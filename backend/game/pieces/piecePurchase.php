@@ -5,7 +5,7 @@ include("../../db.php");
 $gameId = $_SESSION['gameId'];
 $myTeam = $_SESSION['myTeam'];
 
-$placementUnitId = (int) htmlentities($_REQUEST['unitId']);
+$placementUnitId = (int) $_REQUEST['unitId'];
 $costs = [8, 8, 10, 15, 4, 5, 6, 5, 8, 7, 8, 12, 12, 15, 11, 10];
 
 $query = 'SELECT gamePhase, gameCurrentTeam, game'.$myTeam.'Rpoints FROM GAMES WHERE gameId = ?';
@@ -56,7 +56,7 @@ $unitNames = ['Transport', 'Submarine', 'Destroyer', 'AircraftCarrier', 'ArmyCom
 $pieceFunctions = ' draggable="true" ondragstart="pieceDragstart(event, this);" ondragleave="pieceDragleave(event, this);" onclick="pieceClick(event, this);" ondragenter="pieceDragenter(event, this);" ';
 $containerFunctions = " ondragenter='containerDragenter(event, this);' ondragleave='containerDragleave(event, this);' ondragover='positionDragover(event, this);' ondrop='positionDrop(event, this);' ";
 
-$pieceHTML = "<div class='".$unitNames[$placementUnitId]." gamePiece ".$myTeam."' title='".$unitNames[$placementUnitId]."' data-placementId='".$placementId."' ".$pieceFunctions.">";
+$pieceHTML = "<div class='".$unitNames[$placementUnitId]." gamePiece ".$myTeam."' title='".$unitNames[$placementUnitId]."\nMoves: ".$unitsMoves[$placementUnitId]."' data-placementId='".$placementId."' ".$pieceFunctions.">";
 if ($placementUnitId == 0 || $placementUnitId == 3) {
     if ($placementUnitId == 0) {
         $classthing = "transportContainer";
@@ -75,5 +75,3 @@ $query->execute();
 
 echo "Piece Purchased";
 exit;
-
-

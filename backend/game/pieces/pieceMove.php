@@ -5,11 +5,10 @@ include("../../db.php");
 $gameId = $_SESSION['gameId'];
 $myTeam = $_SESSION['myTeam'];
 
-$placementId = (int) htmlentities($_REQUEST['placementId']);  //piece that was moved
-$newPositionId = (int) htmlentities($_REQUEST['positionId']);  //could be -1
-$newContainerId = (int) htmlentities($_REQUEST['containerId']);  //could be -1
+$placementId = (int) $_REQUEST['placementId'];  //piece that was moved
+$newPositionId = (int) $_REQUEST['positionId'];  //could be -1
+$newContainerId = (int) $_REQUEST['containerId'];  //could be -1
 
-//current game state
 $query = 'SELECT gamePhase, gameCurrentTeam, gameBattleSection, gameIsland1, gameIsland2, gameIsland3, gameIsland4, gameIsland5, gameIsland6, gameIsland7, gameIsland8, gameIsland9, gameIsland10, gameIsland11, gameIsland12, gameIsland13, gameIsland14 FROM GAMES WHERE gameId = ?';
 $preparedQuery = $db->prepare($query);
 $preparedQuery->bind_param("i", $gameId);
@@ -50,8 +49,7 @@ if ($gameBattleSection != "none") {
     exit;
 }
 
-//info about the piece moving
-$query = 'SELECT placementUnitId, placementTeamId, placementCurrentMoves, placementPositionId, placementContainerId, unitTerrain, unitName FROM (SELECT placementUnitId, placementTeamId, placementCurrentMoves, placementPositionId, placementContainerId FROM placements WHERE placementId = ?) a NATURAL JOIN units b WHERE placementUnitId = unitId';
+$query = 'SELECT placementUnitId, placementTeamId, placementCurrentMoves, placementPositionId, placementContainerId, placementBattleUsed, unitTerrain, unitName FROM (SELECT placementUnitId, placementTeamId, placementCurrentMoves, placementPositionId, placementContainerId, placementBattleUsed FROM placements WHERE placementId = ?) a NATURAL JOIN units b WHERE placementUnitId = unitId';
 $preparedQuery = $db->prepare($query);
 $preparedQuery->bind_param("i", $placementId);
 $preparedQuery->execute();
@@ -63,6 +61,7 @@ $placementTeamId = $r['placementTeamId'];
 $placementCurrentMoves = $r['placementCurrentMoves'];
 $oldPositionId = $r['placementPositionId'];  //used for distance check
 $oldContainerId = $r['placementContainerId'];
+$placementBattleUsed = $r['placementBattleUsed'];
 $placementUnitTerrain = $r['unitTerrain'];
 $placementUnitName = $r['unitName'];
 
@@ -218,10 +217,9 @@ if ($placementUnitId != 15) {
     }
 }
 
-$one = 1;
-$query = 'SELECT newsTeam, newsEffect, newsPieces, newsZone FROM newsAlerts WHERE (newsGameId = ?) AND (newsActivated = ?) AND (newsLength >= ?)';
+$query = 'SELECT newsTeam, newsEffect, newsPieces, newsZone FROM newsAlerts WHERE (newsGameId = ?) AND (newsActivated = 1) AND (newsLength >= 1)';
 $query = $db->prepare($query);
-$query->bind_param("iii", $gameId, $one, $one);
+$query->bind_param("i", $gameId);
 $query->execute();
 $results = $query->get_result();
 $num_results = $results->num_rows;
@@ -313,7 +311,6 @@ if ($placementUnitId == 0 || $placementUnitId == 2 || $placementUnitId == 3) {  
                     $query = $db->prepare($query);
                     $query->bind_param("isi", $gameId, $updateType, $missilePlacementId);
                     $query->execute();
-
                     break;
                 }
             }
@@ -365,10 +362,15 @@ if ($killed == 1) {
     $query->bind_param("iiii", $gameId, $oldPositionId, $oldContainerId, $placementId);
     $query->execute();
 
+    $battleUsedText = "";
+    if ($placementBattleUsed == 1) {
+        $battleUsedText = "\nUsed in Attack";
+    }
+    $newTitle = $placementUnitName."\nMoves: ".($placementCurrentMoves-1).$battleUsedText;
     $updateType = "pieceMove";
-    $query = 'INSERT INTO updates (updateGameId, updateType, updatePlacementId, updateNewPositionId, updateNewContainerId) VALUES (?, ?, ?, ?, ?)';
+    $query = 'INSERT INTO updates (updateGameId, updateType, updatePlacementId, updateNewPositionId, updateNewContainerId, updateHTML) VALUES (?, ?, ?, ?, ?, ?)';
     $query = $db->prepare($query);
-    $query->bind_param("isiii", $gameId, $updateType, $placementId, $newPositionId, $newContainerId);
+    $query->bind_param("isiiis", $gameId, $updateType, $placementId, $newPositionId, $newContainerId, $newTitle);
     $query->execute();
 
     $flagPositions = [75, 79, 85, 86, 90, 94, 97, 100, 103, 107, 111, 114, 55, 65];
@@ -399,5 +401,4 @@ if ($killed == 1) {
     echo "Moved the piece.";
     exit;
 }
-
 

@@ -5,7 +5,7 @@ include("../../db.php");
 $gameId = $_SESSION['gameId'];
 $myTeam = $_SESSION['myTeam'];
 
-$selectedPieces = json_decode(htmlentities($_REQUEST['selectedPieces']));
+$selectedPieces = json_decode($_REQUEST['selectedPieces']);
 
 $query = 'SELECT gamePhase, gameCurrentTeam, gameBattleSection, gameBattlePosSelected FROM GAMES WHERE gameId = ?';
 $preparedQuery = $db->prepare($query);
@@ -37,7 +37,7 @@ $piecesSelectedHTML = "";
 
 for ($i = 0; $i < sizeof($selectedPieces); $i++) {
     $placementId = (int) $selectedPieces[$i];
-    $query = 'SELECT placementUnitId, placementPositionId, placementBattleUsed FROM placements WHERE (placementId = ?)';
+    $query = 'SELECT placementUnitId, placementPositionId, placementBattleUsed, placementCurrentMoves FROM placements WHERE (placementId = ?)';
     $query = $db->prepare($query);
     $query->bind_param("i", $placementId);
     $query->execute();
@@ -47,6 +47,7 @@ for ($i = 0; $i < sizeof($selectedPieces); $i++) {
     $placementUnitId = $r['placementUnitId'];
     $placementPositionId = $r['placementPositionId'];
     $placementBattleUsed = $r['placementBattleUsed'];
+    $placementCurrentMoves = $r['placementCurrentMoves'];
 
     if ($placementBattleUsed != 0) {
         echo "Selected Piece that was used in battle.";
@@ -74,6 +75,14 @@ for ($i = 0; $i < sizeof($selectedPieces); $i++) {
     $query = 'UPDATE placements SET placementBattleUsed = 1 WHERE (placementId = ?)';
     $query = $db->prepare($query);
     $query->bind_param("i", $placementId);
+    $query->execute();
+
+    $unitNames = ['Transport', 'Submarine', 'Destroyer', 'AircraftCarrier', 'ArmyCompany', 'ArtilleryBattery', 'TankPlatoon', 'MarinePlatoon', 'MarineConvoy', 'AttackHelo', 'SAM', 'FighterSquadron', 'BomberSquadron', 'StealthBomberSquadron', 'Tanker', 'LandBasedSeaMissile'];
+    $newTitle = $unitNames[$placementUnitId]."\nMoves: ".$placementCurrentMoves."\nUsed in Attack";
+    $updateType = "updateTitle";
+    $query = 'INSERT INTO updates (updateGameId, updateType, updatePlacementId, updateHTML) VALUES (?, ?, ?, ?)';
+    $query = $db->prepare($query);
+    $query->bind_param("isis", $gameId, $updateType, $placementId, $newTitle);
     $query->execute();
 
     $piecesSelectedHTML = $piecesSelectedHTML."<div class='".$unitNames[$placementUnitId]." gamePiece ".$myTeam."' title='".$unitNames[$placementUnitId]."' data-battlePieceId='".$placementId."' onclick='battlePieceClick(event, this)'></div>";

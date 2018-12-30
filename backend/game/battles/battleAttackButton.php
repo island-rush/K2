@@ -164,8 +164,6 @@ if ($gameBattleSection == "attack" || $gameBattleSection == "counter") {
         }
     }
 
-
-
     $newSection = "attack";
     $query = 'UPDATE games SET gameBattleSection = ?, gameBattleTurn = '.$gameBattleTurn.' WHERE gameId = ?';
     $preparedQuery = $db->prepare($query);

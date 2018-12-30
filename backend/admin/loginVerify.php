@@ -2,13 +2,12 @@
 session_abort();
 session_start();
 
-
 if ( (isset($_POST['adminSection'])) && (isset($_POST['adminInstructor'])) && (isset($_POST['adminPassword'])) ){
     include("../db.php");
 
-    $section = htmlentities($_POST['adminSection']);
-    $instructor = htmlentities($_POST['adminInstructor']);
-    $password = md5(htmlentities($_POST['adminPassword']));
+    $section = $_POST['adminSection'];
+    $instructor = $_POST['adminInstructor'];
+    $password = md5($_POST['adminPassword']);
 
     $query = "SELECT gameId FROM GAMES WHERE gameSection = ? AND gameInstructor = ? AND gameAdminPassword = ?";
     $preparedQuery = $db->prepare($query);

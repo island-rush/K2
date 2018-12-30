@@ -1,14 +1,13 @@
 <?php
 set_time_limit(0);
 
-$gameId = (int) htmlentities($_REQUEST['gameId']);
-$lastUpdateId = (int) htmlentities($_REQUEST['lastUpdateId']);
+$gameId = (int) $_REQUEST['gameId'];
+$lastUpdateId = (int) $_REQUEST['lastUpdateId'];
 
 include("../db.php");
 
 $loopCounter = 0;
 while(true) {
-    $valuecheck = 0;
     $query = 'SELECT * FROM updates WHERE (updateGameId = ?) AND (updateId > ?) ORDER BY updateId ASC';
     $query = $db->prepare($query);
     $query->bind_param("ii", $gameId, $lastUpdateId);

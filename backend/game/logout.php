@@ -10,21 +10,13 @@ if ($myTeam == "Spec") {
     exit;
 }
 
-$notJoined = 0;
-
-if ($myTeam == "Red") {
-    $query = 'UPDATE games SET gameRedJoined = ? WHERE gameId = ?';
-} else {
-    $query = 'UPDATE games SET gameBlueJoined = ? WHERE gameId = ?';
-}
-
+$query = 'UPDATE games SET game'.$myTeam.'Joined = 0 WHERE gameId = ?';
 $query = $db->prepare($query);
-$query->bind_param("ii", $notJoined, $gameId);
+$query->bind_param("i", $gameId);
 $query->execute();
 
 $db->close();
 
 session_unset();  //not sure capabilities of this yet (or how to fully delete the session stuff)
-
 header("location:../../home.php");
 exit;

@@ -23,11 +23,9 @@ $gameBattleLastRoll = $r['gameBattleLastRoll'];
 $gameBattlePosSelected = $r['gameBattlePosSelected'];
 $gameBattleLastMessage = $r['gameBattleLastMessage'];
 
-$activated = 1;
-$zero = 0;
-$query2 = "SELECT newsText, newsEffectText FROM newsAlerts WHERE newsGameId = ? AND newsActivated = ? AND newsLength != ? ORDER BY newsOrder DESC";
+$query2 = "SELECT newsText, newsEffectText FROM newsAlerts WHERE newsGameId = ? AND newsActivated = 1 AND newsLength != 0 ORDER BY newsOrder DESC";
 $preparedQuery2 = $db->prepare($query2);
-$preparedQuery2->bind_param("iii", $gameId, $activated, $zero);
+$preparedQuery2->bind_param("i", $gameId);
 $preparedQuery2->execute();
 $results2 = $preparedQuery2->get_result();
 $r2 = $results2->fetch_assoc();
@@ -35,11 +33,9 @@ $r2 = $results2->fetch_assoc();
 $newsText = $r2['newsText'];
 $newsEffectText = $r2['newsEffectText'];
 
-$location3 = 3;
-$location4 = 4;
-$query3 = "SELECT battlePieceId FROM battlePieces WHERE battleGameId = ? AND (battlePieceState = ? OR battlePieceState = ?)";
+$query3 = "SELECT battlePieceId FROM battlePieces WHERE battleGameId = ? AND (battlePieceState = 3 OR battlePieceState = 4)";
 $preparedQuery3 = $db->prepare($query3);
-$preparedQuery3->bind_param("iii", $gameId, $location3, $location4);
+$preparedQuery3->bind_param("i", $gameId);
 $preparedQuery3->execute();
 $results3 = $preparedQuery3->get_result();
 $numResults3 = $results3->num_rows;
@@ -218,5 +214,4 @@ $arr = array(
 );
 
 echo json_encode($arr);
-
 $db->close();

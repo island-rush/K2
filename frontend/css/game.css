@@ -8,7 +8,6 @@ html, body {
     width: 100vw;
     overflow-x: hidden;
 }
-
 #whole_game {
     width: 100%;
     height: 100%;
@@ -28,13 +27,6 @@ html, body {
     z-index: 75;
 }
 
-/*.sidepanel_Blue{*/
-/*background-color: #99ccff;*/
-/*}*/
-/*.sidepanel_Red{*/
-/*background-color: #ff8566;*/
-/*}*/
-
 #titlebar{
     line-height: 1em;
     position: absolute;
@@ -45,12 +37,9 @@ html, body {
 }
 #purchase_buttons_container{
     margin-top: 9%;
-    /*margin: 0;*/
     position: absolute;
     z-index: 50;
     width: 100%;
-    /*padding-bottom: 80%;*/
-    /*background-color: red;*/
 }
 .purchase_square{
     float: left;
@@ -70,7 +59,6 @@ html, body {
     height: 5%;
     margin-top: 85%;
     text-align: center;
-    /*background-color: green;*/
     border-top: 2px solid black;
 }
 #shopping_things{
@@ -103,7 +91,6 @@ html, body {
     z-index: 50;
     width: 100%;
     height: 31%;
-    /*background-color: red;*/
     text-align: center;
     border-top: 2px solid black;
 }
@@ -188,8 +175,6 @@ html, body {
     float: left;
 }
 
-/*sdsssflj*/
-
 /*--------------------------------------------------------------------------------------------------------------*/
 /*BOTTOM PANEL CSS */
 #bottom_panel{
@@ -221,7 +206,6 @@ html, body {
     float: left;
     width: 50%;
     height: 100%;
-    /*background-color: sandybrown;*/
 }
 #user_feedback{
     width: 100%;
@@ -232,7 +216,6 @@ html, body {
     text-weight: bold;
     text-size: 14px;
 }
-
 #phase_button_container{
     float: left;
     width: 25%;
@@ -241,21 +224,17 @@ html, body {
 #phase_button{
     width: 80%;
     height: 70%;
-    margin: 5.5% 10%; /*top&bottom right&left */  /*top right bottom left */
+    margin: 5.5% 10%;
     font-family: Impact;
     font-size: 30px;
-    /*background-color: rgba(200, 0, 0, 1.0);*/
     border-color: #c19c71;
 }
-
 .phase_Red{
     background-color: rgba(200, 0, 0, 1.0);
 }
-
 .phase_Blue{
     background-color: rgb(17, 22, 200);
 }
-
 
 /*--------------------------------------------------------------------------------------------------------------*/
 /* NEWS ALERT POPUP CSS */
@@ -292,7 +271,6 @@ html, body {
     font-size: large;
     height: 30%;
 }
-
 #newsBodySubText{
     margin-top: 5px;
     font-family: Helvetica-Black;
@@ -300,38 +278,31 @@ html, body {
     font-size: large;
     height: 70%;
 }
-
 #popupBodyHybrid {
     margin-top: 5px;
     font-family: Helvetica-Black;
     height: 80%;
 }
-#setPoints > h3 {margin:0;}
+#setPoints > h3 {
+    margin:0;
+}
 #setPoints > input[type=number]{
     width: 7%;
 }
-
 #popupBodyHybridMenu{
-    /*background-color:blue;*/
     width:100%;
     height:88%;
     display: none;
 }
-
 #hybridInstructions{
-    /*background-color: orange;*/
     text-align: center;
     width: 100%;
     height: 15%;
 }
 #hybridInstructions > p{
     margin: 2% 4%;
-    /*width: 100%;*/
-    /*height: 100%;*/
-
 }
 #hybridTable{
-    /*background-color: green;*/
     height: 65%;
     width: 80%;
     margin:auto;
@@ -341,62 +312,32 @@ html, body {
     width: 100%;
     margin: auto;
 }
-
-/*#popupBodyHybridMenu > p{*/
-/*text-align: center;*/
-/*margin: 4%;*/
-/*}*/
-/*#hybridTable > table {*/
-/*margin: 0 auto;*/
-/*height: 50%;*/
-/*background-color: green;*/
-/*}*/
 #hybridTable > th, td {
     border-bottom: 1px solid #909090;
 }
-
-
 .news{
     background-image: url("../images/mapImages/board/Newspaper.jpg");
 }
 
-
 /*----------------------------------------------------------------------------------------------*/
 /*GAMEBOARD CSS*/
 
-
-
-
 #game_board {
     height: 95%;
-    /*padding-bottom: 45%;*/
     width: 70%;
-    /*margin-left: 1%;*/
     margin-top: .75%;
     margin-right: 2%;
     float: right;
     background-size: 100% 100%;
     background-color: #232655;
 }
-
 #grid_marker_top {
     height: 4%;
     width: 100%;
-    /*margin-left: 6%;*/
     background-image: url("../images/mapImages/board/grid_marker_top.png");
     background-size: 100% 100%;
     display: block;
 }
-
-/*#grid_marker_right{*/
-/*height: 100%;*/
-/*width: 1.8%;*/
-/*background-color: mediumvioletred;*/
-/*display: block;*/
-/*!*float: right;*!*/
-/*}*/
-
-
 .gridblockLeftBig {
     position: relative;
     width: 20%;
@@ -419,7 +360,6 @@ html, body {
     background-position: center;
     background-repeat: no-repeat;
 }
-
 .gridblockEmptyLeft{
     position: relative;
     width: 3.6%;
@@ -453,7 +393,6 @@ html, body {
     margin-top: -75%;
     background-repeat: no-repeat;
     background-size: 98% 98%;
-    /*background-color: #a30004;*/
     background-position: center;
     display: none;
 }
@@ -483,21 +422,15 @@ html, body {
 .grid_special_island10{background-image: url("../images/mapImages/gridIslands/grid_special_island10.png");}
 .grid_special_island11{background-image: url("../images/mapImages/gridIslands/grid_special_island11.png");}
 .grid_special_island12{background-image: url("../images/mapImages/gridIslands/grid_special_island12.png");}
-
-
 .highlighted {
-    /*background-color: rgb(132, 255, 252);*/
     box-shadow: 0px 0px 0px 1px #a1ffff inset;
-
 }
-
 /*----------------------------------------------------------------------------------------------*/
 /*BattleZone CSS*/
 
 #battleZonePopup{
     width: 30%;
     padding-bottom: 37%;
-    /*height: 70%;*/
     position: absolute;
     display: none;
     background-image: url("../images/battleImages/battle_zone.png");
@@ -508,9 +441,7 @@ html, body {
     z-index: 500;
     margin-left: -27%;
     margin-top: 1%;
-    /*//thing to change!*/
 }
-
 #unused_defender{
     width: 28%;
     height: 34%;
@@ -518,7 +449,6 @@ html, body {
     margin-top: 71%;
     position: absolute;
 }
-
 #unused_attacker{
     width: 29%;
     height: 34%;
@@ -526,7 +456,6 @@ html, body {
     margin-top: 71%;
     position: absolute;
 }
-
 #used_defender{
     width: 28%;
     height: 30%;
@@ -534,7 +463,6 @@ html, body {
     margin-top: 32%;
     position: absolute;
 }
-
 #used_attacker{
     width: 29%;
     height: 30%;
@@ -542,7 +470,6 @@ html, body {
     margin-top: 32%;
     position: absolute;
 }
-
 #center_attacker{
     width: 16%;
     height: 27%;
@@ -550,7 +477,6 @@ html, body {
     margin-top: 51%;
     position: absolute;
 }
-
 #center_defender{
     width: 16%;
     height: 27%;
@@ -558,7 +484,6 @@ html, body {
     margin-top: 51%;
     position: absolute;
 }
-
 #battle_buttons{
     width: 33%;
     height: 20%;
@@ -566,7 +491,6 @@ html, body {
     margin-top: 93%;
     position: absolute;
 }
-
 #battle_outcome{
     width: 33%;
     height: 20%;
@@ -574,7 +498,6 @@ html, body {
     margin-top: 23%;
     position: absolute;
 }
-
 #attackButton{
     width: 100%;
     height: 30%;
@@ -613,7 +536,6 @@ html, body {
 #actionPopupButton{
     margin: auto;
 }
-
 #dice_image_container{
     width: 80%;
     height: 70%;
@@ -623,43 +545,33 @@ html, body {
 
 }
 .dice_image{
-    /*div sizing in here*/
     width: 100%;
     height: 100%;
     background-size: 100% 100%;
     background-repeat: no-repeat;
     margin: 10% auto;
-    /*display: none;*/
-    /*background-image: url("resources/diceImages/blank.gif");*/
 }
-
 #dice_image1{
-    /*z-index: 10;*/
     display: none;
     background-image: url("../images/battleImages/diceImages/die-1.png");
 }
 #dice_image2{
-    /*z-index: 10;*/
     display: none;
     background-image: url("../images/battleImages/diceImages/die-2.png");
 }
 #dice_image3{
-    /*z-index: 10;*/
     display: none;
     background-image: url("../images/battleImages/diceImages/die-3.png");
 }
 #dice_image4{
-    /*z-index: 10;*/
     display: none;
     background-image: url("../images/battleImages/diceImages/die-4.png");
 }
 #dice_image5{
-    /*z-index: 10;*/
     display: none;
     background-image: url("../images/battleImages/diceImages/die-5.png");
 }
 #dice_image6{
-    /*z-index: 10;*/
     display: none;
     background-image: url("../images/battleImages/diceImages/die-6.png");
 }
@@ -673,17 +585,12 @@ html, body {
     float: left;
     position: relative;
     z-index: 15;
-    /*background-color: white;*/
     background-repeat: no-repeat;
     background-size: 90% 90%;
-    /*border-color: white;*/
     box-shadow: 0px 0px 0px 1px white inset;
-    /*border-style: solid;*/
-    /*border-width: thin;*/
     box-sizing: border-box;
     background-position: center;
 }
-
 .Red{
     box-shadow: 0px 0px 0px 1px rgba(255, 0, 0, 0.55) inset;
 }
@@ -715,8 +622,6 @@ html, body {
     width: 15%;
     height: 33%;
 }
-
-
 .transportContainer{
     height: 200%;
     width: 200%;
@@ -735,22 +640,18 @@ html, body {
     display: none;
     z-index: 15;
 }
-
 .aircraftCarrierContainer > .gamePiece{
     height: 100%;
     width: 50%;
 }
-
 .transportContainer > .gamePiece{
     height: 50%;
     width: 50%;
 }
-
 .missileContainer > .gamePiece{
     height: 100%;
     width: 100%;
 }
-
 #unused_attacker > .gamePiece{
     width: 33%;
     height: 40px;
@@ -767,7 +668,6 @@ html, body {
     width: 33%;
     height: 40px;
 }
-
 #center_attacker > .gamePiece{
     width: 40px;
     height: 40px;
@@ -776,42 +676,27 @@ html, body {
     width: 40px;
     height: 40px;
 }
-
 .selected {
     background-color: white;
 }
 .selectedPos{
     box-shadow: 0px 0px 0px 1px #ffef0c inset;
-    /*background-color: #fffb00;*/
 }
-/*this hover not needed?*/
-/*.selectedPos:hover{*/
-/*box-shadow: 0px 0px 0px 1px #ffef0c inset;*/
-/*!*background-color: #fff400;*!*/
-/*}*/
 
 /*----------------------------------------------------------------------------------------------*/
 /*ISLAND POSITIONS CSS*/
 
 .gridblockTiny{
-    /*background-color: rgba(255, 15, 0, 0.31);*/
-
     background-color: rgba(255, 253, 250, 0.2);
     position: absolute;
 }
 .gridblockTiny:hover{
     background-color: rgba(255, 15, 0, 0.31);
 }
-
 .mouseOver{
     background-color: rgba(255, 252, 8, 0.31);
 }
-/*.gridblockTiny:{*/
-/*background-color: rgba(255, 15, 0, 0.31);*/
-/*}*/
-
 #pos13a{
-    /*background-color: rgba(255, 0, 154, 0.51);*/
     width: 25%;
     height: 25%;
     margin-left: 3%;
@@ -1417,7 +1302,6 @@ html, body {
     -webkit-transform: rotate(0deg); /* Safari */
     transform: rotate(0deg);
 }
-
-b{
+b {
     font-weight: bold;
 }
