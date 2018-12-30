@@ -24,6 +24,7 @@ let center_defender = document.getElementById("center_defender");
 let battleStates = [unused_attacker, unused_defender, center_attacker, center_defender, used_attacker, used_defender];
 let attackButton = document.getElementById("attackButton");
 let changeSectionButton = document.getElementById("changeSectionButton");
+let battle_outcome = document.getElementById("battle_outcome");
 let battleActionPopup = document.getElementById("battleActionPopup");
 let lastBattleMessage = document.getElementById("lastBattleMessage");
 let actionPopupButton = document.getElementById("actionPopupButton");
@@ -71,6 +72,9 @@ let openPopupIslandNum = 0;
 let pieceDragTimer;
 let hybridTimer;
 let islandTimer;
+let gameCurrentTeam;
+let gamePhase;
+let gameBattleSection;
 let hybridDeletePieceState = false;
 let hybridDisableAirfieldState = false;
 let hybridBankState = false;
@@ -81,7 +85,7 @@ let battleAdjacentPlacementIds = [];
 
 //-------------------------------------------------------------------------------------------------------------------
 
-function getBoard(){
+function getBoard(roll){
 	let phpPhaseChange = new XMLHttpRequest();
 	phpPhaseChange.onreadystatechange = function () {
 		if (this.readyState === 4 && this.status === 200) {
@@ -115,15 +119,23 @@ function getBoard(){
 			} else {
 				battleZonePopup.style.display = "none";
 			}
-			if (decoded.battle_action_popped) {
-				battleActionPopup.style.display = "block";
-			} else {
-				battleActionPopup.style.display = "none";
-			}
-			showDice(parseInt(decoded.gameBattleLastRoll));
+			lastBattleMessage.style.display = "none";
+			actionPopupButton.style.display = "none";
 			lastBattleMessage.innerHTML = decoded.gameBattleLastMessage;
 			actionPopupButton.disabled = decoded.actionPopupButtonDisabled;
 			actionPopupButton.innerHTML = decoded.actionPopupButtonText;
+			if (roll) {
+				rollDice(parseInt(decoded.gameBattleLastRoll));
+			} else {
+				lastBattleMessage.style.display = "block";
+				actionPopupButton.style.display = "block";
+				showDice(parseInt(decoded.gameBattleLastRoll));
+				if (decoded.battle_action_popped) {
+					battleActionPopup.style.display = "block";
+				} else {
+					battleActionPopup.style.display = "none";
+				}
+			}
 			attackButton.disabled = decoded.attack_button_disabled;
 			attackButton.innerHTML = decoded.attack_button_text;
 			changeSectionButton.disabled = decoded.change_section_button_disabled;
@@ -155,12 +167,16 @@ function getBoard(){
 			}
 			clearSelectedPieces();
 			battleAdjacentPlacementIds = decoded.battleAdjacentPlacementIds;
+			gameCurrentTeam = decoded.gameCurrentTeam;
+			gamePhase = parseInt(decoded.gamePhase);
+			gameBattleSection = decoded.gameBattleSection;
+			battle_outcome.innerHTML = decoded.battleOutcome;
 		}
 	};
 	phpPhaseChange.open("GET", "backend/game/getBoard.php", true);
 	phpPhaseChange.send();
 }
-getBoard();
+getBoard(false);
 
 function ajaxUpdate(){
 	let phpUpdateBoard = new XMLHttpRequest();
@@ -173,18 +189,20 @@ function ajaxUpdate(){
 				lastUpdateId = decoded.updateId;
 				switch (decoded.updateType) {
 					case "logout":
-						alert("Teacher has disabled the game...logging out.");  //TODO: don't log out spectators
-						logout();
+						logout(true);
 						break;
 					case "getBoard":
-						getBoard();
+						getBoard(false);
+						break;
+					case "rollBoard":
+						getBoard(true);
 						break;
 					case "islandOwnerChange":
 						ajaxIslandOwnerChange(parseInt(decoded.updatePlacementId), decoded.updateHTML);
 						break;
 					case "piecePurchase":
 						purchased_container.innerHTML += decoded.updateHTML;
-						getBoard();
+						getBoard(false);
 						break;
 					case "pieceMove":
 						ajaxPieceMove(parseInt(decoded.updatePlacementId), parseInt(decoded.updateNewPositionId), parseInt(decoded.updateNewContainerId), decoded.updateHTML);
@@ -194,17 +212,17 @@ function ajaxUpdate(){
 						break;
 					case "piecesSelected":
 						unused_attacker.innerHTML = decoded.updateHTML;
-						getBoard();
+						getBoard(false);
 						break;
 					case "posSelected":
 						unused_defender.innerHTML = decoded.updateHTML;
-						getBoard();
+						getBoard(false);
 						break;
 					case "battleMove":
-						ajaxBattlePieceMove(parseInt(decoded.updatePlacementId), parseInt(decoded.updateNewPositionId));
+						ajaxBattlePieceMove(parseInt(decoded.updatePlacementId), parseInt(decoded.updateNewPositionId), decoded.updateHTML);
 						break;
 					case "battleRemove":
-						ajaxBattlePieceRemove(parseInt(decoded.updatePlacementId));
+						ajaxBattlePieceRemove(parseInt(decoded.updatePlacementId), decoded.updateHTML);
 						break;
 					case "updateTitle":
 						ajaxUpdateTitle(parseInt(decoded.updatePlacementId), decoded.updateHTML);
@@ -233,15 +251,16 @@ function ajaxPieceMove(placementId, toPositionId, toContainerId, newTitle) {
 	newLocation.append(gamePiece);
 }
 function ajaxPieceRemove(placementId) {
-	//TODO: make all document selectors check for null returns before .removing (see updatePieceDelete() in K2)
 	document.querySelector("[data-placementId='" + placementId + "']").remove();
 }
-function ajaxBattlePieceMove(battlePieceId, battlePieceNewState) {
+function ajaxBattlePieceMove(battlePieceId, battlePieceNewState, battleOutcomeHTML) {
 	let battlePiece = document.querySelector("[data-battlePieceId='" + battlePieceId + "']");
 	battleStates[battlePieceNewState-1].append(battlePiece);
+	battle_outcome.innerHTML = battleOutcomeHTML;
 }
-function ajaxBattlePieceRemove(battlePieceId) {
+function ajaxBattlePieceRemove(battlePieceId, battleOutcomeHTML) {
 	document.querySelector("[data-battlePieceId='" + battlePieceId + "']").remove();
+	battle_outcome.innerHTML = battleOutcomeHTML;
 }
 function ajaxIslandOwnerChange(islandNum, newTeamId) {
 	let gridIsland = gridIslands[islandNum-1];
@@ -335,7 +354,6 @@ function popupDragenter(event, callingElement) {
 
 function positionDragover(event, callingElement){
 	event.preventDefault();
-	//TODO: client side checks to prevent dragging pieces
 	//Can't Drop into something draggable (other pieces) (containers are non-draggable)
 	if (callingElement.getAttribute("draggable") === "true") {
 		event.dataTransfer.dropEffect = "none";
@@ -403,7 +421,11 @@ function piecePurchase(unitId){
 	event.stopPropagation();
 }
 function pieceDragstart(event, callingElement){
-	event.dataTransfer.setData("placementId", callingElement.getAttribute("data-placementId"));
+	if (myTeam === gameCurrentTeam && gameBattleSection === "none" && (gamePhase === 1 || gamePhase === 2 || gamePhase === 3 || gamePhase === 4)) {
+		event.dataTransfer.setData("placementId", callingElement.getAttribute("data-placementId"));
+	} else {
+		event.preventDefault();
+	}
 	event.stopPropagation();
 }
 
@@ -415,6 +437,26 @@ function showDice(diceNumber){
 	dice[4].style.display = "none";
 	dice[5].style.display = "none";
 	dice[diceNumber-1].style.display = "block";
+}
+function rollDice(diceNumber){
+	actionPopupButton.style.display = "none";
+	lastBattleMessage.style.display = "none";
+	battleActionPopup.style.display = "block";
+	let timeBetween = 300;
+	let numRolls = 8;
+	let i;
+	let thingy;
+	for (i = 1; i < numRolls; i++) {
+		let randomRoll = Math.floor(Math.random() * 6) + 1;
+		thingy = setTimeout(function () {
+			showDice(randomRoll);
+		}, (i)*timeBetween);
+	}
+	thingy = setTimeout(function () {
+		showDice(diceNumber);
+		actionPopupButton.style.display = "block";
+		lastBattleMessage.style.display = "block";
+	}, (i)*timeBetween);
 }
 
 function gridIslandClick(event, callingElement){
@@ -787,9 +829,14 @@ function hybridNuke() {
 	}
 }
 
-function logout(){
+function logout(teacherForce){
 	event.preventDefault();
-	window.location.replace("backend/game/logout.php");
+	if (!teacherForce || (teacherForce && myTeam !== "Spec")) {
+		if (teacherForce) {
+			alert("Teacher has disabled the game...logging out.");
+		}
+		window.location.replace("backend/game/logout.php");
+	}
 	event.stopPropagation();
 }
 
@@ -846,7 +893,7 @@ function battlePieceClick(event, callingElement) {
 	phpUpdateBoard.onreadystatechange = function () {
 		if (this.readyState === 4 && this.status === 200) {
 			user_feedback.innerHTML = this.responseText;
-			attackButton.disabled = this.responseText !== "Click Attack to Attack!";
+			attackButton.disabled = this.responseText === "Battle Piece Clicked.";
 		}
 	};
 	phpUpdateBoard.open("GET", "backend/game/battles/battlePieceClick.php?battlePieceId=" + battlePieceId, true);

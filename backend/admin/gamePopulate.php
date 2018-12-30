@@ -2,6 +2,11 @@
 session_start();
 include("../db.php");
 
+if (!isset($_SESSION['secretAdminSessionVariable'])) {
+    header("location:home.php?err=4");
+    exit;
+}
+
 $gameId = $_SESSION['gameId'];
 $gameSection = $_SESSION['gameSection'];
 $gameInstructor = $_SESSION['gameInstructor'];

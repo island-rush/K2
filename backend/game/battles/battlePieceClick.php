@@ -53,10 +53,14 @@ if ($battlePieceState == 3 || $battlePieceState == 4) {
 
     $updateType = "battleMove";
     $newPositionId = $battlePieceState - 2;
-    $query = 'INSERT INTO updates (updateGameId, updateType, updatePlacementId, updateNewPositionId) VALUES (?, ?, ?, ?)';
+    $battle_outcome = "";
+    $query = 'INSERT INTO updates (updateGameId, updateType, updatePlacementId, updateNewPositionId, updateHTML) VALUES (?, ?, ?, ?, ?)';
     $query = $db->prepare($query);
-    $query->bind_param("isii", $gameId, $updateType, $battlePieceId, $newPositionId);
+    $query->bind_param("isiis", $gameId, $updateType, $battlePieceId, $newPositionId, $battle_outcome);
     $query->execute();
+
+    echo "Battle Piece Clicked.";
+    exit;
 } else {
     $stateToCheck = $battlePieceState + 2;
     $query = 'SELECT battlePieceState FROM battlePieces WHERE battlegameId = ? AND battlePieceState = ?';
@@ -70,29 +74,42 @@ if ($battlePieceState == 3 || $battlePieceState == 4) {
         exit;
     }
 
+    $battle_outcome = "";
+
     $query = 'UPDATE battlePieces SET battlePieceState = battlePieceState + 2 WHERE battlePieceId = ?';
     $preparedQuery = $db->prepare($query);
     $preparedQuery->bind_param("i", $battlePieceId);
     $preparedQuery->execute();
 
+    if ($gameBattleSection == "attack") {
+        $order = "ASC";  // 3 attacking 4
+    } else {
+        $order = "DESC"; // 4 attacking 3
+    }
+    $query = 'SELECT placementUnitId FROM battlePieces RIGHT JOIN placements ON battlePieceId WHERE battlePieceId = placementId AND battleGameId = ? AND (battlePieceState = 3 or battlePieceState = 4) ORDER BY battlePieceState '.$order;
+    $preparedQuery = $db->prepare($query);
+    $preparedQuery->bind_param("i", $gameId);
+    $preparedQuery->execute();
+    $results = $preparedQuery->get_result();
+    $numResults = $results->num_rows;
+    if ($numResults == 2) {
+        $r = $results->fetch_assoc();
+        $attackUnitId = $r['placementUnitId'];
+        $r = $results->fetch_assoc();
+        $defendUnitId = $r['placementUnitId'];
+
+        $valueNeeded = $_SESSION['attack'][$attackUnitId][$defendUnitId];
+        $battle_outcome = "You must roll a ".$valueNeeded." in order to kill.";
+
+        echo "Click Attack to Attack!";
+    } else {
+        echo "Battle Piece Clicked.";
+    }
+
     $updateType = "battleMove";
     $newPositionId = $battlePieceState + 2;
-    $query = 'INSERT INTO updates (updateGameId, updateType, updatePlacementId, updateNewPositionId) VALUES (?, ?, ?, ?)';
+    $query = 'INSERT INTO updates (updateGameId, updateType, updatePlacementId, updateNewPositionId, updateHTML) VALUES (?, ?, ?, ?, ?)';
     $query = $db->prepare($query);
-    $query->bind_param("isii", $gameId, $updateType, $battlePieceId, $newPositionId);
+    $query->bind_param("isiis", $gameId, $updateType, $battlePieceId, $newPositionId, $battle_outcome);
     $query->execute();
-}
-
-$query3 = "SELECT battlePieceId FROM battlePieces WHERE battleGameId = ? AND (battlePieceState = 3 OR battlePieceState = 4)";
-$preparedQuery3 = $db->prepare($query3);
-$preparedQuery3->bind_param("i", $gameId);
-$preparedQuery3->execute();
-$results3 = $preparedQuery3->get_result();
-$numResults3 = $results3->num_rows;
-if ($numResults3 == 2) {
-    echo "Click Attack to Attack!";
-    exit;
-} else {
-    echo "Battle Piece Clicked.";
-    exit;
 }

@@ -2,6 +2,11 @@
 session_start();
 include("../db.php");
 
+if (!isset($_SESSION['secretAdminSessionVariable'])) {
+    header("location:home.php?err=4");
+    exit;
+}
+
 $gameId = (int) $_SESSION['gameId'];
 
 $old1order = (int) $_POST['swap1order'];

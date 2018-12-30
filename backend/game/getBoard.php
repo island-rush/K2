@@ -33,7 +33,13 @@ $r2 = $results2->fetch_assoc();
 $newsText = $r2['newsText'];
 $newsEffectText = $r2['newsEffectText'];
 
-$query3 = "SELECT battlePieceId FROM battlePieces WHERE battleGameId = ? AND (battlePieceState = 3 OR battlePieceState = 4)";
+if ($gameBattleSection == "attack") {  //always going to be choosing pieces, otherwise wouldn't hit this button
+    $order = "ASC";  // 3 attacking 4
+} else {
+    $order = "DESC"; // 4 attacking 3
+}
+
+$query3 = 'SELECT placementUnitId FROM battlePieces RIGHT JOIN placements ON battlePieceId WHERE battlePieceId = placementId AND battleGameId = ? AND (battlePieceState = 3 or battlePieceState = 4) ORDER BY battlePieceState '.$order;
 $preparedQuery3 = $db->prepare($query3);
 $preparedQuery3->bind_param("i", $gameId);
 $preparedQuery3->execute();
@@ -103,9 +109,16 @@ if ($gameBattleSubSection == "choosing_pieces") {
 
 //attack button disabled (based on team and center pieces (client))
 //change section button disabled (based on team and section) (same as attack, does not depend on client pieces)
+$battleOutcome = "";
 if (($myTeam != "Spec") && ((($gameBattleSection == "attack" || $gameBattleSection == "askRepeat") && $myTeam == $gameCurrentTeam) || ($gameBattleSection == "counter" && $myTeam != $gameCurrentTeam))) {
     if ($numResults3 == 2) {  //both piece in the center
         $attack_button_disabled = false;
+        $r5 = $results3->fetch_assoc();
+        $attackUnitId = $r5['placementUnitId'];
+        $r5 = $results3->fetch_assoc();
+        $defendUnitId = $r5['placementUnitId'];
+        $valueNeeded = $_SESSION['attack'][$attackUnitId][$defendUnitId];
+        $battleOutcome = "You must roll a ".$valueNeeded." in order to kill.";
     } else {
         if ($gameBattleSection == "askRepeat") {
             $attack_button_disabled = false;
@@ -210,7 +223,9 @@ $arr = array(
     'change_section_button_text' => $change_section_button_text,
     'gameBattleSection' => $gameBattleSection,
     'gameBattlePosSelected' => $gameBattlePosSelected,
-    'battleAdjacentPlacementIds' => $battleAdjacentPlacementIds
+    'battleAdjacentPlacementIds' => $battleAdjacentPlacementIds,
+    'gameCurrentTeam' => $gameCurrentTeam,
+    'battleOutcome' => $battleOutcome
 );
 
 echo json_encode($arr);

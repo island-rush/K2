@@ -48,11 +48,12 @@ if ($gameBattleSection == "attack" || $gameBattleSection == "counter") {
         $preparedQuery->bind_param("i", $battlePieceId);
         $preparedQuery->execute();
 
+        $battle_outcome = "";
         $updateType = "battleMove";
         $newPositionId = $battlePieceState - 4;
-        $query = 'INSERT INTO updates (updateGameId, updateType, updatePlacementId, updateNewPositionId) VALUES (?, ?, ?, ?)';
+        $query = 'INSERT INTO updates (updateGameId, updateType, updatePlacementId, updateNewPositionId, updateHTML) VALUES (?, ?, ?, ?, ?)';
         $query = $db->prepare($query);
-        $query->bind_param("isii", $gameId, $updateType, $battlePieceId, $newPositionId);
+        $query->bind_param("isiis", $gameId, $updateType, $battlePieceId, $newPositionId, $battle_outcome);
         $query->execute();
     }
 
@@ -78,11 +79,12 @@ if ($gameBattleSection == "attack" || $gameBattleSection == "counter") {
         $preparedQuery->bind_param("i", $battlePieceId);
         $preparedQuery->execute();
 
+        $battle_outcome = "";
         $updateType = "battleMove";
         $newPositionId = $battlePieceState - 2;
-        $query = 'INSERT INTO updates (updateGameId, updateType, updatePlacementId, updateNewPositionId) VALUES (?, ?, ?, ?)';
+        $query = 'INSERT INTO updates (updateGameId, updateType, updatePlacementId, updateNewPositionId, updateHTML) VALUES (?, ?, ?, ?, ?)';
         $query = $db->prepare($query);
-        $query->bind_param("isii", $gameId, $updateType, $battlePieceId, $newPositionId);
+        $query->bind_param("isiis", $gameId, $updateType, $battlePieceId, $newPositionId, $battle_outcome);
         $query->execute();
     }
 

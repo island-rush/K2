@@ -111,7 +111,6 @@ if ($news_rows == 0) {
 }
 ?>
 
-<br>
 <hr>
 <button class="btn btn-danger" id="populateButton" onclick="populateGame();">RESET GAME (Refresh After)</button>
 <br>

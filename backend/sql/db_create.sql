@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS `games`(
   `gameBlueRpoints` int(4) NOT NULL DEFAULT 60,
   `gameRedHpoints` int(3) NOT NULL DEFAULT 0,
   `gameBlueHpoints` int(3) NOT NULL DEFAULT 0,
-  `gameBattleSection` varchar(10) NOT NULL DEFAULT 'none',
+  `gameBattleSection` varchar(14) NOT NULL DEFAULT 'none',
   `gameBattleSubSection` varchar(20) NOT NULL DEFAULT 'choosing_pieces',
   `gameBattleTurn` int(3) NOT NULL DEFAULT 0,
   `gameBattleLastRoll` int(1) NOT NULL DEFAULT 1,

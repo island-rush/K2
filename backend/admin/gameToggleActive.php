@@ -2,6 +2,11 @@
 session_start();
 include("../db.php");
 
+if (!isset($_SESSION['secretAdminSessionVariable'])) {
+    header("location:home.php?err=4");
+    exit;
+}
+
 $gameId = $_SESSION['gameId'];
 
 $query = "UPDATE GAMES SET gameActive = (gameActive + 1) % 2, gameRedJoined = 0, gameBlueJoined = 0  WHERE gameId = ?";

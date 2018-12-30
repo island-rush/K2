@@ -15,6 +15,7 @@ if ( (isset($_POST['gameSection'])) && (isset($_POST['gameInstructor'])) && (iss
 
     if ($numResults == 1){
         $r = $results->fetch_assoc();
+
         $_SESSION['myTeam'] = $team;
         $_SESSION['gameId'] = $r['gameId'];
         $_SESSION['gameSection'] = $section;
@@ -76,6 +77,7 @@ if ( (isset($_POST['gameSection'])) && (isset($_POST['gameInstructor'])) && (iss
         fclose($handle);
 
         header("location:../../game.php");
+
     } else {
         header("location:../../home.php?gameErr=5");  //game does not exist or multiple games
     }

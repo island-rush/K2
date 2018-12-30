@@ -79,7 +79,7 @@ if ($gameBattleSubSection == "defense_bonus") {
     $query->bind_param("ssii", $nextSubSection, $gameBattleLastMessage, $lastRoll, $gameId);
     $query->execute();
 
-    $updateType = "getBoard";
+    $updateType = "rollBoard";
     $query = 'INSERT INTO updates (updateGameId, updateType) VALUES (?, ?)';
     $query = $db->prepare($query);
     $query->bind_param("is", $gameId, $updateType);
@@ -125,10 +125,11 @@ if ($gameBattleSubSection == "defense_bonus") {
         $query->bind_param("i", $attackId);
         $query->execute();
 
+        $battle_outcome = "";
         $updateType = "battleRemove";
-        $query = 'INSERT INTO updates (updateGameId, updateType, updatePlacementId) VALUES (?, ?, ?)';
+        $query = 'INSERT INTO updates (updateGameId, updateType, updatePlacementId, updateHTML) VALUES (?, ?, ?, ?)';
         $query = $db->prepare($query);
-        $query->bind_param("isi", $gameId, $updateType, $attackId);
+        $query->bind_param("isis", $gameId, $updateType, $attackId, $battle_outcome);
         $query->execute();
 
         $query = 'DELETE FROM placements WHERE placementId = ?';
@@ -147,11 +148,12 @@ if ($gameBattleSubSection == "defense_bonus") {
         $preparedQuery->bind_param("i", $attackId);
         $preparedQuery->execute();
 
+        $battle_outcome = "";
         $updateType = "battleMove";
         $newPositionId = $attackState + 2;
-        $query = 'INSERT INTO updates (updateGameId, updateType, updatePlacementId, updateNewPositionId) VALUES (?, ?, ?, ?)';
+        $query = 'INSERT INTO updates (updateGameId, updateType, updatePlacementId, updateNewPositionId, updateHTML) VALUES (?, ?, ?, ?, ?)';
         $query = $db->prepare($query);
-        $query->bind_param("isii", $gameId, $updateType, $attackId, $newPositionId);
+        $query->bind_param("isiis", $gameId, $updateType, $attackId, $newPositionId, $battle_outcome);
         $query->execute();
     }
 
@@ -161,10 +163,11 @@ if ($gameBattleSubSection == "defense_bonus") {
         $query->bind_param("i", $defendId);
         $query->execute();
 
+        $battle_outcome = "";
         $updateType = "battleRemove";
-        $query = 'INSERT INTO updates (updateGameId, updateType, updatePlacementId) VALUES (?, ?, ?)';
+        $query = 'INSERT INTO updates (updateGameId, updateType, updatePlacementId, updateHTML) VALUES (?, ?, ?, ?)';
         $query = $db->prepare($query);
-        $query->bind_param("isi", $gameId, $updateType, $defendId);
+        $query->bind_param("isis", $gameId, $updateType, $defendId, $battle_outcome);
         $query->execute();
 
         $query = 'DELETE FROM placements WHERE placementId = ?';
@@ -183,11 +186,12 @@ if ($gameBattleSubSection == "defense_bonus") {
         $preparedQuery->bind_param("i", $defendId);
         $preparedQuery->execute();
 
+        $battle_outcome = "";
         $updateType = "battleMove";
         $newPositionId = $defendState - 2;
-        $query = 'INSERT INTO updates (updateGameId, updateType, updatePlacementId, updateNewPositionId) VALUES (?, ?, ?, ?)';
+        $query = 'INSERT INTO updates (updateGameId, updateType, updatePlacementId, updateNewPositionId, updateHTML) VALUES (?, ?, ?, ?, ?)';
         $query = $db->prepare($query);
-        $query->bind_param("isii", $gameId, $updateType, $defendId, $newPositionId);
+        $query->bind_param("isiis", $gameId, $updateType, $defendId, $newPositionId, $battle_outcome);
         $query->execute();
     }
 

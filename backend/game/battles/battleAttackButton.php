@@ -107,7 +107,7 @@ if ($gameBattleSection == "attack" || $gameBattleSection == "counter") {
     $query->bind_param("ssii", $nextSubSection, $gameBattleLastMessage, $lastRoll, $gameId);
     $query->execute();
 
-    $updateType = "getBoard";
+    $updateType = "rollBoard";
     $query = 'INSERT INTO updates (updateGameId, updateType) VALUES (?, ?)';
     $query = $db->prepare($query);
     $query->bind_param("is", $gameId, $updateType);

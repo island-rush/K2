@@ -111,7 +111,7 @@ $waterClass = 'class="gridblock water"';
             </div>
             <div id="misc_info_undo">
                 <div id="logout_div">
-                    <button id="logout_button" onclick="logout();">Logout</button>
+                    <button id="logout_button" onclick="logout(false);">Logout</button>
                 </div>
                 <div id="undo_button_div">
                     <button id="undo_button" disabled onclick="undoButtonFunction();">Undo Movement</button>

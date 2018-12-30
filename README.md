@@ -18,14 +18,6 @@ K2.5 is a rewritten and refactored K2
 
 - Compressed images
 
-Questions contact c19spencer.adolph@usafa.edu
-
 # TODO:
 
-- dice roll animation (ajax)
-- Need to kill info (battlePieceClick)
-
-
-- SQL injection hardening (db password)
-- XSS hardening
-
+- Testing
