@@ -399,12 +399,10 @@ $waterClass = 'class="gridblock water"';
                         </tbody>
                     </table>
                 </div>
-                <br>
-                <button id="popupHybridClose" style="margin:0 auto; width:30%;">Close this popup</button>
             </div>
         </div>
     </div>
 </div>
-<script src="frontend/js/game.js"></script>
+<script src="frontend/js/game-v3.js"></script>
 </body>
 </html>

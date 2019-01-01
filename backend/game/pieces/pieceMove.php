@@ -49,6 +49,7 @@ if ($gameBattleSection != "none") {
     exit;
 }
 
+
 $query = 'SELECT placementUnitId, placementTeamId, placementCurrentMoves, placementPositionId, placementContainerId, placementBattleUsed, unitTerrain, unitName FROM (SELECT placementUnitId, placementTeamId, placementCurrentMoves, placementPositionId, placementContainerId, placementBattleUsed FROM placements WHERE placementId = ?) a NATURAL JOIN units b WHERE placementUnitId = unitId';
 $preparedQuery = $db->prepare($query);
 $preparedQuery->bind_param("i", $placementId);
@@ -69,14 +70,16 @@ if ($myTeam != $placementTeamId) {
     echo "This piece does not belong to you";
     exit;
 }
-if (($placementCurrentMoves == 0) && $placementUnitId != 15) {  //exclude missile from this check
-    if ($_SESSION['dist'][$oldPositionId][$newPositionId] != 0) {
-        echo "This piece is out of moves.";
-        exit;
-    }
-}
-if (($oldPositionId == 118 && $gamePhase != 4)) {
+if (($oldPositionId == 118 && $gamePhase != 4) || ($gamePhase == 4 && $oldPositionId != 118)) {
     echo "Can only place Reinforcements during 'Reinforcement Place' phase.";
+    exit;
+}
+if ($oldPositionId == $newPositionId && $oldContainerId == $newContainerId) {  //do nothing if dropped into same spot
+    echo "Moved Piece Into Same Position.";
+    exit;
+}
+if (($placementCurrentMoves == 0 && $_SESSION['dist'][$oldPositionId][$newPositionId] != 0) && $placementUnitId != 15) {  //exclude missile from this check (15)
+    echo "This piece is out of moves.";
     exit;
 }
 
@@ -201,18 +204,28 @@ if ($newContainerId != -1) {
     }
 }
 
-if ($_SESSION['dist'][$oldPositionId][$newPositionId] > 1 && $placementUnitId != 15 && $placementCurrentMoves > 0) {  //don't care about missile dist
-    echo "Can only move 1 space at a time.";
-    exit;
-}
+if ($gamePhase == 4) {  //Reinforcement Place controls
+    $redPlaceValid = array(55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 0, 13, 21, 20, 19);
+    $bluePlaceValid = array(65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 8, 7, 6, 12, 18, 25, 31, 38, 45, 54);
+    $airfieldPosition = array(56, 57, 78, 83, 89, 113, 116, 66, 68);
 
-if ($placementUnitId != 15) {
-    if ($_SESSION['dist'][$oldPositionId][$newPositionId] > 1) {
-        echo "Can only move 1 space at a time.";
+    if (($myTeam == "Red" && !in_array($newPositionId, $redPlaceValid)) || ($myTeam == "Blue" && !in_array($newPositionId, $bluePlaceValid))) {
+        echo "Not a valid spot for placement.";
         exit;
     }
-    if ($placementCurrentMoves == 0 && $_SESSION['dist'][$oldPositionId][$newPositionId] != 0) {
-        echo "Not enough moves for this piece.";
+    if (($placementUnitId == 11 || $placementUnitId == 12 || $placementUnitId == 13 || $placementUnitId == 14) && !in_array($newPositionId, $airfieldPosition)) {
+        echo "Planes must be placed on airfields.";
+        exit;
+    }
+
+    $query = 'SELECT placementId FROM placements WHERE (placementPositionId = ?) AND (placementTeamId != ?) AND (placementGameId = ?)';
+    $query = $db->prepare($query);
+    $query->bind_param("isi", $newPositionId, $myTeam, $gameId);
+    $query->execute();
+    $results = $query->get_result();
+    $num_results = $results->num_rows;
+    if ($num_results > 0) {
+        echo "Enemy is already in this position.";
         exit;
     }
 }
@@ -253,17 +266,18 @@ for ($i = 0; $i < $num_results; $i++) {
 $killed = 0;  //allowed to move at this point from all game rules / logic
 $thingToEcho = "DEFAULT THING TO ECHO";
 
-if ($placementUnitId == 11 || $placementUnitId == 12 || $placementUnitId == 13 || $placementUnitId == 14) {
+if ($gamePhase != 4 && $gamePhase != 1 && ($placementUnitId == 11 || $placementUnitId == 12 || $placementUnitId == 13 || $placementUnitId == 14)) {
     $adjSam = array();
-    for ($i = 55; $i <= 117; $i++) {
-        if ($_SESSION['dist'][$newPositionId][$i] <= 1) {
+    for ($i = 55; $i < 117; $i++) {
+        if ($_SESSION['dist'][$newPositionId][$i] == 1) {
             array_push($adjSam, $i);
         }
     }
-    for ($i = 0; $i < sizeof($adjSam); $i++) {
+    array_push($adjSam, $newPositionId);
+    for ($j = 0; $j < sizeof($adjSam); $j++) {
         $query = 'SELECT placementPositionId FROM placements WHERE (placementPositionId = ?) AND (placementTeamId != ?) AND (placementUnitId = 10) AND (placementGameId = ?)';
         $query = $db->prepare($query);
-        $position = $adjSam[$i];
+        $position = $adjSam[$j];
         $query->bind_param("isi", $position, $myTeam, $gameId);
         $query->execute();
         $results = $query->get_result();
@@ -275,7 +289,7 @@ if ($placementUnitId == 11 || $placementUnitId == 12 || $placementUnitId == 13 |
             if ($newPositionId == $samPosition || $placementUnitId != 13) {
                 if ($diceRoll >= $_SESSION['attack'][10][$placementUnitId]) {
                     $killed = 1;
-                    $thingToEcho = "Piece was destroyed by Sam.";
+                    $thingToEcho = "Piece was destroyed by Sam!";
                     break;
                 }
             }
@@ -283,7 +297,7 @@ if ($placementUnitId == 11 || $placementUnitId == 12 || $placementUnitId == 13 |
     }
 }
 
-if ($placementUnitId == 0 || $placementUnitId == 2 || $placementUnitId == 3) {  //missile check
+if ($gamePhase != 4 && $gamePhase != 1 && ($placementUnitId == 0 || $placementUnitId == 2 || $placementUnitId == 3)) {  //missile check
     $missileTargets = [[2, 3, 4, 10, 11, 15, 16], [16, 17, 18, 24, 25, 29, 30, 31], [19, 20, 21, 26, 27, 32, 33, 34], [28, 35, 36, 41, 42]];
     for ($x = 0; $x < 4; $x++) {
         if (in_array($newPositionId, $missileTargets[$x])) {

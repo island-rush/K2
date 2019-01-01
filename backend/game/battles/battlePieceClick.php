@@ -99,7 +99,7 @@ if ($battlePieceState == 3 || $battlePieceState == 4) {
         $defendUnitId = $r['placementUnitId'];
 
         $valueNeeded = $_SESSION['attack'][$attackUnitId][$defendUnitId];
-        $battle_outcome = "You must roll a ".$valueNeeded." in order to kill.";
+        $battle_outcome = "You must roll a ".$valueNeeded." or higher in order to hit.";
 
         echo "Click Attack to Attack!";
     } else {

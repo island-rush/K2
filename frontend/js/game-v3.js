@@ -162,6 +162,11 @@ function getBoard(roll){
 			}
 			if (decoded.gameBattleSection !== "none" && decoded.gameBattleSection !== "selectPos") {
 				document.querySelector("[data-positionId='" + decoded.gameBattlePosSelected + "']").classList.add("selectedPos");
+				if (parseInt(decoded.gameBattlePosSelected) > 54 && parseInt(decoded.gameBattlePosSelected) < 75) {
+					document.querySelector("[data-positionId='" + decoded.gameBattlePosSelected + "']").parentNode.classList.add("selectedPos");
+				} else if (parseInt(decoded.gameBattlePosSelected) > 74) {
+					document.querySelector("[data-positionId='" + decoded.gameBattlePosSelected + "']").parentNode.parentNode.classList.add("selectedPos");
+				}
 			} else {
 				clearSelectedPosition();
 			}
@@ -893,7 +898,7 @@ function battlePieceClick(event, callingElement) {
 	phpUpdateBoard.onreadystatechange = function () {
 		if (this.readyState === 4 && this.status === 200) {
 			user_feedback.innerHTML = this.responseText;
-			attackButton.disabled = this.responseText === "Battle Piece Clicked.";
+			attackButton.disabled = this.responseText !== "Click Attack to Attack!";
 		}
 	};
 	phpUpdateBoard.open("GET", "backend/game/battles/battlePieceClick.php?battlePieceId=" + battlePieceId, true);

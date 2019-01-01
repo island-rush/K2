@@ -33,7 +33,7 @@ $gameIsland13 = $r['gameIsland13'];
 $gameIsland14 = $r['gameIsland14'];
 
 if ($myTeam != $gameCurrentTeam) {
-    echo "Not your teams turn.";
+    echo "Not your team's turn.";
     exit;
 }
 if ($gameBattleSection != "none") {
@@ -275,7 +275,7 @@ switch ($newPhaseNum) {
         break;
     case 6:  //Round Recap
         //reset moves / battle used
-        $query = 'SELECT placementId, unitMoves FROM (SELECT placementId, placementUnitId FROM placements WHERE placementGameId = ? AND placementTeamId = ?) a NATURAL JOIN (SELECT unitId, unitMoves FROM units) b WHERE placementUnitId = unitId';
+        $query = 'SELECT placementId, placementUnitId, unitMoves FROM (SELECT placementId, placementUnitId FROM placements WHERE placementGameId = ? AND placementTeamId = ?) a NATURAL JOIN (SELECT unitId, unitMoves FROM units) b WHERE placementUnitId = unitId';
         $query = $db->prepare($query);
         $query->bind_param("is", $gameId, $myTeam);
         $query->execute();
@@ -284,11 +284,20 @@ switch ($newPhaseNum) {
         for ($x = 0; $x < $num_results; $x++) {
             $r= $results->fetch_assoc();
             $placementId = $r['placementId'];
+            $placementUnitId = $r['placementUnitId'];
             $placementMovesReset = $r['unitMoves'];
             $query2 = 'UPDATE placements SET placementBattleUsed = 0, placementCurrentMoves = ? WHERE (placementId = ?)';
             $query2 = $db->prepare($query2);
             $query2->bind_param("ii", $placementMovesReset, $placementId);
             $query2->execute();
+
+            $unitNames = ['Transport', 'Submarine', 'Destroyer', 'AircraftCarrier', 'ArmyCompany', 'ArtilleryBattery', 'TankPlatoon', 'MarinePlatoon', 'MarineConvoy', 'AttackHelo', 'SAM', 'FighterSquadron', 'BomberSquadron', 'StealthBomberSquadron', 'Tanker', 'LandBasedSeaMissile'];
+            $newTitle = $unitNames[$placementUnitId]."\nMoves: ".$placementMovesReset;
+            $updateType = "updateTitle";
+            $query = 'INSERT INTO updates (updateGameId, updateType, updatePlacementId, updateHTML) VALUES (?, ?, ?, ?)';
+            $query = $db->prepare($query);
+            $query->bind_param("isis", $gameId, $updateType, $placementId, $newTitle);
+            $query->execute();
         }
         $query = 'UPDATE games SET gameTurn = gameTurn + 1 WHERE (gameId = ?)';
         $query = $db->prepare($query);

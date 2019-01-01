@@ -20,4 +20,10 @@ K2.5 is a rewritten and refactored K2
 
 # TODO:
 
-- Testing
+- Testing Full Game
+
+known bugs
+------------------
+
+verify need to attack is correct number (using old value?)
+

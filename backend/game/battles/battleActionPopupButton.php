@@ -70,7 +70,11 @@ if ($gameBattleSubSection == "defense_bonus") {
         $unitNames = ['Transport', 'Submarine', 'Destroyer', 'AircraftCarrier', 'ArmyCompany', 'ArtilleryBattery', 'TankPlatoon', 'MarinePlatoon', 'MarineConvoy', 'AttackHelo', 'SAM', 'FighterSquadron', 'BomberSquadron', 'StealthBomberSquadron', 'Tanker', 'LandBasedSeaMissile'];
         $gameBattleLastMessage = $unitNames[$attackUnitId]." Hit back ".$unitNames[$defendUnitId];
     } else {
-        $gameBattleLastMessage = "Piece did not survive the hit.";
+        if ($needToHit == 0) {
+            $gameBattleLastMessage = "Piece did not survive the hit.";
+        } else {
+            $gameBattleLastMessage = "Piece did not hit back.";
+        }
     }
 
     $nextSubSection = "continue_choosing";

@@ -28,7 +28,7 @@ if ($gameBattleSubSection != "choosing_pieces" || $gameBattleSection == "none" |
     exit;
 }
 if ((($gameBattleSection == "attack" || $gameBattleSection == "askRepeat") && $myTeam != $gameCurrentTeam) || ($gameBattleSection == "counter" && $myTeam == $gameCurrentTeam)) {
-    echo "Not your turn to select pieces.";
+    echo "Not your turn to attack.";
     exit;
 }
 

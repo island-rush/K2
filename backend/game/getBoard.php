@@ -118,7 +118,7 @@ if (($myTeam != "Spec") && ((($gameBattleSection == "attack" || $gameBattleSecti
         $r5 = $results3->fetch_assoc();
         $defendUnitId = $r5['placementUnitId'];
         $valueNeeded = $_SESSION['attack'][$attackUnitId][$defendUnitId];
-        $battleOutcome = "You must roll a ".$valueNeeded." in order to kill.";
+        $battleOutcome = "You must roll a ".$valueNeeded." or higher in order to hit.";
     } else {
         if ($gameBattleSection == "askRepeat") {
             $attack_button_disabled = false;
@@ -154,12 +154,11 @@ if ($gameBattleSection == "attack") {
 $battleAdjacentPlacementIds = [];
 if ($gameBattleSection == "selectPieces" && $myTeam == $gameCurrentTeam) {  //only give adjacent array to selecting team
     $adjacentPositions = [];
+    array_push($adjacentPositions, $gameBattlePosSelected);
     $n = sizeof($_SESSION['dist'][0]);
     for ($j = 0; $j < $n; $j++) {
-        if ($n != $gameBattlePosSelected) {
-            if ($_SESSION['dist'][$gameBattlePosSelected][$j] <= 1) {
-                array_push($adjacentPositions, $j);
-            }
+        if ($_SESSION['dist'][$gameBattlePosSelected][$j] == 1) {
+            array_push($adjacentPositions, $j);
         }
     }
     for ($x = 0; $x < sizeof($adjacentPositions); $x++) {
