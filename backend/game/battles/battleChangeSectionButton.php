@@ -5,7 +5,7 @@ include("../../db.php");
 $gameId = $_SESSION['gameId'];
 $myTeam = $_SESSION['myTeam'];
 
-$query = 'SELECT gamePhase, gameCurrentTeam, gameBattleSection, gameBattleSubSection, gameBattlePosSelected FROM GAMES WHERE gameId = ?';
+$query = 'SELECT gameActive, gamePhase, gameCurrentTeam, gameBattleSection, gameBattleSubSection, gameBattlePosSelected FROM GAMES WHERE gameId = ?';
 $preparedQuery = $db->prepare($query);
 $preparedQuery->bind_param("i", $gameId);
 $preparedQuery->execute();
@@ -18,6 +18,10 @@ $gameBattleSection = $r['gameBattleSection'];
 $gameBattleSubSection = $r['gameBattleSubSection'];
 $gameBattlePosSelected = $r['gameBattlePosSelected'];
 
+if ($r['gameActive'] != 1) {
+    header("location:home.php?err=7");
+    exit;
+}
 if ($gamePhase != 2) {
     echo "It is not the right phase for this.";
     exit;

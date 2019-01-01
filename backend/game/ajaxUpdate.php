@@ -8,7 +8,7 @@ include("../db.php");
 
 $loopCounter = 0;
 while(true) {
-    $query = 'SELECT * FROM updates WHERE (updateGameId = ?) AND (updateId > ?) ORDER BY updateId ASC';
+    $query = 'SELECT updateId, updateType, updatePlacementId, updateNewPositionId, updateNewContainerId, updateHTML FROM updates WHERE (updateGameId = ?) AND (updateId > ?) ORDER BY updateId ASC';
     $query = $db->prepare($query);
     $query->bind_param("ii", $gameId, $lastUpdateId);
     $query->execute();

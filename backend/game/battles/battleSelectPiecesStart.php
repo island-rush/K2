@@ -7,7 +7,7 @@ $myTeam = $_SESSION['myTeam'];
 
 $positionId = (int) $_REQUEST['positionId'];
 
-$query = 'SELECT gamePhase, gameCurrentTeam, gameBattleSection FROM GAMES WHERE gameId = ?';
+$query = 'SELECT gameActive, gamePhase, gameCurrentTeam, gameBattleSection FROM GAMES WHERE gameId = ?';
 $preparedQuery = $db->prepare($query);
 $preparedQuery->bind_param("i", $gameId);
 $preparedQuery->execute();
@@ -18,6 +18,10 @@ $gamePhase = $r['gamePhase'];
 $gameCurrentTeam = $r['gameCurrentTeam'];
 $gameBattleSection = $r['gameBattleSection'];
 
+if ($r['gameActive'] != 1) {
+    header("location:home.php?err=7");
+    exit;
+}
 if ($myTeam != $gameCurrentTeam) {
     echo "It is not your team's turn.";
     exit;

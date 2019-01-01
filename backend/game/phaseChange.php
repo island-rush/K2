@@ -5,7 +5,7 @@ include("../db.php");
 $gameId = $_SESSION['gameId'];
 $myTeam = $_SESSION['myTeam'];
 
-$query = 'SELECT * FROM GAMES WHERE gameId = ?';
+$query = 'SELECT gameActive, gamePhase, gameTurn, gameCurrentTeam, gameBattleSection, gameIsland1, gameIsland2, gameIsland3, gameIsland4, gameIsland5, gameIsland6, gameIsland7, gameIsland8, gameIsland9, gameIsland10, gameIsland11, gameIsland12, gameIsland13, gameIsland14 FROM GAMES WHERE gameId = ?';
 $preparedQuery = $db->prepare($query);
 $preparedQuery->bind_param("i", $gameId);
 $preparedQuery->execute();
@@ -32,6 +32,10 @@ $gameIsland12 = $r['gameIsland12'];
 $gameIsland13 = $r['gameIsland13'];
 $gameIsland14 = $r['gameIsland14'];
 
+if ($r['gameActive'] != 1) {
+    header("location:home.php?err=7");
+    exit;
+}
 if ($myTeam != $gameCurrentTeam) {
     echo "Not your team's turn.";
     exit;
@@ -51,6 +55,8 @@ if ($newPhaseNum == 0) {
 } else {
     $newGameCurrentTeam = $myTeam;
 }
+
+$arrayOfMoves = [2, 2, 2, 2, 1, 1, 1, 1, 2, 3, 1, 4, 6, 5, 5, 0];
 
 switch ($newPhaseNum) {
     case 0:  //News Alerts
@@ -122,14 +128,39 @@ switch ($newPhaseNum) {
         }
 
         $moveEffect = "addMove";
-        $query4 = "SELECT newsId FROM newsAlerts WHERE newsGameId = ? AND newsActivated = 1 AND newsLength = 1 AND newsTeam = ? AND newsEffect = ? ORDER BY newsOrder";
+        $query4 = "SELECT newsId FROM newsAlerts WHERE newsGameId = ? AND newsActivated = 1 AND newsLength = 1 AND newsTeam != ? AND newsEffect = ? ORDER BY newsOrder";
         $preparedQuery4 = $db->prepare($query4);
         $preparedQuery4->bind_param("iss", $gameId, $myTeam, $moveEffect);
         $preparedQuery4->execute();
         $results = $preparedQuery4->get_result();
         $num_results = $results->num_rows;
-        for ($x = 0; $x < $num_results; $x++) {
-            $query4 = "UPDATE placements SET placementCurrentMoves = placementCurrentMoves + 1 WHERE placementGameId = ? AND placementTeamId = ?";
+        if ($num_results > 0) {
+            $arrayOfPlacementMoves = [];
+            $query = 'SELECT placementId, placementUnitId FROM placements WHERE placementGameId = ? AND placementTeamId != ?';
+            $query = $db->prepare($query);
+            $query->bind_param("is", $gameId, $myTeam);
+            $query->execute();
+            $results = $query->get_result();
+            $num_results = $results->num_rows;
+            for ($x = 0; $x < $num_results; $x++) {
+                $r = $results->fetch_assoc();
+                $placementId = $r['placementId'];
+                $placementUnitId = $r['placementUnitId'];
+                $placementMovesReset = $arrayOfMoves[$placementUnitId] + $num_results;
+
+                array_push($arrayOfPlacementMoves, array($placementId, $placementUnitId, $placementMovesReset, 0));
+            }
+
+            if (sizeof($arrayOfPlacementMoves) > 0) {
+                $JSONArray = json_encode($arrayOfPlacementMoves);
+                $updateType = "updateMoves";
+                $query = 'INSERT INTO updates (updateGameId, updateType, updateHTML) VALUES (?, ?, ?)';
+                $query = $db->prepare($query);
+                $query->bind_param("iss", $gameId, $updateType, $JSONArray);
+                $query->execute();
+            }
+
+            $query4 = 'UPDATE placements SET placementCurrentMoves = placementCurrentMoves + '.$num_results.' WHERE placementGameId = ? AND placementTeamId != ?';
             $preparedQuery4 = $db->prepare($query4);
             $preparedQuery4->bind_param("is", $gameId, $myTeam);
             $preparedQuery4->execute();
@@ -173,25 +204,40 @@ switch ($newPhaseNum) {
         break;
     case 3:  //Fortify
         //refuel planes
-        $query = 'SELECT b.placementId, b.placementUnitId FROM (SELECT placementPositionId FROM placements WHERE placementGameId = ? AND placementTeamId = ? AND placementUnitId = 14) a JOIN (SELECT placementId, placementPositionId, placementUnitId, placementCurrentMoves FROM placements WHERE placementGameId = ? AND placementTeamId = ? AND (placementUnitId = 11 OR placementUnitId = 12 OR placementUnitId = 13)) b USING(placementPositionId) WHERE a.placementPositionId = b.placementPositionId';
+        $query = 'SELECT b.placementId, b.placementUnitId, b.placementCurrentMoves, b.placementBattleUsed FROM (SELECT placementPositionId FROM placements WHERE placementGameId = ? AND placementTeamId = ? AND placementUnitId = 14) a JOIN (SELECT placementId, placementPositionId, placementUnitId, placementCurrentMoves, placementBattleUsed FROM placements WHERE placementGameId = ? AND placementTeamId = ? AND (placementUnitId = 11 OR placementUnitId = 12 OR placementUnitId = 13)) b USING(placementPositionId) WHERE a.placementPositionId = b.placementPositionId';
         $query = $db->prepare($query);
         $query->bind_param("isis", $gameId, $myTeam, $gameId, $myTeam);
         $query->execute();
         $results = $query->get_result();
         $num_results = $results->num_rows;
+        $arrayOfPlacementMoves = [];
         for ($i = 0; $i < $num_results; $i++) {
             $r = $results->fetch_assoc();
             $placementId = $r['placementId'];
             $placementUnitId = $r['placementUnitId'];
+            $placementCurrentMoves = $r['placementCurrentMoves'];
+            $placementBattleUsed = $r['placementBattleUsed'];
 
             $updateValue = 2;
             if ($placementUnitId >= 12) {
                 $updateValue = 3;
             }
 
+            $newMoves = $placementCurrentMoves + $updateValue;
             $query = 'UPDATE placements SET placementCurrentMoves = placementCurrentMoves + '.$updateValue.' WHERE (placementId = ?)';
             $query = $db->prepare($query);
             $query->bind_param("i", $placementId);
+            $query->execute();
+
+            array_push($arrayOfPlacementMoves, array($placementId, $placementUnitId, $newMoves, $placementBattleUsed));
+        }
+
+        if ($arrayOfPlacementMoves > 0) {
+            $JSONArray = json_encode($arrayOfPlacementMoves);
+            $updateType = "updateMoves";
+            $query = 'INSERT INTO updates (updateGameId, updateType, updateHTML) VALUES (?, ?, ?)';
+            $query = $db->prepare($query);
+            $query->bind_param("iss", $gameId, $updateType, $JSONArray);
             $query->execute();
         }
         break;
@@ -213,12 +259,10 @@ switch ($newPhaseNum) {
         $query->execute();
         $results = $query->get_result();
         $num_results = $results->num_rows;
-        if ($num_results > 0) {
-            for ($i = 0; $i < $num_results; $i++) {
-                $r = $results->fetch_assoc();
-                $thisPosition = $r['placementId'];
-                array_push($carrierSpots, $thisPosition);
-            }
+        for ($i = 0; $i < $num_results; $i++) {
+            $r = $results->fetch_assoc();
+            $thisPosition = $r['placementId'];
+            array_push($carrierSpots, $thisPosition);
         }
 
         $query = 'SELECT placementId, placementUnitId, placementContainerId, placementPositionId FROM placements WHERE (placementTeamId = ?) AND (placementGameId = ?) AND (placementUnitId = 9 OR placementUnitId = 11 OR placementUnitId = 12 OR placementUnitId = 13 OR placementUnitId = 14) AND (placementPositionId != 118)';
@@ -275,30 +319,35 @@ switch ($newPhaseNum) {
         break;
     case 6:  //Round Recap
         //reset moves / battle used
-        $query = 'SELECT placementId, placementUnitId, unitMoves FROM (SELECT placementId, placementUnitId FROM placements WHERE placementGameId = ? AND placementTeamId = ?) a NATURAL JOIN (SELECT unitId, unitMoves FROM units) b WHERE placementUnitId = unitId';
+        $arrayOfPlacementMoves = [];
+        $query = 'SELECT placementId, placementUnitId FROM placements WHERE placementGameId = ? AND placementTeamId = ?';
         $query = $db->prepare($query);
         $query->bind_param("is", $gameId, $myTeam);
         $query->execute();
         $results = $query->get_result();
         $num_results = $results->num_rows;
         for ($x = 0; $x < $num_results; $x++) {
-            $r= $results->fetch_assoc();
+            $r = $results->fetch_assoc();
             $placementId = $r['placementId'];
             $placementUnitId = $r['placementUnitId'];
-            $placementMovesReset = $r['unitMoves'];
+            $placementMovesReset = $arrayOfMoves[$placementUnitId];
             $query2 = 'UPDATE placements SET placementBattleUsed = 0, placementCurrentMoves = ? WHERE (placementId = ?)';
             $query2 = $db->prepare($query2);
             $query2->bind_param("ii", $placementMovesReset, $placementId);
             $query2->execute();
 
-            $unitNames = ['Transport', 'Submarine', 'Destroyer', 'AircraftCarrier', 'ArmyCompany', 'ArtilleryBattery', 'TankPlatoon', 'MarinePlatoon', 'MarineConvoy', 'AttackHelo', 'SAM', 'FighterSquadron', 'BomberSquadron', 'StealthBomberSquadron', 'Tanker', 'LandBasedSeaMissile'];
-            $newTitle = $unitNames[$placementUnitId]."\nMoves: ".$placementMovesReset;
-            $updateType = "updateTitle";
-            $query = 'INSERT INTO updates (updateGameId, updateType, updatePlacementId, updateHTML) VALUES (?, ?, ?, ?)';
+            array_push($arrayOfPlacementMoves, array($placementId, $placementUnitId, $placementMovesReset, 0));
+        }
+
+        if (sizeof($arrayOfPlacementMoves) > 0) {
+            $JSONArray = json_encode($arrayOfPlacementMoves);
+            $updateType = "updateMoves";
+            $query = 'INSERT INTO updates (updateGameId, updateType, updateHTML) VALUES (?, ?, ?)';
             $query = $db->prepare($query);
-            $query->bind_param("isis", $gameId, $updateType, $placementId, $newTitle);
+            $query->bind_param("iss", $gameId, $updateType, $JSONArray);
             $query->execute();
         }
+
         $query = 'UPDATE games SET gameTurn = gameTurn + 1 WHERE (gameId = ?)';
         $query = $db->prepare($query);
         $query->bind_param("i", $gameId);
@@ -308,6 +357,11 @@ switch ($newPhaseNum) {
         echo "Failed to switch phase. (number outside phase range)";  //unlikely to occur, we mod phase number above
         exit;
 }
+
+$query = 'DELETE FROM movements WHERE movementGameId = ?';
+$query = $db->prepare($query);
+$query->bind_param("i", $gameId);
+$query->execute();
 
 $query = 'UPDATE games SET gamePhase = ?, gameCurrentTeam = ? WHERE (gameId = ?)';
 $query = $db->prepare($query);

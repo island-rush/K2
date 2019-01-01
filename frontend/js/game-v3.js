@@ -229,8 +229,8 @@ function ajaxUpdate(){
 					case "battleRemove":
 						ajaxBattlePieceRemove(parseInt(decoded.updatePlacementId), decoded.updateHTML);
 						break;
-					case "updateTitle":
-						ajaxUpdateTitle(parseInt(decoded.updatePlacementId), decoded.updateHTML);
+					case "updateMoves":
+						ajaxUpdateMoves(JSON.parse(decoded.updateHTML));
 						break;
 					default:
 						alert("Error with ajax call, unknown updateType " + decoded.updateType);
@@ -279,9 +279,15 @@ function ajaxIslandOwnerChange(islandNum, newTeamId) {
 	popIsland.classList.remove(oldTeamId);
 	popIsland.classList.add(newTeamId);
 }
-function ajaxUpdateTitle(placementId, newTitle) {
-	let gamePiece = document.querySelector("[data-placementId='" + placementId + "']");
-	gamePiece.setAttribute("title", newTitle);
+function ajaxUpdateMoves(arrayPiecesMoves) {
+	let battleUsedText;
+	for (let x = 0; x < arrayPiecesMoves.length; x++) {
+		battleUsedText = "";
+		if (arrayPiecesMoves[x][3] === 1) {
+			battleUsedText = "\nUsed in Attack";
+		}
+		document.querySelector("[data-placementId='" + arrayPiecesMoves[x][0] + "']").setAttribute("title", unitNames[arrayPiecesMoves[x][1]] + "\nMoves: " + arrayPiecesMoves[x][2] + battleUsedText);
+	}
 }
 
 function unpopIslands() {
@@ -478,7 +484,7 @@ function gridIslandClick(event, callingElement){
 							user_feedback.innerHTML = this.responseText;
 						}
 					};
-					phpUpdateBoard.open("POST", "hybridBankDrain.php?islandNum=" + islandNum, true);
+					phpUpdateBoard.open("POST", "backend/game/hybrid/hybridBankDrain.php?islandNum=" + islandNum, true);
 					phpUpdateBoard.send();
 
 					whole_game.style.backgroundColor = "black";
@@ -505,7 +511,7 @@ function gridIslandClick(event, callingElement){
 						user_feedback.innerHTML = this.responseText;
 					}
 				};
-				phpUpdateBoard.open("POST", "hybridNuke.php?islandNum=" + islandNum, true);
+				phpUpdateBoard.open("POST", "backend/game/hybrid/hybridNuke.php?islandNum=" + islandNum, true);
 				phpUpdateBoard.send();
 
 				whole_game.style.backgroundColor = "black";
@@ -552,7 +558,7 @@ function pieceClick(event, callingElement) {
 						user_feedback.innerHTML = this.responseText;
 					}
 				};
-				phpUpdateBoard.open("POST", "hybridDeletePiece.php?placementId=" + placementId, true);
+				phpUpdateBoard.open("POST", "backend/game/hybrid/hybridDeletePiece.php?placementId=" + placementId, true);
 				phpUpdateBoard.send();
 
 				whole_game.style.backgroundColor = "black";
@@ -611,7 +617,7 @@ function landClick(event, callingElement) {
 							user_feedback.innerHTML = this.responseText;
 						}
 					};
-					phpUpdateBoard.open("POST", "hybridDisableAirfield.php?positionId=" + positionId, true);
+					phpUpdateBoard.open("POST", "backend/game/hybrid/hybridDisableAirfield.php?positionId=" + positionId, true);
 					phpUpdateBoard.send();
 
 					callingElement.classList.remove("selectedPos");
@@ -934,4 +940,8 @@ function battleActionPopupButtonClick() {
 	};
 	phpUpdateBoard.open("GET", "backend/game/battles/battleActionPopupButton.php", true);
 	phpUpdateBoard.send();
+}
+
+function updateAllMoves() {
+
 }

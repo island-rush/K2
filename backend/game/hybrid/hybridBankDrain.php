@@ -7,7 +7,7 @@ $myTeam = $_SESSION['myTeam'];
 
 $islandNum = (int) $_REQUEST['islandNum'];
 
-$query = 'SELECT gamePhase, gameCurrentTeam, game'.$myTeam.'Hpoints, gameIsland'.$islandNum.' FROM GAMES WHERE gameId = ?';
+$query = 'SELECT gameActive, gamePhase, gameCurrentTeam, game'.$myTeam.'Hpoints, gameIsland'.$islandNum.' FROM GAMES WHERE gameId = ?';
 $preparedQuery = $db->prepare($query);
 $preparedQuery->bind_param("i", $gameId);
 $preparedQuery->execute();
@@ -19,6 +19,10 @@ $gameCurrentTeam = $r['gameCurrentTeam'];
 $points = $r['game'.$myTeam.'Hpoints'];
 $gameIslandOwner = $r['gameIsland'.$islandNum];
 
+if ($r['gameActive'] != 1) {
+    header("location:home.php?err=7");
+    exit;
+}
 if ($myTeam != $gameCurrentTeam) {
     echo "It is not your team's turn.";
     exit;

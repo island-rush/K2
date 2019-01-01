@@ -12,12 +12,19 @@ $myTeam = $_SESSION['myTeam'];
 
 $unitNames = ['Transport', 'Submarine', 'Destroyer', 'AircraftCarrier', 'ArmyCompany', 'ArtilleryBattery', 'TankPlatoon', 'MarinePlatoon', 'MarineConvoy', 'AttackHelo', 'SAM', 'FighterSquadron', 'BomberSquadron', 'StealthBomberSquadron', 'Tanker', 'LandBasedSeaMissile'];
 
-$query = "SELECT gameIsland1, gameIsland2, gameIsland3, gameIsland4, gameIsland5, gameIsland6, gameIsland7, gameIsland8, gameIsland9, gameIsland10, gameIsland11, gameIsland12, gameIsland13, gameIsland14 FROM GAMES WHERE gameId = ?";
+$query = "SELECT gameActive, gameIsland1, gameIsland2, gameIsland3, gameIsland4, gameIsland5, gameIsland6, gameIsland7, gameIsland8, gameIsland9, gameIsland10, gameIsland11, gameIsland12, gameIsland13, gameIsland14 FROM GAMES WHERE gameId = ?";
 $preparedQuery = $db->prepare($query);
 $preparedQuery->bind_param("i", $gameId);
 $preparedQuery->execute();
 $results = $preparedQuery->get_result();
 $r = $results->fetch_assoc();
+$gameActive = $r['gameActive'];
+
+if ($gameActive != 1) {
+    header("location:home.php?err=6");
+    exit;
+}
+
 $gameIsland1 = htmlentities($r['gameIsland1']);
 $gameIsland2 = htmlentities($r['gameIsland2']);
 $gameIsland3 = htmlentities($r['gameIsland3']);
@@ -96,8 +103,8 @@ $waterClass = 'class="gridblock water"';
         <div id="rest_things">
             <div id="phase_indicator">Current Phase = Loading...</div>
             <div id="team_indicators">
-                <div id="red_team_indicator">Züün</div>
-                <div id="blue_team_indicator">Vestrland</div>
+                <div id="red_team_indicator" style="color: red;">Züün</div>
+                <div id="blue_team_indicator" style="color: blue;">Vestrland</div>
             </div>
             <div id="rPoints_indicators">
                 <div id="red_rPoints_indicator">Loading</div>

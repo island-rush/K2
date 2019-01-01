@@ -4,12 +4,17 @@ include("../db.php");
 $gameId = $_SESSION['gameId'];
 $myTeam = $_SESSION['myTeam'];
 
-$query = 'SELECT gamePhase, gameCurrentTeam, gameRedRpoints, gameBlueRpoints, gameRedHpoints, gameBlueHpoints, gameBattleSection, gameBattleSubSection, gameBattleLastRoll, gameBattleLastMessage, gameBattlePosSelected FROM GAMES WHERE gameId = ?';
+$query = 'SELECT gameActive, gamePhase, gameCurrentTeam, gameRedRpoints, gameBlueRpoints, gameRedHpoints, gameBlueHpoints, gameBattleSection, gameBattleSubSection, gameBattleLastRoll, gameBattleLastMessage, gameBattlePosSelected FROM GAMES WHERE gameId = ?';
 $preparedQuery = $db->prepare($query);
 $preparedQuery->bind_param("i", $gameId);
 $preparedQuery->execute();
 $results = $preparedQuery->get_result();
 $r = $results->fetch_assoc();
+
+if ($r['gameActive'] != 1) {
+    header("location:home.php?err=7");
+    exit;
+}
 
 $gamePhase = $r['gamePhase'];
 $gameCurrentTeam = $r['gameCurrentTeam'];

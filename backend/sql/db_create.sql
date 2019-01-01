@@ -45,30 +45,7 @@ CREATE TABLE IF NOT EXISTS `games`(
 
 INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword, gameActive) VALUES ('M1A1', 'Adolph', 	'5f4dcc3b5aa765d61d8327deb882cf99', 1);
 
-CREATE TABLE IF NOT EXISTS `units`(
-	`unitId` int(2) NOT NULL ,
-    `unitName` varchar(25) NOT NULL,
-    `unitTerrain` varchar(8) NOT NULL,
-    `unitMoves` int(2) NOT NULL,
-    `unitCost` int(2) NOT NULL,
-    PRIMARY KEY(`unitId`)
-);
-INSERT INTO `units` VALUES (0, 'Transport', 'water', 2, 8);
-INSERT INTO `units` VALUES (1, 'Submarine', 'water', 2, 8);
-INSERT INTO `units` VALUES (2, 'Destroyer', 'water', 2, 10);
-INSERT INTO `units` VALUES (3, 'AircraftCarrier', 'water', 2, 15);
-INSERT INTO `units` VALUES (4, 'ArmyCompany', 'land', 1, 4);
-INSERT INTO `units` VALUES (5, 'ArtilleryBattery', 'land', 1, 5);
-INSERT INTO `units` VALUES (6, 'TankPlatoon', 'land', 1, 6);
-INSERT INTO `units` VALUES (7, 'MarinePlatoon', 'land', 1, 5);
-INSERT INTO `units` VALUES (8, 'MarineConvoy', 'land', 2, 8);
-INSERT INTO `units` VALUES (9, 'AttackHelo', 'air', 3, 7);
-INSERT INTO `units` VALUES (10, 'SAM', 'land', 1, 8);
-INSERT INTO `units` VALUES (11, 'FighterSquadron', 'air', 4, 12);
-INSERT INTO `units` VALUES (12, 'BomberSquadron', 'air', 6, 12);
-INSERT INTO `units` VALUES (13, 'StealthBomberSquadron', 'air', 5, 15);
-INSERT INTO `units` VALUES (14, 'Tanker', 'air', 5, 11);
-INSERT INTO `units` VALUES (15, 'LandBasedSeaMissile', 'missile', 0, 10);
+-- Units Table Removed, table unchanging and now hardcoded for fewer db requests / faster runtime
 
 CREATE TABLE IF NOT EXISTS `placements`(
 	`placementId` int(8) NOT NULL AUTO_INCREMENT,
@@ -80,7 +57,6 @@ CREATE TABLE IF NOT EXISTS `placements`(
     `placementPositionId` int(3) NOT NULL,
     `placementBattleUsed` int(1) NOT NULL DEFAULT 0,
     PRIMARY KEY(`placementId`),
-    FOREIGN KEY (placementUnitId) REFERENCES units(unitId),
     FOREIGN KEY (placementGameId) REFERENCES games(gameId)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
 
@@ -105,7 +81,7 @@ CREATE TABLE IF NOT EXISTS `battlePieces`(
 CREATE TABLE IF NOT EXISTS `updates`(
 	`updateId` int(16) NOT NULL AUTO_INCREMENT,
 	`updateGameId` int(5) NOT NULL,
-	`updateType` varchar(15), -- phaseChange,
+	`updateType` varchar(18), -- phaseChange,
 	`updatePlacementId` int(8) DEFAULT 0,
 	`updateNewPositionId` int(3) DEFAULT 0,
 	`updateNewContainerId` int(8) DEFAULT 0,
@@ -129,3 +105,4 @@ CREATE TABLE IF NOT EXISTS `newsAlerts`(
   `newsActivated` int(1) NOT NULL DEFAULT 0,
   PRIMARY KEY(`newsId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
+

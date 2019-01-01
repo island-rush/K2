@@ -7,7 +7,7 @@ $myTeam = $_SESSION['myTeam'];
 
 $placementId = (int) $_REQUEST['placementId'];
 
-$query = 'SELECT gamePhase, gameCurrentTeam FROM GAMES WHERE gameId = ?';
+$query = 'SELECT gameActive, gamePhase, gameCurrentTeam FROM GAMES WHERE gameId = ?';
 $preparedQuery = $db->prepare($query);
 $preparedQuery->bind_param("i", $gameId);
 $preparedQuery->execute();
@@ -17,6 +17,10 @@ $r = $results->fetch_assoc();
 $gamePhase = $r['gamePhase'];
 $gameCurrentTeam = $r['gameCurrentTeam'];
 
+if ($r['gameActive'] != 1) {
+    header("location:home.php?err=7");
+    exit;
+}
 if ($myTeam != $gameCurrentTeam) {
     echo "Not your Team's turn.";
     exit;
@@ -26,14 +30,15 @@ if ($gamePhase != 1) {
     exit;
 }
 
-$query = 'SELECT placementPositionId, unitCost FROM (SELECT placementPositionId, placementUnitId FROM placements WHERE placementId = ?) a NATURAL JOIN units b WHERE placementUnitId = unitId';
+$costs = [8, 8, 10, 15, 4, 5, 6, 5, 8, 7, 8, 12, 12, 15, 11, 10];
+$query = 'SELECT placementPositionId, placementUnitId FROM placements WHERE placementId = ?';
 $preparedQuery = $db->prepare($query);
 $preparedQuery->bind_param("i", $placementId);
 $preparedQuery->execute();
 $results = $preparedQuery->get_result();
 $r = $results->fetch_assoc();
 $positionId = $r['placementPositionId'];
-$unitCost = $r['unitCost'];
+$unitCost = $costs[$r['placementUnitId']];
 
 if ($positionId != 118) {
     echo "Can only recycle pieces in inventory.";

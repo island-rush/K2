@@ -7,7 +7,7 @@ $myTeam = $_SESSION['myTeam'];
 
 $islandNum = (int) $_REQUEST['islandNum'];
 
-$query = 'SELECT gamePhase, gameCurrentTeam, game'.$myTeam.'Hpoints FROM GAMES WHERE gameId = ?';
+$query = 'SELECT gameActive, gamePhase, gameCurrentTeam, game'.$myTeam.'Hpoints FROM GAMES WHERE gameId = ?';
 $preparedQuery = $db->prepare($query);
 $preparedQuery->bind_param("i", $gameId);
 $preparedQuery->execute();
@@ -18,6 +18,10 @@ $gamePhase = $r['gamePhase'];
 $gameCurrentTeam = $r['gameCurrentTeam'];
 $points = $r['game'.$myTeam.'Hpoints'];
 
+if ($r['gameActive'] != 1) {
+    header("location:home.php?err=7");
+    exit;
+}
 if ($myTeam != $gameCurrentTeam) {
     echo "It is not your team's turn.";
     exit;
@@ -49,7 +53,7 @@ $thisIslandSpots = $islandSpots[$islandNum - 1];
 
 for ($x = 0; $x < sizeof($thisIslandSpots); $x++) {
     $positionId = $thisIslandSpots[$x];
-    $query = 'SELECT placementId FROM placements WHERE placementPositionId = ? AND placementGameId = ?';
+    $query = 'SELECT placementId FROM placements WHERE placementPositionId = ? AND placementGameId = ? ORDER BY placementContainerId DESC';
     $query = $db->prepare($query);
     $query->bind_param("ii", $positionId, $gameId);
     $query->execute();
@@ -97,7 +101,7 @@ $query->bind_param("iissii",$gameId, $order, $myTeam, $nukeHuman, $length, $acti
 $query->execute();
 
 $updateType = "islandOwnerChange";
-$query = 'INSERT INTO updates (updateGameId, updateType, updateIsland, updateIslandTeam) VALUES (?, ?, ?, ?)';
+$query = 'INSERT INTO updates (updateGameId, updateType, updatePlacementId, updateHTML) VALUES (?, ?, ?, ?)';
 $query = $db->prepare($query);
 $query->bind_param("isis", $gameId, $updateType, $islandNum, $Nuke);
 $query->execute();

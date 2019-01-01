@@ -7,7 +7,7 @@ $myTeam = $_SESSION['myTeam'];
 
 $selectedPieces = json_decode($_REQUEST['selectedPieces']);
 
-$query = 'SELECT gamePhase, gameCurrentTeam, gameBattleSection, gameBattlePosSelected FROM GAMES WHERE gameId = ?';
+$query = 'SELECT gameActive, gamePhase, gameCurrentTeam, gameBattleSection, gameBattlePosSelected FROM GAMES WHERE gameId = ?';
 $preparedQuery = $db->prepare($query);
 $preparedQuery->bind_param("i", $gameId);
 $preparedQuery->execute();
@@ -19,6 +19,10 @@ $gameCurrentTeam = $r['gameCurrentTeam'];
 $gameBattleSection = $r['gameBattleSection'];
 $gameBattlePosSelected = $r['gameBattlePosSelected'];
 
+if ($r['gameActive'] != 1) {
+    header("location:home.php?err=7");
+    exit;
+}
 if ($myTeam != $gameCurrentTeam) {
     echo "It is not your team's turn.";
     exit;
@@ -35,6 +39,8 @@ if ($gameBattleSection != "selectPieces") {
 $unitNames = ['Transport', 'Submarine', 'Destroyer', 'AircraftCarrier', 'ArmyCompany', 'ArtilleryBattery', 'TankPlatoon', 'MarinePlatoon', 'MarineConvoy', 'AttackHelo', 'SAM', 'FighterSquadron', 'BomberSquadron', 'StealthBomberSquadron', 'Tanker', 'LandBasedSeaMissile'];
 $piecesSelectedHTML = "";
 
+
+$arrayOfPlacementMoves = [];
 for ($i = 0; $i < sizeof($selectedPieces); $i++) {
     $placementId = (int) $selectedPieces[$i];
     $query = 'SELECT placementUnitId, placementPositionId, placementBattleUsed, placementCurrentMoves FROM placements WHERE (placementId = ?)';
@@ -77,15 +83,17 @@ for ($i = 0; $i < sizeof($selectedPieces); $i++) {
     $query->bind_param("i", $placementId);
     $query->execute();
 
-    $unitNames = ['Transport', 'Submarine', 'Destroyer', 'AircraftCarrier', 'ArmyCompany', 'ArtilleryBattery', 'TankPlatoon', 'MarinePlatoon', 'MarineConvoy', 'AttackHelo', 'SAM', 'FighterSquadron', 'BomberSquadron', 'StealthBomberSquadron', 'Tanker', 'LandBasedSeaMissile'];
-    $newTitle = $unitNames[$placementUnitId]."\nMoves: ".$placementCurrentMoves."\nUsed in Attack";
-    $updateType = "updateTitle";
-    $query = 'INSERT INTO updates (updateGameId, updateType, updatePlacementId, updateHTML) VALUES (?, ?, ?, ?)';
-    $query = $db->prepare($query);
-    $query->bind_param("isis", $gameId, $updateType, $placementId, $newTitle);
-    $query->execute();
-
+    array_push($arrayOfPlacementMoves, array($placementId, $placementUnitId, $placementCurrentMoves, 1));
     $piecesSelectedHTML = $piecesSelectedHTML."<div class='".$unitNames[$placementUnitId]." gamePiece ".$myTeam."' title='".$unitNames[$placementUnitId]."' data-battlePieceId='".$placementId."' onclick='battlePieceClick(event, this)'></div>";
+}
+
+if (sizeof($arrayOfPlacementMoves) > 0) {
+    $JSONArray = json_encode($arrayOfPlacementMoves);
+    $updateType = "updateMoves";
+    $query = 'INSERT INTO updates (updateGameId, updateType, updateHTML) VALUES (?, ?, ?)';
+    $query = $db->prepare($query);
+    $query->bind_param("iss", $gameId, $updateType, $JSONArray);
+    $query->execute();
 }
 
 $updateType = "piecesSelected";

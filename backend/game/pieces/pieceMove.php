@@ -9,7 +9,7 @@ $placementId = (int) $_REQUEST['placementId'];  //piece that was moved
 $newPositionId = (int) $_REQUEST['positionId'];  //could be -1
 $newContainerId = (int) $_REQUEST['containerId'];  //could be -1
 
-$query = 'SELECT gamePhase, gameCurrentTeam, gameBattleSection, gameIsland1, gameIsland2, gameIsland3, gameIsland4, gameIsland5, gameIsland6, gameIsland7, gameIsland8, gameIsland9, gameIsland10, gameIsland11, gameIsland12, gameIsland13, gameIsland14 FROM GAMES WHERE gameId = ?';
+$query = 'SELECT gameActive, gamePhase, gameCurrentTeam, gameBattleSection, gameIsland1, gameIsland2, gameIsland3, gameIsland4, gameIsland5, gameIsland6, gameIsland7, gameIsland8, gameIsland9, gameIsland10, gameIsland11, gameIsland12, gameIsland13, gameIsland14 FROM GAMES WHERE gameId = ?';
 $preparedQuery = $db->prepare($query);
 $preparedQuery->bind_param("i", $gameId);
 $preparedQuery->execute();
@@ -36,6 +36,10 @@ $gameIsland13 = $r['gameIsland13'];
 $gameIsland14 = $r['gameIsland14'];
 $ownerships = [$gameIsland1, $gameIsland2, $gameIsland3, $gameIsland4, $gameIsland5, $gameIsland6, $gameIsland7, $gameIsland8, $gameIsland9, $gameIsland10, $gameIsland11, $gameIsland12, $gameIsland13, $gameIsland14];
 
+if ($r['gameActive'] != 1) {
+    header("location:home.php?err=7");
+    exit;
+}
 if ($myTeam != $gameCurrentTeam) {
     echo "It is not your team's turn";
     exit;
@@ -49,8 +53,10 @@ if ($gameBattleSection != "none") {
     exit;
 }
 
+$unitTerrains = ['water', 'water', 'water', 'water', 'land', 'land', 'land', 'land', 'land', 'air', 'land', 'air', 'air', 'air', 'air', 'missile'];
+$unitNames = ['Transport', 'Submarine', 'Destroyer', 'AircraftCarrier', 'ArmyCompany', 'ArtilleryBattery', 'TankPlatoon', 'MarinePlatoon', 'MarineConvoy', 'AttackHelo', 'SAM', 'FighterSquadron', 'BomberSquadron', 'StealthBomberSquadron', 'Tanker', 'LandBasedSeaMissile'];
 
-$query = 'SELECT placementUnitId, placementTeamId, placementCurrentMoves, placementPositionId, placementContainerId, placementBattleUsed, unitTerrain, unitName FROM (SELECT placementUnitId, placementTeamId, placementCurrentMoves, placementPositionId, placementContainerId, placementBattleUsed FROM placements WHERE placementId = ?) a NATURAL JOIN units b WHERE placementUnitId = unitId';
+$query = 'SELECT placementUnitId, placementTeamId, placementCurrentMoves, placementPositionId, placementContainerId, placementBattleUsed FROM placements WHERE placementId = ?';
 $preparedQuery = $db->prepare($query);
 $preparedQuery->bind_param("i", $placementId);
 $preparedQuery->execute();
@@ -63,8 +69,8 @@ $placementCurrentMoves = $r['placementCurrentMoves'];
 $oldPositionId = $r['placementPositionId'];  //used for distance check
 $oldContainerId = $r['placementContainerId'];
 $placementBattleUsed = $r['placementBattleUsed'];
-$placementUnitTerrain = $r['unitTerrain'];
-$placementUnitName = $r['unitName'];
+$placementUnitTerrain = $unitTerrains[$placementUnitId];
+$placementUnitName = $unitNames[$placementUnitId];
 
 if ($myTeam != $placementTeamId) {
     echo "This piece does not belong to you";
