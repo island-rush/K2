@@ -45,6 +45,11 @@ $query = $db->prepare($query);
 $query->bind_param("is", $gameId, $updateType);
 $query->execute();
 
+$query = 'DELETE FROM movements WHERE movementGameId = ?';
+$query = $db->prepare($query);
+$query->bind_param("i", $gameId);
+$query->execute();
+
 echo "Select Position for Battle";
 exit;
 

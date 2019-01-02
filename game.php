@@ -410,6 +410,6 @@ $waterClass = 'class="gridblock water"';
         </div>
     </div>
 </div>
-<script src="frontend/js/game-v3.js"></script>
+<script src="frontend/js/game-v1.js"></script>
 </body>
 </html>

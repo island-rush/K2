@@ -685,6 +685,7 @@ function controlButtonFunction() {
 function nextPhaseButtonFunction(){
 	event.preventDefault();
 	if (confirm("Are you sure you want to complete this phase?")) {
+		phase_button.disabled = true;
 		let phpUpdateBoard = new XMLHttpRequest();
 		phpUpdateBoard.onreadystatechange = function () {
 			if (this.readyState === 4 && this.status === 200) {

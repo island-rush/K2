@@ -11,7 +11,7 @@ $gameId = $_SESSION['gameId'];
 $section = $_SESSION['gameSection'];
 $instructor = $_SESSION['gameInstructor'];
 
-$query = "SELECT gameActive, gameCurrentTeam FROM GAMES WHERE gameId = ?";
+$query = "SELECT gameActive, gameCurrentTeam, gameTurn FROM GAMES WHERE gameId = ?";
 $preparedQuery = $db->prepare($query);
 $preparedQuery->bind_param("i", $gameId);
 $preparedQuery->execute();
@@ -19,6 +19,7 @@ $results = $preparedQuery->get_result();
 $r = $results->fetch_assoc();
 $gameActive = (int) htmlentities($r['gameActive']);
 $gameCurrentTeam = htmlentities($r['gameCurrentTeam']);
+$gameTurn = $r['gameTurn'];
 ?>
 
 <!DOCTYPE html>
@@ -86,7 +87,11 @@ $firstRow = $newsAlerts->fetch_assoc();
 $firstOrder = $firstRow['newsOrder'];
 $newsAlerts->data_seek(0);
 if ($news_rows == 0) {
-    echo "<h4>There Are no News Alerts... (Reset the Game to create them)</h4><br><br><br>";
+    if ($gameTurn == 0) {
+        echo "<h4>There Are no News Alerts... (Reset the Game to create them)</h4><br><br><br>";
+    } else {
+        echo "<h4>Game has run out of News Alerts.</h4><br><br><br>";
+    }
 } else {
     echo "<div id='newsAlertsContainer'>
     <h4>Current team: <".$gameCurrentTeam.">".$gameCurrentTeam."</".$gameCurrentTeam.">'s turn</h4>
@@ -94,9 +99,9 @@ if ($news_rows == 0) {
         <div>Use this form to swap two news alerts. Refresh the page to show the most up-to-date news alerts for this game.</div>
         <label>Swap #</label>
         <input type='hidden' name='gameId' id='gameId' value='".htmlentities($gameId)."'>
-        <input name='swap1order' type='number' id='swap1' required min='".htmlentities($firstOrder)."' max='".htmlentities($news_rows)."'>
+        <input name='swap1order' type='number' id='swap1' required min='".htmlentities($firstOrder)."' max='".($news_rows + $firstOrder - 1)."'>
         <label> with #</label>
-        <input name='swap2order' type='number' id='swap2' required min='".htmlentities($firstOrder)."' max='".htmlentities($news_rows)."'>
+        <input name='swap2order' type='number' id='swap2' required min='".htmlentities($firstOrder)."' max='".($news_rows + $firstOrder - 1)."'>
         <input type='submit' value='swap'>
     </form>
     <table id='newsAlertTable' class='".$gameCurrentTeam."Next' ><tr><th>Order</th> <th>Name</th><th>Effect</th></tr>";

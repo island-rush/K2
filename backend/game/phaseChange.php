@@ -65,13 +65,7 @@ switch ($newPhaseNum) {
         $preparedQuery->bind_param("i", $gameId);
         $preparedQuery->execute();
         $results = $preparedQuery->get_result();
-        $r = $results->fetch_assoc();
-
-        $newsId = $r['newsId'];
-        $newsEffect = $r['newsEffect'];
-        $newsZone = $r['newsZone'];
-        $newsRollValue = $r['newsRollValue'];
-        $newsTeam = $r['newsTeam'];
+        $num_results5 = $results->num_rows;
 
         $decrementValue = 1;
         $query = 'UPDATE newsAlerts SET newsLength = newsLength - 1 WHERE (newsGameId = ?) AND (newsActivated = 1) AND (newsLength != 0)';
@@ -79,49 +73,59 @@ switch ($newPhaseNum) {
         $query->bind_param("i", $gameId);
         $query->execute();
 
-        $query = 'UPDATE newsAlerts SET newsActivated = 1 WHERE (newsId = ?)';
-        $query = $db->prepare($query);
-        $query->bind_param("i", $newsId);
-        $query->execute();
+        if ($num_results5 != 0) {
+            $r = $results->fetch_assoc();
 
-        if ($newsEffect == "rollDie") {
-            $islandSpots = [[75, 76, 77, 78], [79, 80, 81, 82], [83, 84, 85], [86, 87, 88, 89], [90, 91, 92, 93], [94, 95, 96], [97, 98, 99], [100, 101, 102], [103, 104, 105, 106], [107, 108, 109, 110], [111, 112, 113], [114, 115, 116, 117], [55, 56, 57, 58, 59, 60, 61, 62, 63, 64], [65, 66, 67, 68, 69, 70, 71, 72, 73, 74]];
-            $islandIndex = $newsZone - 101;
-            $thisIslandSpots = $islandSpots[$islandIndex];
-            for ($x = 0; $x < sizeof($thisIslandSpots); $x++) {
-                if ($newsTeam == "All") {
-                    $team1 = "Red";
-                    $team2 = "Blue";
-                } else {
-                    $team1 = $newsTeam;
-                    $team2 = $newsTeam;
-                }
-                $query = "SELECT placementId, placementUnitId FROM placements WHERE placementGameId = ? AND placementPositionId = ? AND (placementTeamId = ? OR placementTeamId = ?)";
-                $preparedQuery = $db->prepare($query);
-                $preparedQuery->bind_param("iiss", $gameId, $thisIslandSpots[$x], $team1, $team2);
-                $preparedQuery->execute();
-                $results = $preparedQuery->get_result();
-                $num_results = $results->num_rows;
-                for ($i = 0; $i < $num_results; $i++) {
-                    $r = $results->fetch_assoc();
-                    $RandRoll = rand(1, 6);
-                    if ($RandRoll < $newsRollValue) {
-                        $placementId = $r['placementId'];
-                        $query = 'DELETE FROM placements WHERE placementId = ?';
-                        $query = $db->prepare($query);
-                        $query->bind_param("i", $placementId);
-                        $query->execute();
+            $newsId = $r['newsId'];
+            $newsEffect = $r['newsEffect'];
+            $newsZone = $r['newsZone'];
+            $newsRollValue = $r['newsRollValue'];
+            $newsTeam = $r['newsTeam'];
 
-                        $query = 'DELETE FROM placements WHERE placementContainerId = ?';
-                        $query = $db->prepare($query);
-                        $query->bind_param("i", $placementId);
-                        $query->execute();
+            $query = 'UPDATE newsAlerts SET newsActivated = 1 WHERE (newsId = ?)';
+            $query = $db->prepare($query);
+            $query->bind_param("i", $newsId);
+            $query->execute();
 
-                        $updateType = "pieceRemove";
-                        $query = 'INSERT INTO updates (updateGameId, updateType, updatePlacementId) VALUES (?, ?, ?)';
-                        $query = $db->prepare($query);
-                        $query->bind_param("isi", $gameId, $updateType, $placementId);
-                        $query->execute();
+            if ($newsEffect == "rollDie") {
+                $islandSpots = [[75, 76, 77, 78], [79, 80, 81, 82], [83, 84, 85], [86, 87, 88, 89], [90, 91, 92, 93], [94, 95, 96], [97, 98, 99], [100, 101, 102], [103, 104, 105, 106], [107, 108, 109, 110], [111, 112, 113], [114, 115, 116, 117], [55, 56, 57, 58, 59, 60, 61, 62, 63, 64], [65, 66, 67, 68, 69, 70, 71, 72, 73, 74]];
+                $islandIndex = $newsZone - 101;
+                $thisIslandSpots = $islandSpots[$islandIndex];
+                for ($x = 0; $x < sizeof($thisIslandSpots); $x++) {
+                    if ($newsTeam == "All") {
+                        $team1 = "Red";
+                        $team2 = "Blue";
+                    } else {
+                        $team1 = $newsTeam;
+                        $team2 = $newsTeam;
+                    }
+                    $query = "SELECT placementId, placementUnitId FROM placements WHERE placementGameId = ? AND placementPositionId = ? AND (placementTeamId = ? OR placementTeamId = ?)";
+                    $preparedQuery = $db->prepare($query);
+                    $preparedQuery->bind_param("iiss", $gameId, $thisIslandSpots[$x], $team1, $team2);
+                    $preparedQuery->execute();
+                    $results = $preparedQuery->get_result();
+                    $num_results = $results->num_rows;
+                    for ($i = 0; $i < $num_results; $i++) {
+                        $r = $results->fetch_assoc();
+                        $RandRoll = rand(1, 6);
+                        if ($RandRoll < $newsRollValue) {
+                            $placementId = $r['placementId'];
+                            $query = 'DELETE FROM placements WHERE placementId = ?';
+                            $query = $db->prepare($query);
+                            $query->bind_param("i", $placementId);
+                            $query->execute();
+
+                            $query = 'DELETE FROM placements WHERE placementContainerId = ?';
+                            $query = $db->prepare($query);
+                            $query->bind_param("i", $placementId);
+                            $query->execute();
+
+                            $updateType = "pieceRemove";
+                            $query = 'INSERT INTO updates (updateGameId, updateType, updatePlacementId) VALUES (?, ?, ?)';
+                            $query = $db->prepare($query);
+                            $query->bind_param("isi", $gameId, $updateType, $placementId);
+                            $query->execute();
+                        }
                     }
                 }
             }

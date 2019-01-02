@@ -15,14 +15,3 @@ K2.5 is a rewritten and refactored K2
 - Combined all board dependencies (load, client, ajax)
 
 - DOM Caching
-
-- Compressed images
-
-# TODO:
-
-- Testing Full Game
-
-known bugs
-------------------
-
-

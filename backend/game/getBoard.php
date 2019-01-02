@@ -28,15 +28,21 @@ $gameBattleLastRoll = $r['gameBattleLastRoll'];
 $gameBattlePosSelected = $r['gameBattlePosSelected'];
 $gameBattleLastMessage = $r['gameBattleLastMessage'];
 
-$query2 = "SELECT newsText, newsEffectText FROM newsAlerts WHERE newsGameId = ? AND newsActivated = 1 AND newsLength != 0 ORDER BY newsOrder DESC";
+$query2 = "SELECT newsText, newsEffectText FROM newsAlerts WHERE newsGameId = ? AND newsActivated = 1 AND newsLength != 0 AND newsOrder != 0 ORDER BY newsOrder DESC";
 $preparedQuery2 = $db->prepare($query2);
 $preparedQuery2->bind_param("i", $gameId);
 $preparedQuery2->execute();
 $results2 = $preparedQuery2->get_result();
-$r2 = $results2->fetch_assoc();
+$numResults2 = $results2->num_rows;
 
-$newsText = $r2['newsText'];
-$newsEffectText = $r2['newsEffectText'];
+if ($numResults2 == 0) {
+    $newsText = "No More News Alerts";
+    $newsEffectText = "No Effect on Gameplay.";
+} else {
+    $r2 = $results2->fetch_assoc();
+    $newsText = $r2['newsText'];
+    $newsEffectText = $r2['newsEffectText'];
+}
 
 if ($gameBattleSection == "attack") {  //always going to be choosing pieces, otherwise wouldn't hit this button
     $order = "ASC";  // 3 attacking 4
