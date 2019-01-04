@@ -1,21 +1,17 @@
 <?php
 session_start();
 include("../../db.php");
-
 $gameId = $_SESSION['gameId'];
 $myTeam = $_SESSION['myTeam'];
-
 $query = 'SELECT gameActive, gamePhase, gameCurrentTeam, gameBattleSection FROM GAMES WHERE gameId = ?';
 $preparedQuery = $db->prepare($query);
 $preparedQuery->bind_param("i", $gameId);
 $preparedQuery->execute();
 $results = $preparedQuery->get_result();
 $r = $results->fetch_assoc();
-
 $gamePhase = $r['gamePhase'];
 $gameCurrentTeam = $r['gameCurrentTeam'];
 $gameBattleSection = $r['gameBattleSection'];
-
 if ($r['gameActive'] != 1) {
     header("location:home.php?err=7");
     exit;
@@ -32,7 +28,6 @@ if ($gameBattleSection != "none") {
     echo "Cannot undo during battle";
     exit;
 }
-
 $query = 'SELECT movementId, movementFromPosition, movementFromContainer, movementNowPlacement FROM movements WHERE movementGameId = ? ORDER BY movementId DESC LIMIT 0, 1';
 $query = $db->prepare($query);
 $query->bind_param("i", $gameId);
@@ -45,17 +40,14 @@ if ($num_results > 0) {
     $movementFromPosition = $r['movementFromPosition'];
     $movementFromContainer = $r['movementFromContainer'];
     $movementPlacementId = $r['movementNowPlacement'];
-
     $query = 'UPDATE placements SET placementPositionId = ?, placementCurrentMoves = placementCurrentMoves + 1, placementContainerId = ? WHERE (placementId = ?)';
     $query = $db->prepare($query);
     $query->bind_param("iii", $movementFromPosition,  $movementFromContainer,  $movementPlacementId);
     $query->execute();
-
     $query = 'DELETE FROM movements WHERE movementId = ?';
     $query = $db->prepare($query);
     $query->bind_param("i", $movementId);
     $query->execute();
-
     $query = 'SELECT placementUnitId, placementCurrentMoves, placementBattleUsed FROM placements WHERE placementId = ?';
     $query = $db->prepare($query);
     $query->bind_param("i", $movementPlacementId);
@@ -66,7 +58,6 @@ if ($num_results > 0) {
     $placementCurrentMoves = $r['placementCurrentMoves'];
     $placementBattleUsed = $r['placementBattleUsed'];
     $unitNames = ['Transport', 'Submarine', 'Destroyer', 'AircraftCarrier', 'ArmyCompany', 'ArtilleryBattery', 'TankPlatoon', 'MarinePlatoon', 'MarineConvoy', 'AttackHelo', 'SAM', 'FighterSquadron', 'BomberSquadron', 'StealthBomberSquadron', 'Tanker', 'LandBasedSeaMissile'];
-
     $battleUsedText = "";
     if ($placementBattleUsed == 1) {
         $battleUsedText = "\nUsed in Attack";
@@ -77,11 +68,9 @@ if ($num_results > 0) {
     $query = $db->prepare($query);
     $query->bind_param("isiiis", $gameId, $updateType, $movementPlacementId, $movementFromPosition, $movementFromContainer, $newTitle);
     $query->execute();
-
     echo "Movement Undone.";
     exit;
 } else {
     echo "No more undo's can be made.";
     exit;
 }
-

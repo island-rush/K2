@@ -1,6 +1,3 @@
-/*Island Rush CSS File*/
-/*Created By C1C Spencer Adolph (7/28/2018)*/
-
 html, body {
     margin: 0;
     padding: 0;
@@ -13,9 +10,6 @@ html, body {
     height: 100%;
     background-color: black;
 }
-/*----------------------------------------------------------------------------------------------*/
-/*SIDEPANEL CSS*/
-
 #side_panel {
     position: relative;
     height: 95%;
@@ -26,7 +20,6 @@ html, body {
     background-color: wheat;
     z-index: 75;
 }
-
 #titlebar{
     line-height: 1em;
     position: absolute;
@@ -94,7 +87,6 @@ html, body {
     text-align: center;
     border-top: 2px solid black;
 }
-
 #phase_indicator{
     width: 100%;
     height: 20%;
@@ -174,9 +166,6 @@ html, body {
     width: 50%;
     float: left;
 }
-
-/*--------------------------------------------------------------------------------------------------------------*/
-/*BOTTOM PANEL CSS */
 #bottom_panel{
     position: absolute;
     background-color: wheat;
@@ -235,9 +224,6 @@ html, body {
 .phase_Blue{
     background-color: rgb(17, 22, 200);
 }
-
-/*--------------------------------------------------------------------------------------------------------------*/
-/* NEWS ALERT POPUP CSS */
 #popup{
     width: 35%;
     height: 60%;
@@ -318,10 +304,6 @@ html, body {
 .news{
     background-image: url("../images/mapImages/board/Newspaper.jpg");
 }
-
-/*----------------------------------------------------------------------------------------------*/
-/*GAMEBOARD CSS*/
-
 #game_board {
     height: 95%;
     width: 70%;
@@ -425,9 +407,6 @@ html, body {
 .highlighted {
     box-shadow: 0px 0px 0px 1px #a1ffff inset;
 }
-/*----------------------------------------------------------------------------------------------*/
-/*BattleZone CSS*/
-
 #battleZonePopup{
     width: 30%;
     padding-bottom: 37%;
@@ -507,9 +486,6 @@ html, body {
     width:100%;
     min-height: 30%;
 }
-/*----------------------------------------------------------------------------------------------*/
-/*BATTLE ACTION POPUP (DICEROLL) CSS*/
-
 #battleActionPopup{
     width: 96%;
     height: 97%;
@@ -528,11 +504,9 @@ html, body {
     height: 80%;
     margin: 10% auto;
 }
-
 #lastBattleMessage{
     margin: 10% auto;
 }
-
 #actionPopupButton{
     margin: auto;
 }
@@ -575,10 +549,6 @@ html, body {
     display: none;
     background-image: url("../images/battleImages/diceImages/die-6.png");
 }
-
-/*----------------------------------------------------------------------------------------------*/
-/*GAME PIECE CSS*/
-
 .gamePiece {
     width: 33.333%;
     height: 33.333%;
@@ -600,7 +570,6 @@ html, body {
 .Nuke{
     box-shadow: 0px 0px 0px 1px rgb(255, 255, 255) inset;
 }
-
 .Transport{background-image: url("../images/unitImages/Transport.png");}
 .Submarine{background-image: url("../images/unitImages/Submarine.png");}
 .Destroyer{background-image: url("../images/unitImages/Destroyer.png");}
@@ -617,7 +586,6 @@ html, body {
 .StealthBomberSquadron{background-image: url("../images/unitImages/StealthBomber.png");}
 .Tanker{background-image: url("../images/unitImages/Tanker.png");}
 .LandBasedSeaMissile{background-image: url("../images/unitImages/Missile.png");}
-
 #purchased_container > .gamePiece{
     width: 15%;
     height: 33%;
@@ -682,10 +650,6 @@ html, body {
 .selectedPos{
     box-shadow: 0px 0px 0px 1px #ffef0c inset;
 }
-
-/*----------------------------------------------------------------------------------------------*/
-/*ISLAND POSITIONS CSS*/
-
 .gridblockTiny{
     background-color: rgba(255, 253, 250, 0.2);
     position: absolute;
@@ -701,8 +665,8 @@ html, body {
     height: 25%;
     margin-left: 3%;
     margin-top: 41%;
-    -ms-transform: rotate(0deg); /* IE 9 */
-    -webkit-transform: rotate(0deg); /* Safari */
+    -ms-transform: rotate(0deg); 
+    -webkit-transform: rotate(0deg); 
     transform: rotate(0deg);
 }
 #pos13b{
@@ -710,7 +674,7 @@ html, body {
     height: 22%;
     margin-left: 42%;
     margin-top: 1%;
-    -ms-transform: rotate(0deg); /* IE 9 */
+    -ms-transform: rotate(0deg); 
     -webkit-transform: rotate(0deg); /* Safari h */
     transform: rotate(0deg);
 }
@@ -719,8 +683,8 @@ html, body {
     height: 25%;
     margin-left: 14%;
     margin-top: 69%;
-    -ms-transform: rotate(-20deg); /* IE 9 */
-    -webkit-transform: rotate(-20deg); /* Safari */
+    -ms-transform: rotate(-20deg); 
+    -webkit-transform: rotate(-20deg); 
     transform: rotate(-20deg);
 }
 #pos13d{
@@ -728,8 +692,8 @@ html, body {
     height: 24%;
     margin-left: 11%;
     margin-top: 7%;
-    -ms-transform: rotate(-33deg); /* IE 9 */
-    -webkit-transform: rotate(-33deg); /* Safari */
+    -ms-transform: rotate(-33deg); 
+    -webkit-transform: rotate(-33deg); 
     transform: rotate(-33deg);
 }
 #pos13e{
@@ -737,8 +701,8 @@ html, body {
     height: 15%;
     margin-left: 34%;
     margin-top: 28%;
-    -ms-transform: rotate(0deg); /* IE 9 */
-    -webkit-transform: rotate(0deg); /* Safari */
+    -ms-transform: rotate(0deg); 
+    -webkit-transform: rotate(0deg); 
     transform: rotate(0deg);
 }
 #pos13f{
@@ -746,8 +710,8 @@ html, body {
     height: 18%;
     margin-left: 32%;
     margin-top: 44%;
-    -ms-transform: rotate(0deg); /* IE 9 */
-    -webkit-transform: rotate(0deg); /* Safari */
+    -ms-transform: rotate(0deg); 
+    -webkit-transform: rotate(0deg); 
     transform: rotate(0deg);
 }
 #pos13g{
@@ -755,8 +719,8 @@ html, body {
     height: 23%;
     margin-left: 47%;
     margin-top: 63%;
-    -ms-transform: rotate(-7deg); /* IE 9 */
-    -webkit-transform: rotate(-7deg); /* Safari */
+    -ms-transform: rotate(-7deg); 
+    -webkit-transform: rotate(-7deg); 
     transform: rotate(-7deg);
 }
 #pos13h{
@@ -764,8 +728,8 @@ html, body {
     height: 20%;
     margin-left: 73%;
     margin-top:2.4%;
-    -ms-transform: rotate(0deg); /* IE 9 */
-    -webkit-transform: rotate(0deg); /* Safari */
+    -ms-transform: rotate(0deg); 
+    -webkit-transform: rotate(0deg); 
     transform: rotate(0deg);
 }
 #pos13i{
@@ -773,8 +737,8 @@ html, body {
     height: 20%;
     margin-left: 55%;
     margin-top:23%;
-    -ms-transform: rotate(0deg); /* IE 9 */
-    -webkit-transform: rotate(0deg); /* Safari */
+    -ms-transform: rotate(0deg); 
+    -webkit-transform: rotate(0deg); 
     transform: rotate(0deg);
 }
 #pos13j{
@@ -782,8 +746,8 @@ html, body {
     height: 15%;
     margin-left: 54%;
     margin-top: 45%;
-    -ms-transform: rotate(0deg); /* IE 9 */
-    -webkit-transform: rotate(0deg); /* Safari */
+    -ms-transform: rotate(0deg); 
+    -webkit-transform: rotate(0deg); 
     transform: rotate(0deg);
 }
 #pos14a{
@@ -791,8 +755,8 @@ html, body {
     height: 16%;
     margin-left: 55%;
     margin-top: 66%;
-    -ms-transform: rotate(0deg); /* IE 9 */
-    -webkit-transform: rotate(0deg); /* Safari */
+    -ms-transform: rotate(0deg); 
+    -webkit-transform: rotate(0deg); 
     transform: rotate(0deg);
 }
 #pos14b{
@@ -800,8 +764,8 @@ html, body {
     height: 15%;
     margin-left: 14%;
     margin-top: 33%;
-    -ms-transform: rotate(0deg); /* IE 9 */
-    -webkit-transform: rotate(0deg); /* Safari */
+    -ms-transform: rotate(0deg); 
+    -webkit-transform: rotate(0deg); 
     transform: rotate(0deg);
 }
 #pos14c{
@@ -809,8 +773,8 @@ html, body {
     height: 11%;
     margin-left: 8%;
     margin-top: 128%;
-    -ms-transform: rotate(-35deg); /* IE 9 */
-    -webkit-transform: rotate(-35deg); /* Safari */
+    -ms-transform: rotate(-35deg); 
+    -webkit-transform: rotate(-35deg); 
     transform: rotate(-35deg);
 }
 #pos14d{
@@ -818,8 +782,8 @@ html, body {
     height: 11%;
     margin-left: 24%;
     margin-top:150%;
-    -ms-transform: rotate(-35deg); /* IE 9 */
-    -webkit-transform: rotate(-35deg); /* Safari */
+    -ms-transform: rotate(-35deg); 
+    -webkit-transform: rotate(-35deg); 
     transform: rotate(-35deg);
 }
 #pos14e{
@@ -827,8 +791,8 @@ html, body {
     height: 14%;
     margin-left: 60%;
     margin-top:170%;
-    -ms-transform: rotate(0deg); /* IE 9 */
-    -webkit-transform: rotate(0deg); /* Safari */
+    -ms-transform: rotate(0deg); 
+    -webkit-transform: rotate(0deg); 
     transform: rotate(0deg);
 }
 #pos14f{
@@ -836,8 +800,8 @@ html, body {
     height: 12%;
     margin-left: 50%;
     margin-top: 141%;
-    -ms-transform: rotate(-35deg); /* IE 9 */
-    -webkit-transform: rotate(-35deg); /* Safari */
+    -ms-transform: rotate(-35deg); 
+    -webkit-transform: rotate(-35deg); 
     transform: rotate(-35deg);
 }
 #pos14g{
@@ -845,8 +809,8 @@ html, body {
     height: 13%;
     margin-left: 50%;
     margin-top: 104%;
-    -ms-transform: rotate(15deg); /* IE 9 */
-    -webkit-transform: rotate(15deg); /* Safari */
+    -ms-transform: rotate(15deg); 
+    -webkit-transform: rotate(15deg); 
     transform: rotate(15deg);
 }
 #pos14h{
@@ -854,8 +818,8 @@ html, body {
     height: 10%;
     margin-left: 28%;
     margin-top:98%;
-    -ms-transform: rotate(15deg); /* IE 9 */
-    -webkit-transform: rotate(15deg); /* Safari */
+    -ms-transform: rotate(15deg); 
+    -webkit-transform: rotate(15deg); 
     transform: rotate(15deg);
 }
 #pos14i{
@@ -863,8 +827,8 @@ html, body {
     height: 11%;
     margin-left: 24%;
     margin-top: 70%;
-    -ms-transform: rotate(0deg); /* IE 9 */
-    -webkit-transform: rotate(0deg); /* Safari */
+    -ms-transform: rotate(0deg); 
+    -webkit-transform: rotate(0deg); 
     transform: rotate(0deg);
 }
 #pos14j{
@@ -872,8 +836,8 @@ html, body {
     height: 15.5%;
     margin-left: 47%;
     margin-top: 28%;
-    -ms-transform: rotate(0deg); /* IE 9 */
-    -webkit-transform: rotate(0deg); /* Safari */
+    -ms-transform: rotate(0deg); 
+    -webkit-transform: rotate(0deg); 
     transform: rotate(0deg);
 }
 #pos1a{
@@ -881,8 +845,8 @@ html, body {
     height: 30%;
     margin-left: 30%;
     margin-top: 7%;
-    -ms-transform: rotate(0deg); /* IE 9 */
-    -webkit-transform: rotate(0deg); /* Safari */
+    -ms-transform: rotate(0deg); 
+    -webkit-transform: rotate(0deg); 
     transform: rotate(0deg);
 }
 #pos1b{
@@ -890,8 +854,8 @@ html, body {
     height: 17%;
     margin-left: 45%;
     margin-top: 33.5%;
-    -ms-transform: rotate(0deg); /* IE 9 */
-    -webkit-transform: rotate(0deg); /* Safari */
+    -ms-transform: rotate(0deg); 
+    -webkit-transform: rotate(0deg); 
     transform: rotate(0deg);
 }
 #pos1c{
@@ -899,8 +863,8 @@ html, body {
     height: 30%;
     margin-left: 22%;
     margin-top: 50%;
-    -ms-transform: rotate(0deg); /* IE 9 */
-    -webkit-transform: rotate(0deg); /* Safari */
+    -ms-transform: rotate(0deg); 
+    -webkit-transform: rotate(0deg); 
     transform: rotate(0deg);
 }
 #pos1d{
@@ -908,8 +872,8 @@ html, body {
     height: 30%;
     margin-left: 53%;
     margin-top:50%;
-    -ms-transform: rotate(0deg); /* IE 9 */
-    -webkit-transform: rotate(0deg); /* Safari */
+    -ms-transform: rotate(0deg); 
+    -webkit-transform: rotate(0deg); 
     transform: rotate(0deg);
 }
 #pos2a{
@@ -917,8 +881,8 @@ html, body {
     height: 27%;
     margin-left: 11%;
     margin-top: 47%;
-    -ms-transform: rotate(0deg); /* IE 9 */
-    -webkit-transform: rotate(0deg); /* Safari */
+    -ms-transform: rotate(0deg); 
+    -webkit-transform: rotate(0deg); 
     transform: rotate(0deg);
 }
 #pos2b{
@@ -926,8 +890,8 @@ html, body {
     height: 27%;
     margin-left: 40%;
     margin-top: 30%;
-    -ms-transform: rotate(-8deg); /* IE 9 */
-    -webkit-transform: rotate(-8deg); /* Safari */
+    -ms-transform: rotate(-8deg); 
+    -webkit-transform: rotate(-8deg); 
     transform: rotate(-8deg);
 }
 #pos2c{
@@ -935,8 +899,8 @@ html, body {
     height: 25%;
     margin-left: 47%;
     margin-top: 54.5%;
-    -ms-transform: rotate(-8deg); /* IE 9 */
-    -webkit-transform: rotate(-8deg); /* Safari */
+    -ms-transform: rotate(-8deg); 
+    -webkit-transform: rotate(-8deg); 
     transform: rotate(-8deg);
 }
 #pos2d{
@@ -944,8 +908,8 @@ html, body {
     height: 26%;
     margin-left: 72.5%;
     margin-top: 48%;
-    -ms-transform: rotate(-8deg); /* IE 9 */
-    -webkit-transform: rotate(-8deg); /* Safari */
+    -ms-transform: rotate(-8deg); 
+    -webkit-transform: rotate(-8deg); 
     transform: rotate(-8deg);
 }
 #pos3a{
@@ -953,8 +917,8 @@ html, body {
     height: 23%;
     margin-left: 2%;
     margin-top: 22%;
-    -ms-transform: rotate(0deg); /* IE 9 */
-    -webkit-transform: rotate(0deg); /* Safari */
+    -ms-transform: rotate(0deg); 
+    -webkit-transform: rotate(0deg); 
     transform: rotate(0deg);
 }
 #pos3b{
@@ -962,8 +926,8 @@ html, body {
     height: 24%;
     margin-left: 25%;
     margin-top: 24%;
-    -ms-transform: rotate(0deg); /* IE 9 */
-    -webkit-transform: rotate(0deg); /* Safari */
+    -ms-transform: rotate(0deg); 
+    -webkit-transform: rotate(0deg); 
     transform: rotate(0deg);
 }
 #pos3c{
@@ -971,8 +935,8 @@ html, body {
     height: 24%;
     margin-left: 53%;
     margin-top: 25%;
-    -ms-transform: rotate(0deg); /* IE 9 */
-    -webkit-transform: rotate(0deg); /* Safari */
+    -ms-transform: rotate(0deg); 
+    -webkit-transform: rotate(0deg); 
     transform: rotate(0deg);
 }
 #pos4a{
@@ -980,8 +944,8 @@ html, body {
     height: 27%;
     margin-left: 21%;
     margin-top: 20%;
-    -ms-transform: rotate(0deg); /* IE 9 */
-    -webkit-transform: rotate(0deg); /* Safari */
+    -ms-transform: rotate(0deg); 
+    -webkit-transform: rotate(0deg); 
     transform: rotate(0deg);
 }
 #pos4b{
@@ -989,8 +953,8 @@ html, body {
     height: 27%;
     margin-left: 51%;
     margin-top: 20%;
-    -ms-transform: rotate(0deg); /* IE 9 */
-    -webkit-transform: rotate(0deg); /* Safari */
+    -ms-transform: rotate(0deg); 
+    -webkit-transform: rotate(0deg); 
     transform: rotate(0deg);
 }
 #pos4c{
@@ -998,8 +962,8 @@ html, body {
     height: 27%;
     margin-left: 22%;
     margin-top: 45%;
-    -ms-transform: rotate(0deg); /* IE 9 */
-    -webkit-transform: rotate(0deg); /* Safari */
+    -ms-transform: rotate(0deg); 
+    -webkit-transform: rotate(0deg); 
     transform: rotate(0deg);
 }
 #pos4d{
@@ -1007,8 +971,8 @@ html, body {
     height: 27%;
     margin-left: 51%;
     margin-top: 45%;
-    -ms-transform: rotate(0deg); /* IE 9 */
-    -webkit-transform: rotate(0deg); /* Safari */
+    -ms-transform: rotate(0deg); 
+    -webkit-transform: rotate(0deg); 
     transform: rotate(0deg);
 }
 #pos5a{
@@ -1016,8 +980,8 @@ html, body {
     height: 25%;
     margin-left: 27%;
     margin-top: 27%;
-    -ms-transform: rotate(0deg); /* IE 9 */
-    -webkit-transform: rotate(0deg); /* Safari */
+    -ms-transform: rotate(0deg); 
+    -webkit-transform: rotate(0deg); 
     transform: rotate(0deg);
 }
 #pos5b{
@@ -1025,8 +989,8 @@ html, body {
     height: 23%;
     margin-left: 30%;
     margin-top: 5%;
-    -ms-transform: rotate(0deg); /* IE 9 */
-    -webkit-transform: rotate(0deg); /* Safari */
+    -ms-transform: rotate(0deg); 
+    -webkit-transform: rotate(0deg); 
     transform: rotate(0deg);
 }
 #pos5c{
@@ -1034,8 +998,8 @@ html, body {
     height: 23%;
     margin-left: 62%;
     margin-top: 17%;
-    -ms-transform: rotate(0deg); /* IE 9 */
-    -webkit-transform: rotate(0deg); /* Safari */
+    -ms-transform: rotate(0deg); 
+    -webkit-transform: rotate(0deg); 
     transform: rotate(0deg);
 }
 #pos5d{
@@ -1043,8 +1007,8 @@ html, body {
     height: 25%;
     margin-left: 34%;
     margin-top: 51%;
-    -ms-transform: rotate(0deg); /* IE 9 */
-    -webkit-transform: rotate(0deg); /* Safari */
+    -ms-transform: rotate(0deg); 
+    -webkit-transform: rotate(0deg); 
     transform: rotate(0deg);
 }
 #pos6a{
@@ -1052,8 +1016,8 @@ html, body {
     height: 33%;
     margin-left: 15%;
     margin-top: 27%;
-    -ms-transform: rotate(0deg); /* IE 9 */
-    -webkit-transform: rotate(0deg); /* Safari */
+    -ms-transform: rotate(0deg); 
+    -webkit-transform: rotate(0deg); 
     transform: rotate(0deg);
 }
 #pos6b{
@@ -1061,24 +1025,24 @@ html, body {
     height: 31%;
     margin-left: 51%;
     margin-top: 10%;
-    -ms-transform: rotate(0deg); /* IE 9 */
-    -webkit-transform: rotate(0deg); /* Safari */
+    -ms-transform: rotate(0deg); 
+    -webkit-transform: rotate(0deg); 
     transform: rotate(0deg);}
 #pos6c{
     width: 28%;
     height: 31%;
     margin-left: 49%;
     margin-top: 37%;
-    -ms-transform: rotate(0deg); /* IE 9 */
-    -webkit-transform: rotate(0deg); /* Safari */
+    -ms-transform: rotate(0deg); 
+    -webkit-transform: rotate(0deg); 
     transform: rotate(0deg);}
 #pos7a{
     width: 25%;
     height: 27.5%;
     margin-left: 18%;
     margin-top: 28%;
-    -ms-transform: rotate(0deg); /* IE 9 */
-    -webkit-transform: rotate(0deg); /* Safari */
+    -ms-transform: rotate(0deg); 
+    -webkit-transform: rotate(0deg); 
     transform: rotate(0deg);
 }
 #pos7b{
@@ -1086,8 +1050,8 @@ html, body {
     height: 25%;
     margin-left: 50%;
     margin-top: 17%;
-    -ms-transform: rotate(0deg); /* IE 9 */
-    -webkit-transform: rotate(0deg); /* Safari */
+    -ms-transform: rotate(0deg); 
+    -webkit-transform: rotate(0deg); 
     transform: rotate(0deg);
 }
 #pos7c{
@@ -1095,8 +1059,8 @@ html, body {
     height: 25%;
     margin-left: 49%;
     margin-top: 39.5%;
-    -ms-transform: rotate(0deg); /* IE 9 */
-    -webkit-transform: rotate(0deg); /* Safari */
+    -ms-transform: rotate(0deg); 
+    -webkit-transform: rotate(0deg); 
     transform: rotate(0deg);
 }
 #pos8a{
@@ -1104,8 +1068,8 @@ html, body {
     height: 23%;
     margin-left: 30%;
     margin-top: 17%;
-    -ms-transform: rotate(0deg); /* IE 9 */
-    -webkit-transform: rotate(0deg); /* Safari */
+    -ms-transform: rotate(0deg); 
+    -webkit-transform: rotate(0deg); 
     transform: rotate(0deg);
 }
 #pos8b{
@@ -1113,8 +1077,8 @@ html, body {
     height: 28%;
     margin-left: 57%;
     margin-top: 23%;
-    -ms-transform: rotate(0deg); /* IE 9 */
-    -webkit-transform: rotate(0deg); /* Safari */
+    -ms-transform: rotate(0deg); 
+    -webkit-transform: rotate(0deg); 
     transform: rotate(0deg);
 }
 #pos8c{
@@ -1122,8 +1086,8 @@ html, body {
     height: 27%;
     margin-left: 20%;
     margin-top: 41%;
-    -ms-transform: rotate(24deg); /* IE 9 */
-    -webkit-transform: rotate(24deg); /* Safari */
+    -ms-transform: rotate(24deg); 
+    -webkit-transform: rotate(24deg); 
     transform: rotate(24deg);
 }
 #pos9a{
@@ -1131,8 +1095,8 @@ html, body {
     height: 25%;
     margin-left: 65%;
     margin-top: 45%;
-    -ms-transform: rotate(-22deg); /* IE 9 */
-    -webkit-transform: rotate(-22deg); /* Safari */
+    -ms-transform: rotate(-22deg); 
+    -webkit-transform: rotate(-22deg); 
     transform: rotate(-22deg);
 }
 #pos9b{
@@ -1140,8 +1104,8 @@ html, body {
     height: 25%;
     margin-left: 39%;
     margin-top: 52%;
-    -ms-transform: rotate(-22deg); /* IE 9 */
-    -webkit-transform: rotate(-22deg); /* Safari */
+    -ms-transform: rotate(-22deg); 
+    -webkit-transform: rotate(-22deg); 
     transform: rotate(-22deg);
 }
 #pos9c{
@@ -1149,8 +1113,8 @@ html, body {
     height: 24%;
     margin-left: 40%;
     margin-top: 19%;
-    -ms-transform: rotate(0deg); /* IE 9 */
-    -webkit-transform: rotate(0deg); /* Safari */
+    -ms-transform: rotate(0deg); 
+    -webkit-transform: rotate(0deg); 
     transform: rotate(0deg);
 }
 #pos9d{
@@ -1158,8 +1122,8 @@ html, body {
     height: 27%;
     margin-left: 9%;
     margin-top: 8%;
-    -ms-transform: rotate(0deg); /* IE 9 */
-    -webkit-transform: rotate(0deg); /* Safari */
+    -ms-transform: rotate(0deg); 
+    -webkit-transform: rotate(0deg); 
     transform: rotate(0deg);
 }
 #pos10a{
@@ -1167,8 +1131,8 @@ html, body {
     height: 33%;
     margin-left: 50%;
     margin-top: 13%;
-    -ms-transform: rotate(0deg); /* IE 9 */
-    -webkit-transform: rotate(0deg); /* Safari */
+    -ms-transform: rotate(0deg); 
+    -webkit-transform: rotate(0deg); 
     transform: rotate(0deg);
 }
 #pos10b{
@@ -1176,8 +1140,8 @@ html, body {
     height: 23%;
     margin-left: 22%;
     margin-top: 6%;
-    -ms-transform: rotate(0deg); /* IE 9 */
-    -webkit-transform: rotate(0deg); /* Safari */
+    -ms-transform: rotate(0deg); 
+    -webkit-transform: rotate(0deg); 
     transform: rotate(0deg);
 }
 #pos10c{
@@ -1185,8 +1149,8 @@ html, body {
     height: 19%;
     margin-left: 20%;
     margin-top: 30%;
-    -ms-transform: rotate(-10deg); /* IE 9 */
-    -webkit-transform: rotate(-10deg); /* Safari */
+    -ms-transform: rotate(-10deg); 
+    -webkit-transform: rotate(-10deg); 
     transform: rotate(-10deg);
 }
 #pos10d{
@@ -1194,8 +1158,8 @@ html, body {
     height: 25%;
     margin-left: 34%;
     margin-top: 50%;
-    -ms-transform: rotate(0deg); /* IE 9 */
-    -webkit-transform: rotate(0deg); /* Safari */
+    -ms-transform: rotate(0deg); 
+    -webkit-transform: rotate(0deg); 
     transform: rotate(0deg);
 }
 #pos11a{
@@ -1203,8 +1167,8 @@ html, body {
     height: 27%;
     margin-left: 19%;
     margin-top: 50%;
-    -ms-transform: rotate(0deg); /* IE 9 */
-    -webkit-transform: rotate(0deg); /* Safari */
+    -ms-transform: rotate(0deg); 
+    -webkit-transform: rotate(0deg); 
     transform: rotate(0deg);
 }
 #pos11b{
@@ -1212,8 +1176,8 @@ html, body {
     height: 17%;
     margin-left: 48%;
     margin-top: 36.5%;
-    -ms-transform: rotate(8deg); /* IE 9 */
-    -webkit-transform: rotate(8deg); /* Safari */
+    -ms-transform: rotate(8deg); 
+    -webkit-transform: rotate(8deg); 
     transform: rotate(8deg);
 }
 #pos11c{
@@ -1221,8 +1185,8 @@ html, body {
     height: 25%;
     margin-left: 50%;
     margin-top: 15%;
-    -ms-transform: rotate(0deg); /* IE 9 */
-    -webkit-transform: rotate(0deg); /* Safari */
+    -ms-transform: rotate(0deg); 
+    -webkit-transform: rotate(0deg); 
     transform: rotate(0deg);
 }
 #pos12a{
@@ -1230,8 +1194,8 @@ html, body {
     height: 26%;
     margin-left: 55%;
     margin-top: 27%;
-    -ms-transform: rotate(25deg); /* IE 9 */
-    -webkit-transform: rotate(25deg); /* Safari */
+    -ms-transform: rotate(25deg); 
+    -webkit-transform: rotate(25deg); 
     transform: rotate(25deg);
 }
 #pos12b{
@@ -1239,8 +1203,8 @@ html, body {
     height: 26%;
     margin-left: 39.5%;
     margin-top: 48%;
-    -ms-transform: rotate(25deg); /* IE 9 */
-    -webkit-transform: rotate(25deg); /* Safari */
+    -ms-transform: rotate(25deg); 
+    -webkit-transform: rotate(25deg); 
     transform: rotate(25deg);
 }
 #pos12c{
@@ -1248,8 +1212,8 @@ html, body {
     height: 25%;
     margin-left: 2%;
     margin-top: 6%;
-    -ms-transform: rotate(0deg); /* IE 9 */
-    -webkit-transform: rotate(0deg); /* Safari */
+    -ms-transform: rotate(0deg); 
+    -webkit-transform: rotate(0deg); 
     transform: rotate(0deg);
 }
 #pos12d{
@@ -1257,8 +1221,8 @@ html, body {
     height: 22%;
     margin-left: 24%;
     margin-top: 26%;
-    -ms-transform: rotate(25deg); /* IE 9 */
-    -webkit-transform: rotate(25deg); /* Safari */
+    -ms-transform: rotate(25deg); 
+    -webkit-transform: rotate(25deg); 
     transform: rotate(25deg);
 }
 
@@ -1271,8 +1235,8 @@ html, body {
     height: 15%;
     margin-left: 25%;
     margin-top:10%;
-    -ms-transform: rotate(0deg); /* IE 9 */
-    -webkit-transform: rotate(0deg); /* Safari */
+    -ms-transform: rotate(0deg); 
+    -webkit-transform: rotate(0deg); 
     transform: rotate(0deg);
 }
 #posM2{
@@ -1280,8 +1244,8 @@ html, body {
     height: 15%;
     margin-left: 80%;
     margin-top: 10%;
-    -ms-transform: rotate(0deg); /* IE 9 */
-    -webkit-transform: rotate(0deg); /* Safari */
+    -ms-transform: rotate(0deg); 
+    -webkit-transform: rotate(0deg); 
     transform: rotate(0deg);
 }
 #posM3{
@@ -1289,8 +1253,8 @@ html, body {
     height: 15%;
     margin-left: 5%;
     margin-top: 5%;
-    -ms-transform: rotate(0deg); /* IE 9 */
-    -webkit-transform: rotate(0deg); /* Safari */
+    -ms-transform: rotate(0deg); 
+    -webkit-transform: rotate(0deg); 
     transform: rotate(0deg);
 }
 #posM4{
@@ -1298,8 +1262,8 @@ html, body {
     height: 15%;
     margin-left: 5%;
     margin-top: 60%;
-    -ms-transform: rotate(0deg); /* IE 9 */
-    -webkit-transform: rotate(0deg); /* Safari */
+    -ms-transform: rotate(0deg); 
+    -webkit-transform: rotate(0deg); 
     transform: rotate(0deg);
 }
 b {

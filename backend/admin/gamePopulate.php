@@ -1,12 +1,10 @@
 <?php
 session_start();
 include("../db.php");
-
 if (!isset($_SESSION['secretAdminSessionVariable']) || !isset($_SESSION['gameId']) || !isset($_SESSION['gameSection']) || !isset($_SESSION['gameInstructor'])) {
     header("location:home.php?err=4");
     exit;
 }
-
 $gameId = $_SESSION['gameId'];
 $gameSection = $_SESSION['gameSection'];
 $gameInstructor = $_SESSION['gameInstructor'];
@@ -79,7 +77,6 @@ $placementBattleUsed = 0;
 
 $query = 'INSERT INTO placements (placementGameId, placementUnitId, placementTeamId, placementContainerId, placementCurrentMoves, placementPositionId, placementBattleUsed) VALUES(?, ?, ?, ?, ?, ?, ?)';
 $query = $db->prepare($query);
-
 $query2 = 'SELECT LAST_INSERT_ID()';
 $query2 = $db->prepare($query2);
 

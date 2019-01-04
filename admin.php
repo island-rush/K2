@@ -1,16 +1,13 @@
 <?php
 session_start();
 include("backend/db.php");
-
 if (!isset($_SESSION['secretAdminSessionVariable']) || !isset($_SESSION['gameId']) || !isset($_SESSION['gameSection']) || !isset($_SESSION['gameInstructor'])) {
     header("location:home.php?err=4");
     exit;
 }
-
 $gameId = $_SESSION['gameId'];
 $section = $_SESSION['gameSection'];
 $instructor = $_SESSION['gameInstructor'];
-
 $query = "SELECT gameActive, gameCurrentTeam, gameTurn FROM GAMES WHERE gameId = ?";
 $preparedQuery = $db->prepare($query);
 $preparedQuery->bind_param("i", $gameId);
@@ -21,7 +18,6 @@ $gameActive = (int) htmlentities($r['gameActive']);
 $gameCurrentTeam = htmlentities($r['gameCurrentTeam']);
 $gameTurn = $r['gameTurn'];
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -30,7 +26,6 @@ $gameTurn = $r['gameTurn'];
     <link rel="stylesheet" type="text/css" href="frontend/css/main.css">
     <script>
 		console.log("Admin Javascript");
-
 		function populateGame() {
 			if(confirm("ARE YOU SURE YOU WANT TO COMPLETELY RESET THIS GAME?")){
 				if(confirm("This will delete all information for the game and set it back to the initial start state of the game.\n\n   ARE YOU SURE YOU WANT TO RESET?")){
@@ -42,7 +37,6 @@ $gameTurn = $r['gameTurn'];
 				}
 			}
 		}
-
 		function toggleActive() {
 			let phpGamePopulate = new XMLHttpRequest();
 			phpGamePopulate.open("GET", "backend/admin/gameToggleActive.php", true);
@@ -50,19 +44,15 @@ $gameTurn = $r['gameTurn'];
 		}
     </script>
 </head>
-
 <body>
 <h1>Island Rush Admin</h1>
-
 <nav>
     <a href="./home.php">Home</a>
     <a href="rulebook.html">Rule Book</a>
 </nav>
-
 <h2>Admin Tools</h2>
 <span class="important" id="section">Section: <?php echo htmlentities($section); ?></span>
 <span class="important" id="instructor">Instructor: <?php echo htmlentities($instructor); ?></span>
-
 <br>
 <hr>
 <h3>Activate / Deactivate Game</h3>
@@ -72,10 +62,8 @@ $gameTurn = $r['gameTurn'];
     <span id="slider1" class="slider round"></span>
 </label>
 <span>Active</span>
-
 <hr>
 <h3>News Alerts for this game:</h3>
-
 <?php
 $query = "SELECT * FROM newsAlerts WHERE newsGameId = ? AND newsActivated = 0 ORDER BY newsOrder ASC";
 $preparedQuery = $db->prepare($query);
@@ -115,7 +103,6 @@ if ($news_rows == 0) {
     echo "</table></div>";
 }
 ?>
-
 <hr>
 <button class="btn btn-danger" id="populateButton" onclick="populateGame();">RESET GAME (Refresh After)</button>
 <br>

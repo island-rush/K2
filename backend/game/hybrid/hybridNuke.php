@@ -1,23 +1,18 @@
 <?php
 session_start();
 include("../../db.php");
-
 $gameId = $_SESSION['gameId'];
 $myTeam = $_SESSION['myTeam'];
-
 $islandNum = (int) $_REQUEST['islandNum'];
-
 $query = 'SELECT gameActive, gamePhase, gameCurrentTeam, game'.$myTeam.'Hpoints FROM GAMES WHERE gameId = ?';
 $preparedQuery = $db->prepare($query);
 $preparedQuery->bind_param("i", $gameId);
 $preparedQuery->execute();
 $results = $preparedQuery->get_result();
 $r = $results->fetch_assoc();
-
 $gamePhase = $r['gamePhase'];
 $gameCurrentTeam = $r['gameCurrentTeam'];
 $points = $r['game'.$myTeam.'Hpoints'];
-
 if ($r['gameActive'] != 1) {
     header("location:home.php?err=7");
     exit;
@@ -34,7 +29,6 @@ if ($points < 12) {
     echo "Not enough hybrid points.";
     exit;
 }
-
 $islandSpots = [
     [0, 1, 9, 13, 14, 75, 76, 77, 78],
     [2, 3, 4, 10, 11, 15, 16, 79, 80, 81, 82, 121],
@@ -48,9 +42,7 @@ $islandSpots = [
     [29, 30, 31, 37, 38, 43, 44, 45, 107, 108, 109, 110],
     [33, 34, 35, 40, 41, 47, 48, 49, 111, 112, 113],
     [36, 37, 42, 43, 50, 51, 52, 114, 115, 116, 117]];
-
 $thisIslandSpots = $islandSpots[$islandNum - 1];
-
 for ($x = 0; $x < sizeof($thisIslandSpots); $x++) {
     $positionId = $thisIslandSpots[$x];
     $query = 'SELECT placementId FROM placements WHERE placementPositionId = ? AND placementGameId = ? ORDER BY placementContainerId DESC';
@@ -62,12 +54,10 @@ for ($x = 0; $x < sizeof($thisIslandSpots); $x++) {
     for ($i = 0; $i < $num_results; $i++) {
         $b = $results->fetch_assoc();
         $placementId = $b['placementId'];
-
         $query2 = 'DELETE FROM placements WHERE placementId = ?';
         $query2= $db->prepare($query2);
         $query2->bind_param("i", $placementId);
         $query2->execute();
-
         $updateType = "pieceRemove";
         $query = 'INSERT INTO updates (updateGameId, updateType, updatePlacementId) VALUES (?, ?, ?)';
         $query = $db->prepare($query);
@@ -87,36 +77,29 @@ $query = 'INSERT INTO newsAlerts (newsGameId, newsOrder, newsTeam, newsPieces, n
 $query = $db->prepare($query);
 $query->bind_param("iisssiii",$gameId, $order, $All, $allPieces, $disable, $zone, $length, $activated);
 $query->execute();
-
 $query = 'UPDATE games SET gameIsland'.$islandNum.' = ? WHERE (gameId = ?)';
 $query = $db->prepare($query);
 $query->bind_param("si", $Nuke, $gameId);
 $query->execute();
-
 $length = 7;
 $nukeHuman = "nukeHuman";
 $query = 'INSERT INTO newsAlerts (newsGameId, newsOrder, newsTeam, newsEffect, newsLength, newsActivated) VALUES(?, ?, ?, ?, ?, ?)';
 $query = $db->prepare($query);
 $query->bind_param("iissii",$gameId, $order, $myTeam, $nukeHuman, $length, $activated);
 $query->execute();
-
 $updateType = "islandOwnerChange";
 $query = 'INSERT INTO updates (updateGameId, updateType, updatePlacementId, updateHTML) VALUES (?, ?, ?, ?)';
 $query = $db->prepare($query);
 $query->bind_param("isis", $gameId, $updateType, $islandNum, $Nuke);
 $query->execute();
-
 $query = 'UPDATE games SET game'.$myTeam.'Hpoints = game'.$myTeam.'Hpoints - 12 WHERE gameId = ?';
 $query = $db->prepare($query);
 $query->bind_param("i",  $gameId);
 $query->execute();
-
 $updateType = "getBoard";
 $query = 'INSERT INTO updates (updateGameId, updateType) VALUES (?, ?)';
 $query = $db->prepare($query);
 $query->bind_param("is", $gameId, $updateType);
 $query->execute();
-
 echo "Nuked the Island.";
 exit;
-

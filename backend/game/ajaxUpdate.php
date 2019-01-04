@@ -1,11 +1,8 @@
 <?php
 set_time_limit(0);
-
 $gameId = (int) $_REQUEST['gameId'];
 $lastUpdateId = (int) $_REQUEST['lastUpdateId'];
-
 include("../db.php");
-
 $loopCounter = 0;
 while(true) {
     $query = 'SELECT updateId, updateType, updatePlacementId, updateNewPositionId, updateNewContainerId, updateHTML FROM updates WHERE (updateGameId = ?) AND (updateId > ?) ORDER BY updateId ASC';
@@ -27,14 +24,11 @@ while(true) {
         echo json_encode($arr);
         break;
     }
-
     if ($loopCounter++ >= 800) {  //3.5 minutes total
         echo "TIMEOUT";
         break;
     }
-
     usleep(250000);   //.25 seconds in-between each query
 }
-
 $results->free();
 $db->close();

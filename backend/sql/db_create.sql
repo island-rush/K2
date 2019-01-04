@@ -1,10 +1,7 @@
--- Database Creation for K2.5
-
 DROP DATABASE IF EXISTS islandRushDB2;
 CREATE DATABASE islandRushDB2;
 USE islandRushDB2;
 SET SQL_SAFE_UPDATES = 0;
-
 CREATE TABLE IF NOT EXISTS `games`(
   `gameId` int(3) NOT NULL AUTO_INCREMENT,
   `gameSection` varchar(5) NOT NULL,
@@ -42,11 +39,7 @@ CREATE TABLE IF NOT EXISTS `games`(
   `gameIsland14` varchar(5) NOT NULL DEFAULT 'Blue',
     PRIMARY KEY(`gameId`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
-
 INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword, gameActive) VALUES ('M1A1', 'Adolph', 	'5f4dcc3b5aa765d61d8327deb882cf99', 1);
-
--- Units Table Removed, table unchanging and now hardcoded for fewer db requests / faster runtime
-
 CREATE TABLE IF NOT EXISTS `placements`(
 	`placementId` int(8) NOT NULL AUTO_INCREMENT,
     `placementGameId` int(3) NOT NULL,
@@ -59,7 +52,6 @@ CREATE TABLE IF NOT EXISTS `placements`(
     PRIMARY KEY(`placementId`),
     FOREIGN KEY (placementGameId) REFERENCES games(gameId)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
-
 CREATE TABLE IF NOT EXISTS `movements`(
 	`movementId` int(16) NOT NULL AUTO_INCREMENT,
     `movementGameId` int(5) NOT NULL,
@@ -69,7 +61,6 @@ CREATE TABLE IF NOT EXISTS `movements`(
     PRIMARY KEY(`movementId`),
     FOREIGN KEY (movementGameId) REFERENCES games(gameId)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
-
 CREATE TABLE IF NOT EXISTS `battlePieces`(
 	`battlePieceId` int(8) NOT NULL,
     `battleGameId` int(3) NOT NULL,
@@ -77,7 +68,6 @@ CREATE TABLE IF NOT EXISTS `battlePieces`(
     `battlePieceWasHit` int(1) NOT NULL DEFAULT 0,
     PRIMARY KEY(`battlePieceId`)
 );
-
 CREATE TABLE IF NOT EXISTS `updates`(
 	`updateId` int(16) NOT NULL AUTO_INCREMENT,
 	`updateGameId` int(5) NOT NULL,
@@ -88,7 +78,6 @@ CREATE TABLE IF NOT EXISTS `updates`(
     `updateHTML` varchar(16000) DEFAULT 'defaultString',
 	PRIMARY KEY(`updateId`)
  ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
- 
 CREATE TABLE IF NOT EXISTS `newsAlerts`(
   `newsId` int(8) NOT NULL AUTO_INCREMENT,
   `newsGameId` int(3) NOT NULL,
@@ -105,4 +94,3 @@ CREATE TABLE IF NOT EXISTS `newsAlerts`(
   `newsActivated` int(1) NOT NULL DEFAULT 0,
   PRIMARY KEY(`newsId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
-

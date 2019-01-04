@@ -112,7 +112,7 @@ $waterClass = 'class="gridblock water"';
                             <button id="logout_button" onclick="logout(false);">Logout</button>
                         </div>
                         <div id="undo_button_div">
-                            <button id="undo_button" disabled onclick="undoButtonFunction();">Undo Movement</button>
+                            <button id="undo_button" disabled onclick="generalBackendRequest('backend/game/pieces/pieceMoveUndo.php');">Undo Movement</button>
                         </div>
                     </div>
                 </div>
@@ -316,8 +316,8 @@ $waterClass = 'class="gridblock water"';
                     <div id="center_defender" data-boxId="6"><?php $boxId = 4; include("backend/game/battles/battlePieceDisplay.php"); ?></div>
                     <div id="battle_outcome"></div>
                     <div id="battle_buttons">
-                        <button id="attackButton" disabled onclick="attackButtonFunction();">Loading...</button>
-                        <button id="changeSectionButton" disabled onclick="changeSectionButtonFunction();">Loading...</button>
+                        <button id="attackButton" disabled onclick="generalBackendRequest('backend/game/battles/battleAttackButton.php');">Loading...</button>
+                        <button id="changeSectionButton" disabled onclick="generalBackendRequest('backend/game/battles/battleChangeSectionButton.php')">Loading...</button>
                     </div>
                     <div id="battleActionPopup">
                         <div id="battleActionPopupContainer">
@@ -330,7 +330,7 @@ $waterClass = 'class="gridblock water"';
                                 <div id="dice_image6" class="dice_image"></div>
                             </div>
                             <div id="lastBattleMessage">Loading...</div>
-                            <button id="actionPopupButton" disabled onclick="battleActionPopupButtonClick();">Loading...</button>
+                            <button id="actionPopupButton" disabled onclick="generalBackendRequest('backend/game/battles/battleActionPopupButton.php');">Loading...</button>
                         </div>
                     </div>
                 </div>
@@ -401,6 +401,6 @@ $waterClass = 'class="gridblock water"';
                 </div>
             </div>
         </div>
-        <script src="frontend/js/game-v1.js"></script>
+        <script src="frontend/js/game-v2.js"></script>
     </body>
 </html>

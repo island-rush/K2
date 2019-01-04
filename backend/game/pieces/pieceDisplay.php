@@ -5,7 +5,6 @@ $query->bind_param("ii", $positionId, $gameId);
 $query->execute();
 $results = $query->get_result();
 $num_results = $results->num_rows;
-
 for ($i = 0; $i < $num_results; $i++) {
     $r = $results->fetch_assoc();
     $placementId = (int) $r['placementId'];
@@ -13,15 +12,12 @@ for ($i = 0; $i < $num_results; $i++) {
     $placementTeamId = $r['placementTeamId'];
     $placementCurrentMoves = $r['placementCurrentMoves'];
     $placementBattleUsed = $r['placementBattleUsed'];
-
     $pieceFunctions = ' draggable="true" ondragstart="pieceDragstart(event, this);" ondragleave="pieceDragleave(event, this);" onclick="pieceClick(event, this);" ondragenter="pieceDragenter(event, this);" ';
     $containerFunctions = " ondragenter='containerDragenter(event, this);' ondragleave='containerDragleave(event, this);' ondragover='positionDragover(event, this);' ondrop='positionDrop(event, this);' ";
-
     $battleUsedText = "";
     if ($placementBattleUsed == 1) {
         $battleUsedText = "\nUsed in Attack";
     }
-    //open the overall piece
     echo "<div class='".$unitNames[$placementUnitId]." gamePiece ".$placementTeamId."' title='".$unitNames[$placementUnitId]."\nMoves: ".$placementCurrentMoves.$battleUsedText."' data-placementId='".$placementId."' ".$pieceFunctions.">";
     if ($placementUnitId == 0 || $placementUnitId == 3) {
         if ($placementUnitId == 0) {
@@ -51,5 +47,4 @@ for ($i = 0; $i < $num_results; $i++) {
     }
     echo "</div>";  //end the overall piece
 }
-
 unset($positionId);

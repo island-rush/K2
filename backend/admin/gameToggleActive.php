@@ -1,12 +1,10 @@
 <?php
 session_start();
 include("../db.php");
-
 if (!isset($_SESSION['secretAdminSessionVariable']) || !isset($_SESSION['gameId']) || !isset($_SESSION['gameSection']) || !isset($_SESSION['gameInstructor'])) {
     header("location:home.php?err=4");
     exit;
 }
-
 $gameId = $_SESSION['gameId'];
 
 $query = "UPDATE GAMES SET gameActive = (gameActive + 1) % 2, gameRedJoined = 0, gameBlueJoined = 0  WHERE gameId = ?";
@@ -19,4 +17,3 @@ $query = 'INSERT INTO updates (updateGameId, updateType) VALUES (?, ?)';
 $query = $db->prepare($query);
 $query->bind_param("is", $gameId, $updateType);
 $query->execute();
-

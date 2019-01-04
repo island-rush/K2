@@ -1,24 +1,19 @@
 <?php
 session_start();
 include("../../db.php");
-
 $gameId = $_SESSION['gameId'];
 $myTeam = $_SESSION['myTeam'];
-
 $battlePieceId = (int) $_REQUEST['battlePieceId'];
-
 $query = 'SELECT gameActive, gamePhase, gameCurrentTeam, gameBattleSection, gameBattleSubSection FROM GAMES WHERE gameId = ?';
 $preparedQuery = $db->prepare($query);
 $preparedQuery->bind_param("i", $gameId);
 $preparedQuery->execute();
 $results = $preparedQuery->get_result();
 $r = $results->fetch_assoc();
-
 $gamePhase = $r['gamePhase'];
 $gameCurrentTeam = $r['gameCurrentTeam'];
 $gameBattleSection = $r['gameBattleSection'];
 $gameBattleSubSection = $r['gameBattleSubSection'];
-
 if ($r['gameActive'] != 1) {
     header("location:home.php?err=7");
     exit;
@@ -35,7 +30,6 @@ if (($gameBattleSection == "attack" && $myTeam != $gameCurrentTeam) || ($gameBat
     echo "Not your turn to select pieces.";
     exit;
 }
-
 $query = 'SELECT battlePieceState FROM battlePieces WHERE battlePieceId = ?';
 $preparedQuery = $db->prepare($query);
 $preparedQuery->bind_param("i", $battlePieceId);
@@ -43,18 +37,15 @@ $preparedQuery->execute();
 $results = $preparedQuery->get_result();
 $r = $results->fetch_assoc();
 $battlePieceState = $r['battlePieceState'];
-
 if ($battlePieceState == 5 || $battlePieceState == 6) {
     echo "Cannot click used pieces.";
     exit;
 }
-
 if ($battlePieceState == 3 || $battlePieceState == 4) {
     $query = 'UPDATE battlePieces SET battlePieceState = battlePieceState - 2 WHERE battlePieceId = ?';
     $preparedQuery = $db->prepare($query);
     $preparedQuery->bind_param("i", $battlePieceId);
     $preparedQuery->execute();
-
     $updateType = "battleMove";
     $newPositionId = $battlePieceState - 2;
     $battle_outcome = "";
@@ -62,7 +53,6 @@ if ($battlePieceState == 3 || $battlePieceState == 4) {
     $query = $db->prepare($query);
     $query->bind_param("isiis", $gameId, $updateType, $battlePieceId, $newPositionId, $battle_outcome);
     $query->execute();
-
     echo "Battle Piece Clicked.";
     exit;
 } else {
@@ -77,14 +67,11 @@ if ($battlePieceState == 3 || $battlePieceState == 4) {
         echo "Piece already in the center.";
         exit;
     }
-
     $battle_outcome = "";
-
     $query = 'UPDATE battlePieces SET battlePieceState = battlePieceState + 2 WHERE battlePieceId = ?';
     $preparedQuery = $db->prepare($query);
     $preparedQuery->bind_param("i", $battlePieceId);
     $preparedQuery->execute();
-
     if ($gameBattleSection == "attack") {
         $order = "ASC";  // 3 attacking 4
     } else {
@@ -101,15 +88,12 @@ if ($battlePieceState == 3 || $battlePieceState == 4) {
         $attackUnitId = $r['placementUnitId'];
         $r = $results->fetch_assoc();
         $defendUnitId = $r['placementUnitId'];
-
         $valueNeeded = $_SESSION['attack'][$attackUnitId][$defendUnitId];
         $battle_outcome = "You must roll a ".$valueNeeded." or higher in order to hit.";
-
         echo "Click Attack to Attack!";
     } else {
         echo "Battle Piece Clicked.";
     }
-
     $updateType = "battleMove";
     $newPositionId = $battlePieceState + 2;
     $query = 'INSERT INTO updates (updateGameId, updateType, updatePlacementId, updateNewPositionId, updateHTML) VALUES (?, ?, ?, ?, ?)';

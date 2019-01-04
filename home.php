@@ -1,7 +1,6 @@
 <?php
 session_abort();
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,15 +11,12 @@ session_abort();
 		console.log("Home Page Javascript");
     </script>
 </head>
-
 <body>
 <h1>Island Rush Homepage</h1>
-
 <nav>
     <a class="active" href="home.php">Home</a>
     <a href="rulebook.html">Rule Book</a>
 </nav>
-
 <table border="0" cellpadding="30" cellspacing="10">
     <tr>
         <td>
@@ -53,7 +49,6 @@ session_abort();
                 </table>
             </form>
         </td>
-
         <td>
             <H3>Admin Login</H3>
             <form name="adminLogin" method="post" id="adminLogin" action="backend/admin/loginVerify.php">
@@ -84,6 +79,5 @@ session_abort();
         </td>
     </tr>
 </table>
-
 </body>
 </html>

@@ -9,7 +9,6 @@ for ($i = 0; $i < $num_results; $i++) {
     $r = $results->fetch_assoc();
     $battlePieceId = $r['battlePieceId'];
     $battlePieceWasHit = $r['battlePieceWasHit'];
-
     $query2 = 'SELECT placementUnitId, placementTeamId FROM placements WHERE placementId = ?';
     $query2 = $db->prepare($query2);
     $query2->bind_param("i", $battlePieceId);
@@ -18,8 +17,6 @@ for ($i = 0; $i < $num_results; $i++) {
     $r2 = $results2->fetch_assoc();
     $placementUnitId = $r2['placementUnitId'];
     $placementTeamId = $r2['placementTeamId'];
-
     echo "<div class='".$unitNames[$placementUnitId]." gamePiece ".$placementTeamId."' title='".$unitNames[$placementUnitId]."' data-battlePieceId='".$battlePieceId."' onclick='battlePieceClick(event, this)'></div>";
 }
-
 unset($boxId);

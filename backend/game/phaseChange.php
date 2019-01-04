@@ -1,22 +1,18 @@
 <?php
 session_start();
 include("../db.php");
-
 $gameId = $_SESSION['gameId'];
 $myTeam = $_SESSION['myTeam'];
-
 $query = 'SELECT gameActive, gamePhase, gameTurn, gameCurrentTeam, gameBattleSection, gameIsland1, gameIsland2, gameIsland3, gameIsland4, gameIsland5, gameIsland6, gameIsland7, gameIsland8, gameIsland9, gameIsland10, gameIsland11, gameIsland12, gameIsland13, gameIsland14 FROM GAMES WHERE gameId = ?';
 $preparedQuery = $db->prepare($query);
 $preparedQuery->bind_param("i", $gameId);
 $preparedQuery->execute();
 $results = $preparedQuery->get_result();
 $r = $results->fetch_assoc();
-
 $gamePhase = $r['gamePhase'];
 $gameTurn = $r['gameTurn'];
 $gameCurrentTeam = $r['gameCurrentTeam'];
 $gameBattleSection = $r['gameBattleSection'];
-
 $gameIsland1 = $r['gameIsland1'];
 $gameIsland2 = $r['gameIsland2'];
 $gameIsland3 = $r['gameIsland3'];
@@ -31,7 +27,6 @@ $gameIsland11 = $r['gameIsland11'];
 $gameIsland12 = $r['gameIsland12'];
 $gameIsland13 = $r['gameIsland13'];
 $gameIsland14 = $r['gameIsland14'];
-
 if ($r['gameActive'] != 1) {
     header("location:home.php?err=7");
     exit;
@@ -44,7 +39,6 @@ if ($gameBattleSection != "none") {
     echo "Cannot change phase during battle.";
     exit;
 }
-
 $newPhaseNum = ($gamePhase + 1) % 7;
 if ($newPhaseNum == 0) {
     if ($myTeam == "Red") {
@@ -55,9 +49,7 @@ if ($newPhaseNum == 0) {
 } else {
     $newGameCurrentTeam = $myTeam;
 }
-
 $arrayOfMoves = [2, 2, 2, 2, 1, 1, 1, 1, 2, 3, 1, 4, 6, 5, 5, 0];
-
 switch ($newPhaseNum) {
     case 0:  //News Alerts
         $query = "SELECT newsId, newsEffect, newsZone, newsRollValue, newsTeam FROM newsAlerts WHERE newsGameId = ? AND newsActivated = 0 AND newsLength != 0 ORDER BY newsOrder";
@@ -66,27 +58,22 @@ switch ($newPhaseNum) {
         $preparedQuery->execute();
         $results = $preparedQuery->get_result();
         $num_results5 = $results->num_rows;
-
         $decrementValue = 1;
         $query = 'UPDATE newsAlerts SET newsLength = newsLength - 1 WHERE (newsGameId = ?) AND (newsActivated = 1) AND (newsLength != 0)';
         $query = $db->prepare($query);
         $query->bind_param("i", $gameId);
         $query->execute();
-
         if ($num_results5 != 0) {
             $r = $results->fetch_assoc();
-
             $newsId = $r['newsId'];
             $newsEffect = $r['newsEffect'];
             $newsZone = $r['newsZone'];
             $newsRollValue = $r['newsRollValue'];
             $newsTeam = $r['newsTeam'];
-
             $query = 'UPDATE newsAlerts SET newsActivated = 1 WHERE (newsId = ?)';
             $query = $db->prepare($query);
             $query->bind_param("i", $newsId);
             $query->execute();
-
             if ($newsEffect == "rollDie") {
                 $islandSpots = [[75, 76, 77, 78], [79, 80, 81, 82], [83, 84, 85], [86, 87, 88, 89], [90, 91, 92, 93], [94, 95, 96], [97, 98, 99], [100, 101, 102], [103, 104, 105, 106], [107, 108, 109, 110], [111, 112, 113], [114, 115, 116, 117], [55, 56, 57, 58, 59, 60, 61, 62, 63, 64], [65, 66, 67, 68, 69, 70, 71, 72, 73, 74]];
                 $islandIndex = $newsZone - 101;
@@ -114,12 +101,10 @@ switch ($newPhaseNum) {
                             $query = $db->prepare($query);
                             $query->bind_param("i", $placementId);
                             $query->execute();
-
                             $query = 'DELETE FROM placements WHERE placementContainerId = ?';
                             $query = $db->prepare($query);
                             $query->bind_param("i", $placementId);
                             $query->execute();
-
                             $updateType = "pieceRemove";
                             $query = 'INSERT INTO updates (updateGameId, updateType, updatePlacementId) VALUES (?, ?, ?)';
                             $query = $db->prepare($query);
@@ -130,7 +115,6 @@ switch ($newPhaseNum) {
                 }
             }
         }
-
         $moveEffect = "addMove";
         $query4 = "SELECT newsId FROM newsAlerts WHERE newsGameId = ? AND newsActivated = 1 AND newsLength = 1 AND newsTeam != ? AND newsEffect = ? ORDER BY newsOrder";
         $preparedQuery4 = $db->prepare($query4);
@@ -151,10 +135,8 @@ switch ($newPhaseNum) {
                 $placementId = $r['placementId'];
                 $placementUnitId = $r['placementUnitId'];
                 $placementMovesReset = $arrayOfMoves[$placementUnitId] + $num_results;
-
                 array_push($arrayOfPlacementMoves, array($placementId, $placementUnitId, $placementMovesReset, 0));
             }
-
             if (sizeof($arrayOfPlacementMoves) > 0) {
                 $JSONArray = json_encode($arrayOfPlacementMoves);
                 $updateType = "updateMoves";
@@ -163,7 +145,6 @@ switch ($newPhaseNum) {
                 $query->bind_param("iss", $gameId, $updateType, $JSONArray);
                 $query->execute();
             }
-
             $query4 = 'UPDATE placements SET placementCurrentMoves = placementCurrentMoves + '.$num_results.' WHERE placementGameId = ? AND placementTeamId != ?';
             $preparedQuery4 = $db->prepare($query4);
             $preparedQuery4->bind_param("is", $gameId, $myTeam);
@@ -171,7 +152,6 @@ switch ($newPhaseNum) {
         }
         break;
     case 1:  //Buy Reinforcements
-        //give the points for island ownership to this team (except if newsalert from bank drain prevents it)
         if ($gameTurn > 1) {
             $gameIslands = [$gameIsland1, $gameIsland2, $gameIsland3, $gameIsland4, $gameIsland5, $gameIsland6, $gameIsland7, $gameIsland8, $gameIsland9, $gameIsland10, $gameIsland11, $gameIsland12, $gameIsland13, $gameIsland14];
             $islandPoints = [4, 6, 4, 3, 8, 7, 7, 10, 8, 5, 5, 5, 15, 25];
@@ -197,7 +177,6 @@ switch ($newPhaseNum) {
             if ($gameIslands[13] == $gameCurrentTeam) {
                 $totalPointsToAdd += 25;
             }
-
             $query = 'UPDATE games SET game'.$myTeam.'Rpoints = game'.$myTeam.'Rpoints + ? WHERE (gameId = ?)';
             $query = $db->prepare($query);
             $query->bind_param("ii", $totalPointsToAdd, $gameId);
@@ -207,7 +186,6 @@ switch ($newPhaseNum) {
     case 2:  //Combat (no change)
         break;
     case 3:  //Fortify
-        //refuel planes
         $query = 'SELECT b.placementId, b.placementUnitId, b.placementCurrentMoves, b.placementBattleUsed FROM (SELECT placementPositionId FROM placements WHERE placementGameId = ? AND placementTeamId = ? AND placementUnitId = 14) a JOIN (SELECT placementId, placementPositionId, placementUnitId, placementCurrentMoves, placementBattleUsed FROM placements WHERE placementGameId = ? AND placementTeamId = ? AND (placementUnitId = 11 OR placementUnitId = 12 OR placementUnitId = 13)) b USING(placementPositionId) WHERE a.placementPositionId = b.placementPositionId';
         $query = $db->prepare($query);
         $query->bind_param("isis", $gameId, $myTeam, $gameId, $myTeam);
@@ -221,21 +199,17 @@ switch ($newPhaseNum) {
             $placementUnitId = $r['placementUnitId'];
             $placementCurrentMoves = $r['placementCurrentMoves'];
             $placementBattleUsed = $r['placementBattleUsed'];
-
             $updateValue = 2;
             if ($placementUnitId >= 12) {
                 $updateValue = 3;
             }
-
             $newMoves = $placementCurrentMoves + $updateValue;
             $query = 'UPDATE placements SET placementCurrentMoves = placementCurrentMoves + '.$updateValue.' WHERE (placementId = ?)';
             $query = $db->prepare($query);
             $query->bind_param("i", $placementId);
             $query->execute();
-
             array_push($arrayOfPlacementMoves, array($placementId, $placementUnitId, $newMoves, $placementBattleUsed));
         }
-
         if ($arrayOfPlacementMoves > 0) {
             $JSONArray = json_encode($arrayOfPlacementMoves);
             $updateType = "updateMoves";
@@ -246,7 +220,6 @@ switch ($newPhaseNum) {
         }
         break;
     case 4:  //Reinforcement Place
-        //delete planes not in airfield or carriers
         $airfields = [56, 57, 66, 68, 78, 83, 89, 113, 116];
         $airFieldOwner = [$gameIsland13, $gameIsland13, $gameIsland14, $gameIsland14, $gameIsland1, $gameIsland3, $gameIsland4, $gameIsland11, $gameIsland12];
         $airFieldSpots = [];
@@ -255,7 +228,6 @@ switch ($newPhaseNum) {
                 array_push($airFieldSpots, $airfields[$x]);
             }
         }
-
         $carrierSpots = [];
         $query = 'SELECT placementId FROM placements WHERE (placementGameId = ?) AND (placementUnitId = 3) AND (placementTeamId = ?)';
         $query = $db->prepare($query);
@@ -268,7 +240,6 @@ switch ($newPhaseNum) {
             $thisPosition = $r['placementId'];
             array_push($carrierSpots, $thisPosition);
         }
-
         $query = 'SELECT placementId, placementUnitId, placementContainerId, placementPositionId FROM placements WHERE (placementTeamId = ?) AND (placementGameId = ?) AND (placementUnitId = 9 OR placementUnitId = 11 OR placementUnitId = 12 OR placementUnitId = 13 OR placementUnitId = 14) AND (placementPositionId != 118)';
         $query = $db->prepare($query);
         $query->bind_param("si", $myTeam, $gameId);
@@ -283,12 +254,10 @@ switch ($newPhaseNum) {
                 $placementContainerId = $r['placementContainerId'];
                 $placementPositionId = $r['placementPositionId'];
                 if ((($placementUnitId == 9 && $placementPositionId < 55 && $placementContainerId == -1) || (($placementUnitId == 11 && (!in_array($placementContainerId, $carrierSpots) && !in_array($placementPositionId, $airFieldSpots)))) || (($placementUnitId > 11 && !in_array($placementPositionId, $airFieldSpots))))) {
-                    //delete the real piece from database
                     $query = 'DELETE FROM placements WHERE placementId = ?';
                     $query = $db->prepare($query);
                     $query->bind_param("i", $placementId);
                     $query->execute();
-
                     $updateType = "pieceRemove";
                     $query = 'INSERT INTO updates (updateGameId, updateType, updatePlacementId) VALUES (?, ?, ?)';
                     $query = $db->prepare($query);
@@ -299,7 +268,6 @@ switch ($newPhaseNum) {
         }
         break;
     case 5:  //Hybrid Warfare
-        //delete pieces not placed from 118
         $query = 'SELECT placementId FROM placements WHERE (placementPositionId = 118) AND (placementGameId = ?)';
         $query = $db->prepare($query);
         $query->bind_param("i", $gameId);
@@ -313,7 +281,6 @@ switch ($newPhaseNum) {
             $query = $db->prepare($query);
             $query->bind_param("i", $placementId);
             $query->execute();
-
             $updateType = "pieceRemove";
             $query = 'INSERT INTO updates (updateGameId, updateType, updatePlacementId) VALUES (?, ?, ?)';
             $query = $db->prepare($query);
@@ -322,7 +289,6 @@ switch ($newPhaseNum) {
         }
         break;
     case 6:  //Round Recap
-        //reset moves / battle used
         $arrayOfPlacementMoves = [];
         $query = 'SELECT placementId, placementUnitId FROM placements WHERE placementGameId = ? AND placementTeamId = ?';
         $query = $db->prepare($query);
@@ -339,10 +305,8 @@ switch ($newPhaseNum) {
             $query2 = $db->prepare($query2);
             $query2->bind_param("ii", $placementMovesReset, $placementId);
             $query2->execute();
-
             array_push($arrayOfPlacementMoves, array($placementId, $placementUnitId, $placementMovesReset, 0));
         }
-
         if (sizeof($arrayOfPlacementMoves) > 0) {
             $JSONArray = json_encode($arrayOfPlacementMoves);
             $updateType = "updateMoves";
@@ -351,7 +315,6 @@ switch ($newPhaseNum) {
             $query->bind_param("iss", $gameId, $updateType, $JSONArray);
             $query->execute();
         }
-
         $query = 'UPDATE games SET gameTurn = gameTurn + 1 WHERE (gameId = ?)';
         $query = $db->prepare($query);
         $query->bind_param("i", $gameId);
@@ -361,22 +324,18 @@ switch ($newPhaseNum) {
         echo "Failed to switch phase. (number outside phase range)";  //unlikely to occur, we mod phase number above
         exit;
 }
-
 $query = 'DELETE FROM movements WHERE movementGameId = ?';
 $query = $db->prepare($query);
 $query->bind_param("i", $gameId);
 $query->execute();
-
 $query = 'UPDATE games SET gamePhase = ?, gameCurrentTeam = ? WHERE (gameId = ?)';
 $query = $db->prepare($query);
 $query->bind_param("isi", $newPhaseNum, $newGameCurrentTeam, $gameId);
 $query->execute();
-
 $updateType = "getBoard";
 $query = 'INSERT INTO updates (updateGameId, updateType) VALUES (?, ?)';
 $query = $db->prepare($query);
 $query->bind_param("is", $gameId, $updateType);
 $query->execute();
-
 echo "Changed Phase.";
 exit;
