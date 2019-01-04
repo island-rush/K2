@@ -82,9 +82,7 @@ let hybridNukeState = false;
 let selectPosState = false;
 let selectPiecesState = false;
 let battleAdjacentPlacementIds = [];
-
 //-------------------------------------------------------------------------------------------------------------------
-
 function getBoard(roll){
 	let phpPhaseChange = new XMLHttpRequest();
 	phpPhaseChange.onreadystatechange = function () {
@@ -182,7 +180,6 @@ function getBoard(roll){
 	phpPhaseChange.send();
 }
 getBoard(false);
-
 function ajaxUpdate(){
 	let phpUpdateBoard = new XMLHttpRequest();
 	phpUpdateBoard.onreadystatechange = function () {
@@ -243,7 +240,6 @@ function ajaxUpdate(){
 	phpUpdateBoard.send();
 }
 ajaxUpdate();
-
 function ajaxPieceMove(placementId, toPositionId, toContainerId, newTitle) {
 	let gamePiece = document.querySelector("[data-placementId='" + placementId + "']");
 	gamePiece.setAttribute("title", newTitle);
@@ -289,7 +285,6 @@ function ajaxUpdateMoves(arrayPiecesMoves) {
 		document.querySelector("[data-placementId='" + arrayPiecesMoves[x][0] + "']").setAttribute("title", unitNames[arrayPiecesMoves[x][1]] + "\nMoves: " + arrayPiecesMoves[x][2] + battleUsedText);
 	}
 }
-
 function unpopIslands() {
 	if (openPopupIslandNum !== 0) {
 		popIslands[openPopupIslandNum-1].style.display = "none";
@@ -323,7 +318,6 @@ function clearSelectedPieces() {
 		highlighted_things[0].classList.remove("selected");
 	}
 }
-
 function containerDragenter(event, callingElement) {
 	event.preventDefault();
 	clearTimeout(pieceDragTimer);
@@ -362,7 +356,6 @@ function popupDragenter(event, callingElement) {
 	clearTimeout(islandTimer);
 	event.stopPropagation();
 }
-
 function positionDragover(event, callingElement){
 	event.preventDefault();
 	//Can't Drop into something draggable (other pieces) (containers are non-draggable)
@@ -387,7 +380,6 @@ function positionDrop(event, callingElement){
 	phpUpdateBoard.send();
 	event.stopPropagation();
 }
-
 function pieceDragenter(event, callingElement) {
 	event.preventDefault();
 	clearTimeout(pieceDragTimer);
@@ -439,7 +431,6 @@ function pieceDragstart(event, callingElement){
 	}
 	event.stopPropagation();
 }
-
 function showDice(diceNumber){
 	dice[0].style.display = "none";
 	dice[1].style.display = "none";
@@ -469,7 +460,6 @@ function rollDice(diceNumber){
 		lastBattleMessage.style.display = "block";
 	}, (i)*timeBetween);
 }
-
 function gridIslandClick(event, callingElement){
 	event.preventDefault();
 	if (hybridBankState) {
@@ -659,7 +649,6 @@ function doubleClick(event, callingElement) {
 	phpAvailableMoves.send();
 	event.stopPropagation();
 }
-
 function controlButtonFunction() {
 	event.preventDefault();
 	unpopIslands();
@@ -709,7 +698,6 @@ function undoButtonFunction(){
 	phpUpdateBoard.send();
 	event.stopPropagation();
 }
-
 function hybridPopupToggle() {
 	if(popup.style.display === "block"){
 		popup.style.display = "none";
@@ -840,7 +828,6 @@ function hybridNuke() {
 		phpUpdateBoard.send();
 	}
 }
-
 function logout(teacherForce){
 	event.preventDefault();
 	if (!teacherForce || (teacherForce && myTeam !== "Spec")) {
@@ -851,7 +838,6 @@ function logout(teacherForce){
 	}
 	event.stopPropagation();
 }
-
 function battleSelectPosStart() {
 	if (confirm("Are you sure you want to start a battle")) {
 		let phpUpdateBoard = new XMLHttpRequest();
@@ -941,8 +927,4 @@ function battleActionPopupButtonClick() {
 	};
 	phpUpdateBoard.open("GET", "backend/game/battles/battleActionPopupButton.php", true);
 	phpUpdateBoard.send();
-}
-
-function updateAllMoves() {
-
 }
