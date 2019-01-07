@@ -240,7 +240,7 @@ for ($i = 0; $i < $num_results; $i++) {
                 (($newsZone > 1000) && (($newsZone - 1000 == $newPositionId) || ($newsZone - 1000 == $oldPositionId)))) {
                 $decoded = json_decode($newsPieces, true);
                 if ((int) $decoded[$placementUnitName] == 1) {
-                    if ((int) $oldPositionId != 118){  //purchased is exempt
+                    if ((int) $oldPositionId != 118 && $placementUnitId != 15){  //purchased is exempt (except for missiles)
                         echo "News Alert Prevented the Move.";
                         exit;
                     }
@@ -253,7 +253,7 @@ $killed = 0;  //allowed to move at this point from all game rules / logic
 $thingToEcho = "DEFAULT THING TO ECHO";
 if ($gamePhase != 4 && $gamePhase != 1 && ($placementUnitId == 11 || $placementUnitId == 12 || $placementUnitId == 13 || $placementUnitId == 14)) {
     $adjSam = array();
-    for ($i = 55; $i < 117; $i++) {
+    for ($i = 55; $i < 117; $i++) {  //no container sams on land, skip water check
         if ($_SESSION['dist'][$newPositionId][$i] == 1) {
             array_push($adjSam, $i);
         }
@@ -286,9 +286,9 @@ if ($gamePhase != 4 && $gamePhase != 1 && ($placementUnitId == 0 || $placementUn
     for ($x = 0; $x < 4; $x++) {
         if (in_array($newPositionId, $missileTargets[$x])) {
             $missilePosition = $x + 121;
-            $query = 'SELECT placementId FROM placements WHERE placementPositionId = ? AND placementGameId = ?';
+            $query = 'SELECT placementId FROM placements WHERE placementPositionId = ? AND placementGameId = ? AND placementTeamId != ?';
             $query = $db->prepare($query);
-            $query->bind_param("ii", $missilePosition, $gameId);
+            $query->bind_param("iis", $missilePosition, $gameId, $myTeam);
             $query->execute();
             $results = $query->get_result();
             $num_results = $results->num_rows;
@@ -299,7 +299,7 @@ if ($gamePhase != 4 && $gamePhase != 1 && ($placementUnitId == 0 || $placementUn
                 if ($randNumber <= 8) {
                     $killed = 1;
                     $thingToEcho = "Piece was destroyed by Missile.";
-                    $query = 'DELETE FROM placements WHERE placementId = ?';
+                    $query = 'DELETE FROM placements WHERE placementId = ?';  //Delete the missile
                     $query = $db->prepare($query);
                     $query->bind_param("i", $missilePlacementId);
                     $query->execute();
@@ -366,20 +366,22 @@ if ($killed == 1) {
         $index = array_search($newPositionId, $flagPositions);
         if ($ownerships[$index] != $myTeam) {
             if (sizeof($listEnemyPiecesInPosition_UnitIds) == 0) {  //already have this from land/water blockade check
-                $query = 'UPDATE games SET gameIsland'.($index + 1).' = ?, game'.$myTeam.'Hpoints = game'.$myTeam.'Hpoints + 1 WHERE gameId = ?';
-                $query = $db->prepare($query);
-                $query->bind_param("si", $myTeam, $gameId);
-                $query->execute();
-                $islandToChange = $index + 1;
-                $updateType = "islandOwnerChange";
-                $query = 'INSERT INTO updates (updateGameId, updateType, updatePlacementId, updateHTML) VALUES (?, ?, ?, ?)';
-                $query = $db->prepare($query);
-                $query->bind_param("isis", $gameId, $updateType, $islandToChange, $myTeam);
-                $query->execute();
-                $query = 'DELETE FROM movements WHERE movementGameId = ?';
-                $query = $db->prepare($query);
-                $query->bind_param("i", $gameId);
-                $query->execute();
+                if ($placementUnitId >= 4 && $placementUnitId <= 8) {  //land units that can capture
+                    $query = 'UPDATE games SET gameIsland'.($index + 1).' = ?, game'.$myTeam.'Hpoints = game'.$myTeam.'Hpoints + 1 WHERE gameId = ?';
+                    $query = $db->prepare($query);
+                    $query->bind_param("si", $myTeam, $gameId);
+                    $query->execute();
+                    $islandToChange = $index + 1;
+                    $updateType = "islandOwnerChange";
+                    $query = 'INSERT INTO updates (updateGameId, updateType, updatePlacementId, updateHTML) VALUES (?, ?, ?, ?)';
+                    $query = $db->prepare($query);
+                    $query->bind_param("isis", $gameId, $updateType, $islandToChange, $myTeam);
+                    $query->execute();
+                    $query = 'DELETE FROM movements WHERE movementGameId = ?';
+                    $query = $db->prepare($query);
+                    $query->bind_param("i", $gameId);
+                    $query->execute();
+                }
             }
         }
     }
