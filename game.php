@@ -88,7 +88,7 @@ $waterClass = 'class="gridblock water"';
                 </div>
                 <div id="purchase_seperator">Inventory</div>
                 <div id="shopping_things">
-                    <div id="purchased_container" data-positionType="purchased_container" data-positionId="118"><?php $positionId = 118; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+                    <div id="purchased_container" data-positionId="118"><?php $positionId = 118; include("backend/game/pieces/pieceDisplay.php"); ?></div>
                     <div id="trashbox" <?php echo $trashBoxFunctions; ?>></div>
                 </div>
                 <div id="rest_things">
@@ -308,16 +308,16 @@ $waterClass = 'class="gridblock water"';
                 <div <?php echo $waterClass; ?> data-positionId="53" <?php echo $waterFunctions; ?>><?php $positionId = 53; include("backend/game/pieces/pieceDisplay.php"); ?></div>
                 <div <?php echo $waterClass; ?> data-positionId="54" <?php echo $waterFunctions; ?>><?php $positionId = 54; include("backend/game/pieces/pieceDisplay.php"); ?></div>
                 <div id="battleZonePopup">
-                    <div id="unused_attacker" data-boxId="1"><?php $boxId = 1; include("backend/game/battles/battlePieceDisplay.php"); ?></div>
-                    <div id="unused_defender" data-boxId="2"><?php $boxId = 2; include("backend/game/battles/battlePieceDisplay.php"); ?></div>
-                    <div id="used_attacker" data-boxId="3"><?php $boxId = 5; include("backend/game/battles/battlePieceDisplay.php"); ?></div>
-                    <div id="used_defender" data-boxId="4"><?php $boxId = 6; include("backend/game/battles/battlePieceDisplay.php"); ?></div>
-                    <div id="center_attacker" data-boxId="5"><?php $boxId = 3; include("backend/game/battles/battlePieceDisplay.php"); ?></div>
-                    <div id="center_defender" data-boxId="6"><?php $boxId = 4; include("backend/game/battles/battlePieceDisplay.php"); ?></div>
+                    <div id="unused_attacker"><?php $boxId = 1; include("backend/game/battles/battlePieceDisplay.php"); ?></div>
+                    <div id="unused_defender"><?php $boxId = 2; include("backend/game/battles/battlePieceDisplay.php"); ?></div>
+                    <div id="used_attacker"><?php $boxId = 5; include("backend/game/battles/battlePieceDisplay.php"); ?></div>
+                    <div id="used_defender"><?php $boxId = 6; include("backend/game/battles/battlePieceDisplay.php"); ?></div>
+                    <div id="center_attacker"><?php $boxId = 3; include("backend/game/battles/battlePieceDisplay.php"); ?></div>
+                    <div id="center_defender"><?php $boxId = 4; include("backend/game/battles/battlePieceDisplay.php"); ?></div>
                     <div id="battle_outcome"></div>
                     <div id="battle_buttons">
-                        <button id="attackButton" disabled onclick="generalBackendRequest('backend/game/battles/battleAttackButton.php');">Loading...</button>
-                        <button id="changeSectionButton" disabled onclick="generalBackendRequest('backend/game/battles/battleChangeSectionButton.php')">Loading...</button>
+                        <button id="attackButton" disabled onclick="attackButton.disabled = true; changeSectionButton.disabled = true; generalBackendRequest('backend/game/battles/battleAttackButton.php');">Loading...</button>
+                        <button id="changeSectionButton" disabled onclick="attackButton.disabled = true; changeSectionButton.disabled = true; generalBackendRequest('backend/game/battles/battleChangeSectionButton.php')">Loading...</button>
                     </div>
                     <div id="battleActionPopup">
                         <div id="battleActionPopupContainer">
@@ -330,7 +330,7 @@ $waterClass = 'class="gridblock water"';
                                 <div id="dice_image6" class="dice_image"></div>
                             </div>
                             <div id="lastBattleMessage">Loading...</div>
-                            <button id="actionPopupButton" disabled onclick="generalBackendRequest('backend/game/battles/battleActionPopupButton.php');">Loading...</button>
+                            <button id="actionPopupButton" disabled onclick="actionPopupButton.disabled = true; generalBackendRequest('backend/game/battles/battleActionPopupButton.php');">Loading...</button>
                         </div>
                     </div>
                 </div>

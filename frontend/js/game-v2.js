@@ -406,13 +406,12 @@ function rollDice(diceNumber){
 	actionPopupButton.style.display = "none";
 	lastBattleMessage.style.display = "none";
 	battleActionPopup.style.display = "block";
-	const timeBetween = 300;
+	const timeBetween = 275;
 	const numRolls = 8;
 	let i;
 	let thingy;
-	let randomRoll;
 	for (i = 1; i < numRolls; i++) {
-		randomRoll = Math.floor(Math.random() * 6) + 1;
+		let randomRoll = Math.floor(Math.random() * 6) + 1;
 		thingy = setTimeout(function () {
 			showDice(randomRoll);
 		}, (i)*timeBetween);
