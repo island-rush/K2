@@ -33,11 +33,11 @@ $gameIsland11 = htmlentities($r['gameIsland11']);
 $gameIsland12 = htmlentities($r['gameIsland12']);
 $gameIsland13 = htmlentities($r['gameIsland13']);
 $gameIsland14 = htmlentities($r['gameIsland14']);
-$waterFunctions = 'onclick="waterClick(event, this);" ondblclick="doubleClick(event, this);" ondragover="positionDragover(event, this);" ondrop="positionDrop(event, this);"';
-$landFunctions = 'onclick="landClick(event, this);" ondblclick="doubleClick(event, this);" ondragover="positionDragover(event, this);" ondrop="positionDrop(event, this);"';
-$gridIslandFunctions = 'onclick="gridIslandClick(event, this);" ondragenter="islandDragenter(event, this);" ondragleave="islandDragleave(event, this);"   ';
-$popIslandFunctions = ' ondragenter="popupDragenter(event, this);" ondragleave="popupDragleave(event, this);" ondragover="popupDragover(event, this);"';
-$trashBoxFunctions = 'ondragover="positionDragover(event, this);" ondrop="pieceTrash(event, this);"';
+$waterFunctions = 'draggable="false" ondragstart="event.preventDefault();" onclick="waterClick(event, this);" ondblclick="doubleClick(event, this);" ondragover="positionDragover(event, this);" ondrop="positionDrop(event, this);"';
+$landFunctions = 'draggable="false" ondragstart="event.preventDefault();" onclick="landClick(event, this);" ondblclick="doubleClick(event, this);" ondragover="positionDragover(event, this);" ondrop="positionDrop(event, this);"';
+$gridIslandFunctions = 'draggable="false" ondragstart="event.preventDefault();" onclick="gridIslandClick(event, this);" ondragenter="islandDragenter(event, this);" ondragleave="islandDragleave(event, this);"   ';
+$popIslandFunctions = 'draggable="false" ondragstart="event.preventDefault();" ondragenter="popupDragenter(event, this);" ondragleave="popupDragleave(event, this);" ondragover="popupDragover(event, this);"';
+$trashBoxFunctions = 'draggable="false" ondragstart="event.preventDefault();" ondragover="positionDragover(event, this);" ondrop="pieceTrash(event, this);"';
 $landPositionClass = 'class="gridblockTiny"';
 $waterClass = 'class="gridblock water"';
 ?>
@@ -167,7 +167,7 @@ $waterClass = 'class="gridblock water"';
                         <div <?php echo $landPositionClass; ?> id="pos2b" data-positionId="80" <?php echo $landFunctions; ?>><?php $positionId = 80; include("backend/game/pieces/pieceDisplay.php"); ?></div>
                         <div <?php echo $landPositionClass; ?> id="pos2c" data-positionId="81" <?php echo $landFunctions; ?>><?php $positionId = 81; include("backend/game/pieces/pieceDisplay.php"); ?></div>
                         <div <?php echo $landPositionClass; ?> id="pos2d" data-positionId="82" <?php echo $landFunctions; ?>><?php $positionId = 82; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-                        <div class="gridblockTiny missileContainer" id="posM1" data-positionId="121"><?php $positionId = 121; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+                        <div class="gridblockTiny missileContainer" id="posM1" data-positionId="121" <?php echo $landFunctions; ?>><?php $positionId = 121; include("backend/game/pieces/pieceDisplay.php"); ?></div>
                     </div>
                 </div>
                 <div <?php echo $waterClass; ?> data-positionId="11" <?php echo $waterFunctions; ?>><?php $positionId = 11; include("backend/game/pieces/pieceDisplay.php"); ?></div>
@@ -225,7 +225,7 @@ $waterClass = 'class="gridblock water"';
                         <div <?php echo $landPositionClass; ?> id="pos6a" data-positionId="94" <?php echo $landFunctions; ?>><?php $positionId = 94; include("backend/game/pieces/pieceDisplay.php"); ?></div>
                         <div <?php echo $landPositionClass; ?> id="pos6b" data-positionId="95" <?php echo $landFunctions; ?>><?php $positionId = 95; include("backend/game/pieces/pieceDisplay.php"); ?></div>
                         <div <?php echo $landPositionClass; ?> id="pos6c" data-positionId="96" <?php echo $landFunctions; ?>><?php $positionId = 96; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-                        <div class="gridblockTiny missileContainer" id="posM2" data-positionId="122"><?php $positionId = 122; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+                        <div class="gridblockTiny missileContainer" id="posM2" data-positionId="122" <?php echo $landFunctions; ?>><?php $positionId = 122; include("backend/game/pieces/pieceDisplay.php"); ?></div>
                     </div>
                 </div>
                 <div <?php echo $waterClass; ?> data-positionId="25" <?php echo $waterFunctions; ?>><?php $positionId = 25; include("backend/game/pieces/pieceDisplay.php"); ?></div>
@@ -235,7 +235,7 @@ $waterClass = 'class="gridblock water"';
                         <div <?php echo $landPositionClass; ?> id="pos7a" data-positionId="97" <?php echo $landFunctions; ?>><?php $positionId = 97; include("backend/game/pieces/pieceDisplay.php"); ?></div>
                         <div <?php echo $landPositionClass; ?> id="pos7b" data-positionId="98" <?php echo $landFunctions; ?>><?php $positionId = 98; include("backend/game/pieces/pieceDisplay.php"); ?></div>
                         <div <?php echo $landPositionClass; ?> id="pos7c" data-positionId="99" <?php echo $landFunctions; ?>><?php $positionId = 99; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-                        <div class="gridblockTiny missileContainer" id="posM3" data-positionId="123"><?php $positionId = 123; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+                        <div class="gridblockTiny missileContainer" id="posM3" data-positionId="123" <?php echo $landFunctions; ?>><?php $positionId = 123; include("backend/game/pieces/pieceDisplay.php"); ?></div>
                     </div>
                 </div>
                 <div <?php echo $waterClass; ?> data-positionId="27" <?php echo $waterFunctions; ?>><?php $positionId = 27; include("backend/game/pieces/pieceDisplay.php"); ?></div>
@@ -262,7 +262,7 @@ $waterClass = 'class="gridblock water"';
                         <div <?php echo $landPositionClass; ?> id="pos9b" data-positionId="104" <?php echo $landFunctions; ?>><?php $positionId = 104; include("backend/game/pieces/pieceDisplay.php"); ?></div>
                         <div <?php echo $landPositionClass; ?> id="pos9c" data-positionId="105" <?php echo $landFunctions; ?>><?php $positionId = 105; include("backend/game/pieces/pieceDisplay.php"); ?></div>
                         <div <?php echo $landPositionClass; ?> id="pos9d" data-positionId="106" <?php echo $landFunctions; ?>><?php $positionId = 106; include("backend/game/pieces/pieceDisplay.php"); ?></div>
-                        <div class="gridblockTiny missileContainer" id="posM4" data-positionId="124"><?php $positionId = 124; include("backend/game/pieces/pieceDisplay.php"); ?></div>
+                        <div class="gridblockTiny missileContainer" id="posM4" data-positionId="124" <?php echo $landFunctions; ?>><?php $positionId = 124; include("backend/game/pieces/pieceDisplay.php"); ?></div>
                     </div>
                 </div>
                 <div <?php echo $waterClass; ?> data-positionId="36" <?php echo $waterFunctions; ?>><?php $positionId = 36; include("backend/game/pieces/pieceDisplay.php"); ?></div>
@@ -316,8 +316,8 @@ $waterClass = 'class="gridblock water"';
                     <div id="center_defender"><?php $boxId = 4; include("backend/game/battles/battlePieceDisplay.php"); ?></div>
                     <div id="battle_outcome"></div>
                     <div id="battle_buttons">
-                        <button id="attackButton" disabled onclick="attackButton.disabled = true; changeSectionButton.disabled = true; generalBackendRequest('backend/game/battles/battleAttackButton.php');">Loading...</button>
-                        <button id="changeSectionButton" disabled onclick="attackButton.disabled = true; changeSectionButton.disabled = true; generalBackendRequest('backend/game/battles/battleChangeSectionButton.php')">Loading...</button>
+                        <button id="attackButton" disabled onclick="attackButton.disabled = true; generalBackendRequest('backend/game/battles/battleAttackButton.php');">Loading...</button>
+                        <button id="changeSectionButton" disabled onclick="generalBackendRequest('backend/game/battles/battleChangeSectionButton.php')">Loading...</button>
                     </div>
                     <div id="battleActionPopup">
                         <div id="battleActionPopupContainer">
@@ -401,6 +401,6 @@ $waterClass = 'class="gridblock water"';
                 </div>
             </div>
         </div>
-        <script src="frontend/js/game-v2.js"></script>
+        <script src="frontend/js/game-v3.js"></script>
     </body>
 </html>

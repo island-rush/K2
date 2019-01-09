@@ -16,7 +16,7 @@ $gameBattleSubSection = $r['gameBattleSubSection'];
 $gameBattleTurn = $r['gameBattleTurn'];
 $gameBattlePosSelected = $r['gameBattlePosSelected'];
 if ($r['gameActive'] != 1) {
-    header("location:home.php?err=7");
+    header("location:home.php?err=1");
     exit;
 }
 if ($gamePhase != 2) {

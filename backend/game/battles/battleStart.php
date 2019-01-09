@@ -15,7 +15,7 @@ $gameCurrentTeam = $r['gameCurrentTeam'];
 $gameBattleSection = $r['gameBattleSection'];
 $gameBattlePosSelected = $r['gameBattlePosSelected'];
 if ($r['gameActive'] != 1) {
-    header("location:home.php?err=7");
+    header("location:home.php?err=1");
     exit;
 }
 if ($myTeam != $gameCurrentTeam) {

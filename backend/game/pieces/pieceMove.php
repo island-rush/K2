@@ -3,6 +3,10 @@ session_start();
 include("../../db.php");
 $gameId = $_SESSION['gameId'];
 $myTeam = $_SESSION['myTeam'];
+if (!isset($_REQUEST['placementId']) || !isset($_REQUEST['positionId']) || !isset($_REQUEST['containerId']) || !$_REQUEST['placementId'] || !$_REQUEST['positionId'] || !$_REQUEST['containerId']) {
+    echo "Invalid request.";
+    exit;
+}
 $placementId = (int) $_REQUEST['placementId'];  //piece that was moved
 $newPositionId = (int) $_REQUEST['positionId'];  //could be -1
 $newContainerId = (int) $_REQUEST['containerId'];  //could be -1
@@ -31,7 +35,7 @@ $gameIsland13 = $r['gameIsland13'];
 $gameIsland14 = $r['gameIsland14'];
 $ownerships = [$gameIsland1, $gameIsland2, $gameIsland3, $gameIsland4, $gameIsland5, $gameIsland6, $gameIsland7, $gameIsland8, $gameIsland9, $gameIsland10, $gameIsland11, $gameIsland12, $gameIsland13, $gameIsland14];
 if ($r['gameActive'] != 1) {
-    header("location:home.php?err=7");
+    header("location:home.php?err=1");
     exit;
 }
 if ($myTeam != $gameCurrentTeam) {
@@ -67,16 +71,22 @@ if ($myTeam != $placementTeamId) {
     exit;
 }
 if (($oldPositionId == 118 && $gamePhase != 4) || ($gamePhase == 4 && $oldPositionId != 118)) {
-    echo "Can only place Reinforcements during 'Reinforcement Place' phase.";
+    echo "Can only place Reinforcements in inventory during 'Reinforcement Place' phase.";
     exit;
 }
 if ($oldPositionId == $newPositionId && $oldContainerId == $newContainerId) {  //do nothing if dropped into same spot
     echo "Moved Piece Into Same Position.";
     exit;
 }
-if (($placementCurrentMoves == 0 && $_SESSION['dist'][$oldPositionId][$newPositionId] != 0) && $placementUnitId != 15) {  //exclude missile from this check (15)
+if ($placementUnitId != 15 && $placementCurrentMoves == 0) {
     echo "This piece is out of moves.";
     exit;
+}
+if ($placementUnitId != 15) {
+    if ($_SESSION['dist'][$oldPositionId][$newPositionId] == 0) {
+        echo "Can only move 1 space at a time.";
+        exit;
+    }
 }
 if ($newContainerId != -1) {
     $query = 'SELECT placementUnitId, placementTeamId, placementPositionId FROM placements WHERE placementId = ?';
@@ -122,8 +132,7 @@ if ($newContainerId != -1) {
                     exit;
                 }
             }
-        } elseif (in_array($placementUnitId, $machines)) {  //machine going in
-            //needs to have 0, 1 people
+        } elseif (in_array($placementUnitId, $machines)) {  //machine going in            //needs to have 0, 1 people
             if (sizeof($containerContents_UnitIds) == 2 || (sizeof($containerContents_UnitIds) == 1 && in_array($containerContents_UnitIds[0], $machines))) {
                 echo "This piece can't fit with this combination.";
                 exit;
@@ -162,6 +171,10 @@ if ($newContainerId != -1) {
             echo "Missile already at this site.";
             exit;
         }
+        if ($oldPositionId != 118) {
+            echo "Can only move missiles from 118.";
+            exit;
+        }
     } else {  //land or water position
         if ($placementUnitId == 15) {
             echo "Missiles only go on missile sites (red squares).";  //missile positions checked above
@@ -194,7 +207,7 @@ if ($newContainerId != -1) {
         }
     }
 }
-if ($gamePhase == 4) {  //Reinforcement Place controls
+if ($gamePhase == 4 && $placementUnitId != 15) {  //Reinforcement Place controls, already checked missile stuff, already checked from 118
     $redPlaceValid = array(55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 0, 13, 21, 20, 19);
     $bluePlaceValid = array(65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 8, 7, 6, 12, 18, 25, 31, 38, 45, 54);
     $airfieldPosition = array(56, 57, 78, 83, 89, 113, 116, 66, 68);
@@ -303,7 +316,7 @@ if ($gamePhase != 4 && $gamePhase != 1 && ($placementUnitId == 0 || $placementUn
                     $query = $db->prepare($query);
                     $query->bind_param("i", $missilePlacementId);
                     $query->execute();
-                    $updateType = "pieceKilled";
+                    $updateType = "pieceRemove";
                     $query = 'INSERT INTO updates (updateGameId, updateType, updatePlacementId) VALUES (?, ?, ?)';
                     $query = $db->prepare($query);
                     $query->bind_param("isi", $gameId, $updateType, $missilePlacementId);
@@ -329,10 +342,10 @@ if ($killed == 1) {
     $query = $db->prepare($query);
     $query->bind_param("i", $gameId);
     $query->execute();
-    $updateType = "pieceRemove";
-    $query = 'INSERT INTO updates (updateGameId, updateType, updatePlacementId) VALUES (?, ?, ?)';
+    $updateType = "killRemove";
+    $query = 'INSERT INTO updates (updateGameId, updateType, updatePlacementId, updateHTML) VALUES (?, ?, ?, ?)';
     $query = $db->prepare($query);
-    $query->bind_param("isi", $gameId, $updateType, $placementId);
+    $query->bind_param("isis", $gameId, $updateType, $placementId, $thingToEcho);
     $query->execute();
     echo $thingToEcho;
     exit;

@@ -60,11 +60,6 @@ spectator
     - gets all updates
 
 
-
-
-
-
-
 airfields disabled for newsalerts
 planes refueled correctly
 planes deleted correctly
@@ -72,14 +67,7 @@ placements from reinforcements can go to only where they are allowed to go
 
 
 
-
-Could re-compress / resize images for quicker transfer
-    there are better image formats for better compression / quicker transfer (according to google site audit)
-
-could minifi all frontend files (js / css)
-    get rid of unused css
-
-
+need to test hybrid effects / news alert effects?
 
 
 

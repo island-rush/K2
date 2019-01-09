@@ -15,7 +15,7 @@ $gameCurrentTeam = $r['gameCurrentTeam'];
 $gameBattleSection = $r['gameBattleSection'];
 $gameBattleSubSection = $r['gameBattleSubSection'];
 if ($r['gameActive'] != 1) {
-    header("location:home.php?err=7");
+    header("location:home.php?err=1");
     exit;
 }
 if ($gamePhase != 2) {
@@ -59,7 +59,7 @@ if ($battlePieceState == 3 || $battlePieceState == 4) {
     $stateToCheck = $battlePieceState + 2;
     $query = 'SELECT battlePieceState FROM battlePieces WHERE battlegameId = ? AND battlePieceState = ?';
     $preparedQuery = $db->prepare($query);
-    $preparedQuery->bind_param("ii", $battlePieceId, $stateToCheck);
+    $preparedQuery->bind_param("ii", $gameId, $stateToCheck);
     $preparedQuery->execute();
     $results = $preparedQuery->get_result();
     $num_results = $results->num_rows;

@@ -2,7 +2,7 @@
 session_start();
 include("../db.php");
 if (!isset($_SESSION['secretAdminSessionVariable']) || !isset($_SESSION['gameId']) || !isset($_SESSION['gameSection']) || !isset($_SESSION['gameInstructor'])) {
-    header("location:home.php?err=4");
+    header("location:home.php?err=8");
     exit;
 }
 $gameId = (int) $_SESSION['gameId'];

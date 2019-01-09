@@ -13,4 +13,4 @@ $query->bind_param("i", $gameId);
 $query->execute();
 $db->close();
 session_unset();  //not sure capabilities of this yet (or how to fully delete the session stuff)
-header("location:../../home.php");
+header("location:../../home.php?logout=1");

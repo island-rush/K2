@@ -24,6 +24,44 @@ session_abort();
             <form name="gameLogin" method="post" id="gameLogin" action="backend/game/loginVerify.php">
                 <table border="0" cellpadding="3" cellspacing="1">
                     <tr>
+                        <td colspan="2">
+                            <div id="formFeedback" class="formError" style="color: red;">
+                                <?php
+                                if (isset($_GET['err'])) {
+                                    switch($_GET['err']) {
+                                        case 1:
+                                            echo "Teacher has Disabled Game.";
+                                            break;
+                                        case 2:
+                                            echo "Red Team Commander Already Logged In.";
+                                            break;
+                                        case 3:
+                                            echo "Blue Team Commander Already Logged In.";
+                                            break;
+                                        case 4:
+                                            echo "Invalid Team was Selected.";
+                                            break;
+                                        case 5:
+                                            echo "Multiple games exist, inform instructor.";
+                                            break;
+                                        case 6:
+                                            echo "Made request without all required values.";
+                                            break;
+                                        case 7:
+                                            echo "Game does not exist.\nCheck values entered again.";
+                                            break;
+                                        case 8:
+                                            echo "Invalid Game or Admin Request was Made.";
+                                            break;
+                                        default:
+                                            echo "Unknown Error Occured.";
+                                    }
+                                }
+                                ?>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
                         <td>Section</td>
                         <td>
                             <input name="gameSection" type="text" id="gameSection" placeholder="ex: m1a1" autofocus="autofocus" required>

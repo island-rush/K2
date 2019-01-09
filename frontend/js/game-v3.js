@@ -197,6 +197,10 @@ function ajaxUpdate(){
 					case "pieceRemove":
 						ajaxPieceRemove(parseInt(decoded.updatePlacementId));
 						break;
+					case "killRemove":
+						ajaxPieceRemove(parseInt(decoded.updatePlacementId));
+						user_feedback.innerHTML = decoded.updateHTML;
+						break;
 					case "piecesSelected":
 						unused_attacker.innerHTML = decoded.updateHTML;
 						getBoard(false);
@@ -230,6 +234,10 @@ function ajaxPieceMove(placementId, toPositionId, toContainerId, newTitle) {
 	gamePiece.setAttribute("title", newTitle);
 	let newLocation = (toContainerId === -1) ? document.querySelector("[data-positionId='" + toPositionId + "']") : document.querySelector("[data-placementId='" + toContainerId + "']").firstChild;
 	newLocation.append(gamePiece);
+	if (toContainerId === -1) {
+		newLocation.classList.add("selectedPos");
+		setTimeout(function() { newLocation.classList.remove("selectedPos"); }, 2000);
+	}
 }
 function ajaxPieceRemove(placementId) {
 	document.querySelector("[data-placementId='" + placementId + "']").remove();
@@ -406,8 +414,8 @@ function rollDice(diceNumber){
 	actionPopupButton.style.display = "none";
 	lastBattleMessage.style.display = "none";
 	battleActionPopup.style.display = "block";
-	const timeBetween = 275;
-	const numRolls = 8;
+	const timeBetween = 310;
+	const numRolls = 9;
 	let i;
 	let thingy;
 	for (i = 1; i < numRolls; i++) {
