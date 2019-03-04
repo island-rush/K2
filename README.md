@@ -21,7 +21,10 @@ INSTRUCTIONS FOR SET UP
 Run xampp with apache and sql
 
 Using workbench (or another sql ide) connect to the sql and run db_create.sql script.
-This will create the database and set up some backend.
+This will create the database and set up some backend
+
+note the game insert for m1a1 adolph, copy this and change to insert more games for each section
+passwords are md5 hashes
 
 Place the repository into the htdocs folder created by xampp
 this is usually located in the C:/xampp/
