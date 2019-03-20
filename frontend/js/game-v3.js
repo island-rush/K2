@@ -753,7 +753,7 @@ function battlePieceClick(event, callingElement) {
 	phpUpdateBoard.onreadystatechange = function () {
 		if (this.readyState === 4 && this.status === 200) {
 			user_feedback.innerHTML = this.responseText;
-			attackButton.disabled = this.responseText !== "Click Attack to Attack!" && (center_defender.childElementCount !== 1 || center_attacker.childElementCound !== 1);
+			attackButton.disabled = this.responseText !== "Click Attack to Attack!";
 		}
 	};
 	phpUpdateBoard.open("GET", "backend/game/battles/battlePieceClick.php?battlePieceId=" + battlePieceId, true);
