@@ -19,7 +19,7 @@ if ($r['gameActive'] != 1) {
     header("location:home.php?err=1");
     exit;
 }
-if ($gamePhase != 2) {
+if ($gamePhase != 2 || $myTeam == "Spec") {
     echo "It is not the right phase for this.";
     exit;
 }
