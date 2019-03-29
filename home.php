@@ -53,6 +53,9 @@ session_abort();
                                         case 8:
                                             echo "Invalid Game or Admin Request was Made.";
                                             break;
+                                        case 9:
+                                            echo "Possible Game Timeout or Other Error: Session Lost";
+                                            break;
                                         default:
                                             echo "Unknown Error Occured.";
                                     }
