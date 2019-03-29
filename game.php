@@ -2,7 +2,7 @@
 session_start();
 include("backend/db.php");
 if (!isset($_SESSION['gameId']) && !isset($_SESSION['myTeam'])) {
-    header("location:home.php?err=5");
+    header("location:home.php?err=9");
     exit;
 }
 $gameId = $_SESSION['gameId'];
@@ -16,7 +16,7 @@ $results = $preparedQuery->get_result();
 $r = $results->fetch_assoc();
 $gameActive = $r['gameActive'];
 if ($gameActive != 1) {
-    header("location:home.php?err=6");
+    header("location:home.php?err=1");
     exit;
 }
 $gameIsland1 = htmlentities($r['gameIsland1']);
@@ -94,7 +94,7 @@ $waterClass = 'class="gridblock water"';
                 <div id="rest_things">
                     <div id="phase_indicator">Current Phase = Loading...</div>
                     <div id="team_indicators">
-                        <div id="red_team_indicator" style="color: red;">ZÃ¼Ã¼n</div>
+                        <div id="red_team_indicator" style="color: red;">Züün</div>
                         <div id="blue_team_indicator" style="color: blue;">Vestrland</div>
                     </div>
                     <div id="rPoints_indicators">
