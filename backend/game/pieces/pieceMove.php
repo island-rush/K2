@@ -96,6 +96,10 @@ if ($newContainerId != -1) {
     $results = $preparedQuery->get_result();
     $r = $results->fetch_assoc();
     $newPositionId = $r['placementPositionId'];  //positionId was -1, now we know actual position going to
+    if ($_SESSION['dist'][$oldPositionId][$newPositionId] != 1 && ($oldPositionId != $newPositionId)) {
+        echo "Can only move 1 space at a time.";
+        exit;
+    }
     $containerUnitId = $r['placementUnitId'];
     $containerTeamId = $r['placementTeamId'];
     if ($containerUnitId != 0 && $containerUnitId != 3) {
