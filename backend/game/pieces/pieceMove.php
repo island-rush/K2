@@ -83,7 +83,7 @@ if ($placementUnitId != 15 && $placementCurrentMoves == 0) {
     exit;
 }
 if ($placementUnitId != 15) {
-    if ($_SESSION['dist'][$oldPositionId][$newPositionId] != 1 && ($oldPositionId != $newPositionId)) {
+    if (($_SESSION['dist'][$oldPositionId][$newPositionId] != 1 && ($oldPositionId != $newPositionId)) && $newPositionId != -1) {
         echo "Can only move 1 space at a time.";
         exit;
     }
