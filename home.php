@@ -9,7 +9,6 @@ if ($myTeam == "Blue" || $myTeam == "Red") {
     $query->bind_param("i", $gameId);
     $query->execute();
 }
-$db->close();
 session_abort();
 ?>
 <!DOCTYPE html>
