@@ -111,9 +111,9 @@ if ($newContainerId != -1) {
         exit;
     }
     $containerContents_UnitIds = [];
-    $query = 'SELECT placementUnitId FROM placements WHERE placementContainerId = ?';
+    $query = 'SELECT placementUnitId FROM placements WHERE placementContainerId = ? AND placementGameId = ?';
     $preparedQuery = $db->prepare($query);
-    $preparedQuery->bind_param("i", $newContainerId);
+    $preparedQuery->bind_param("ii", $newContainerId, $gameId);
     $preparedQuery->execute();
     $results = $preparedQuery->get_result();
     $num_results = $results->num_rows;
@@ -156,9 +156,9 @@ if ($newContainerId != -1) {
         }
     }
 } else {  //an actual land or water position
-    $query = 'SELECT placementUnitId FROM placements WHERE placementPositionId = ? AND placementTeamId != ?';  //get the other pieces that are there
+    $query = 'SELECT placementUnitId FROM placements WHERE placementPositionId = ? AND placementTeamId != ? AND placementGameId = ?';  //get the other pieces that are there
     $preparedQuery = $db->prepare($query);
-    $preparedQuery->bind_param("is", $newPositionId, $myTeam);
+    $preparedQuery->bind_param("isi", $newPositionId, $myTeam, $gameId);
     $preparedQuery->execute();
     $results = $preparedQuery->get_result();
     $num_results = $results->num_rows;
