@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS `games`(
   `gameIsland14` varchar(5) NOT NULL DEFAULT 'Blue',
     PRIMARY KEY(`gameId`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1;
-INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword, gameActive) VALUES ('M1A1', 'Adolph', 	'5f4dcc3b5aa765d61d8327deb882cf99', 1);
+INSERT INTO `games` (gameSection, gameInstructor, gameAdminPassword) VALUES ('M1A1', 'Adolph', 	'5f4dcc3b5aa765d61d8327deb882cf99');
 CREATE TABLE IF NOT EXISTS `placements`(
 	`placementId` int(8) NOT NULL AUTO_INCREMENT,
     `placementGameId` int(3) NOT NULL,
