@@ -3,14 +3,12 @@ session_start();
 include("./backend/db.php");
 $gameId = $_SESSION['gameId'];
 $myTeam = $_SESSION['myTeam'];
-if ($myTeam == "Spec") {
-    header("location:../../home.php");
-    exit;
+if ($myTeam == "Blue" || $myTeam == "Red") {
+    $query = 'UPDATE games SET game'.$myTeam.'Joined = 0 WHERE gameId = ?';
+    $query = $db->prepare($query);
+    $query->bind_param("i", $gameId);
+    $query->execute();
 }
-$query = 'UPDATE games SET game'.$myTeam.'Joined = 0 WHERE gameId = ?';
-$query = $db->prepare($query);
-$query->bind_param("i", $gameId);
-$query->execute();
 $db->close();
 session_abort();
 ?>
