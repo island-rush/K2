@@ -1,6 +1,6 @@
-DROP DATABASE IF EXISTS islandRushDB2;
-CREATE DATABASE islandRushDB2;
-USE islandRushDB2;
+DROP DATABASE IF EXISTS islandRushDB;
+CREATE DATABASE islandRushDB;
+USE islandRushDB;
 SET SQL_SAFE_UPDATES = 0;
 CREATE TABLE IF NOT EXISTS `games`(
   `gameId` int(3) NOT NULL AUTO_INCREMENT,
@@ -71,7 +71,7 @@ CREATE TABLE IF NOT EXISTS `battlePieces`(
 CREATE TABLE IF NOT EXISTS `updates`(
 	`updateId` int(16) NOT NULL AUTO_INCREMENT,
 	`updateGameId` int(5) NOT NULL,
-	`updateType` varchar(18), -- phaseChange,
+	`updateType` varchar(18),
 	`updatePlacementId` int(8) DEFAULT 0,
 	`updateNewPositionId` int(3) DEFAULT 0,
 	`updateNewContainerId` int(8) DEFAULT 0,
