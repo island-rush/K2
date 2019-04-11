@@ -156,6 +156,7 @@ switch ($newPhaseNum) {
             $gameIslands = [$gameIsland1, $gameIsland2, $gameIsland3, $gameIsland4, $gameIsland5, $gameIsland6, $gameIsland7, $gameIsland8, $gameIsland9, $gameIsland10, $gameIsland11, $gameIsland12, $gameIsland13, $gameIsland14];
             $islandPoints = [4, 6, 4, 3, 8, 7, 7, 10, 8, 5, 5, 5, 15, 25];
             $totalPointsToAdd = 0;
+            $otherTeamPointsToAdd = 0;
             $bankDrain = "bankDrain";
             for ($x = 0; $x < 12; $x++) {
                 if ($gameIslands[$x] == $myTeam) {
@@ -168,6 +169,8 @@ switch ($newPhaseNum) {
                     $num_results = $results->num_rows;
                     if ($num_results == 0) {
                         $totalPointsToAdd += $islandPoints[$x];
+                    } else {
+                        $otherTeamPointsToAdd += $islandPoints[$x];
                     }
                 }
             }
@@ -177,9 +180,18 @@ switch ($newPhaseNum) {
             if ($gameIslands[13] == $gameCurrentTeam) {
                 $totalPointsToAdd += 25;
             }
+            $otherTeamName = "Blue";
+            if ($myTeam == "Blue") {
+                $otherTeamName = "Red";
+            }
             $query = 'UPDATE games SET game'.$myTeam.'Rpoints = game'.$myTeam.'Rpoints + ? WHERE (gameId = ?)';
             $query = $db->prepare($query);
             $query->bind_param("ii", $totalPointsToAdd, $gameId);
+            $query->execute();
+            
+            $query = 'UPDATE games SET game'.$otherTeamName.'Rpoints = game'.$otherTeamName.'Rpoints + ? WHERE (gameId = ?)';
+            $query = $db->prepare($query);
+            $query->bind_param("ii", $otherTeamPointsToAdd, $gameId);
             $query->execute();
         }
         break;
