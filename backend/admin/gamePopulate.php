@@ -407,7 +407,7 @@ $query->execute();
 $query2->execute();
 $results2 = $query2->get_result();
 $r2 = $results2->fetch_assoc();
-$container = $r['LAST_INSERT_ID()'];
+$container = $r2['LAST_INSERT_ID()'];
 $query->bind_param("iisiiii", $gameId, $fighter, $blue, $container, $moves[$fighter], $position, $placementBattleUsed);
 $query->execute();
 $query->bind_param("iisiiii", $gameId, $fighter, $blue, $container, $moves[$fighter], $position, $placementBattleUsed);
