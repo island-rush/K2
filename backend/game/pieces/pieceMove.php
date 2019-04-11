@@ -3,7 +3,7 @@ session_start();
 include("../../db.php");
 $gameId = $_SESSION['gameId'];
 $myTeam = $_SESSION['myTeam'];
-if (!isset($_REQUEST['placementId']) || !isset($_REQUEST['positionId']) || !isset($_REQUEST['containerId']) || !$_REQUEST['placementId'] || !$_REQUEST['positionId'] || !$_REQUEST['containerId']) {
+if (!isset($_REQUEST['placementId']) || !isset($_REQUEST['positionId']) || !isset($_REQUEST['containerId'])) {
     echo "Invalid request.";
     exit;
 }
