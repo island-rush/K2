@@ -1,15 +1,5 @@
 <?php
-session_start();
-include("./backend/db.php");
-$gameId = $_SESSION['gameId'];
-$myTeam = $_SESSION['myTeam'];
-if ($myTeam == "Blue" || $myTeam == "Red") {
-    $query = 'UPDATE games SET game'.$myTeam.'Joined = 0 WHERE gameId = ?';
-    $query = $db->prepare($query);
-    $query->bind_param("i", $gameId);
-    $query->execute();
-}
-session_abort();
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
