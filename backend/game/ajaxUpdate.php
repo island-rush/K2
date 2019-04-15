@@ -24,7 +24,7 @@ while(true) {
         echo json_encode($arr);
         break;
     }
-    if ($loopCounter++ >= 800) {  //3.5 minutes total
+    if ($loopCounter++ >= 400) {  //800 = ~3.5 min
         echo "TIMEOUT";
         break;
     }
