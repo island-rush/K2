@@ -1,5 +1,4 @@
 <?php
-session_abort();
 session_start();
 if ( (isset($_POST['adminSection'])) && (isset($_POST['adminInstructor'])) && (isset($_POST['adminPassword'])) ){
     include("../db.php");
