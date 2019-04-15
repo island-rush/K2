@@ -1,7 +1,7 @@
 <?php
 session_start();
 include("../../db.php");
-$gameId = $_SESSION['gameId'];
+$gameId = (int) $_SESSION['gameId'];
 $myTeam = $_SESSION['myTeam'];
 $query = 'SELECT gameActive, gamePhase, gameCurrentTeam, game'.$myTeam.'Hpoints FROM GAMES WHERE gameId = ?';
 $preparedQuery = $db->prepare($query);
