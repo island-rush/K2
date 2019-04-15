@@ -134,6 +134,45 @@ if ($gameBattleSection == "attack" || $gameBattleSection == "counter") {
                 $query = $db->prepare($query);
                 $query->bind_param("i", $gameId);
                 $query->execute();
+                //
+                $myArray = array(
+                    2 => 121,
+                    6 => 122,
+                    7 => 123,
+                    9 => 124
+                );
+                $positionForMissile = $myArray[$islandNum];
+                
+                $query = 'SELECT placementId, placementTeamId FROM placements WHERE (placementPositionId = ?) AND (placementGameId = ?)';
+                $query = $db->prepare($query);
+                $query->bind_param("ii", $positionForMissile, $gameId);
+                $query->execute();
+                $results = $query->get_result();
+                $num_results = $results->num_rows;
+            
+                if ($num_results == 1) {
+                    $r = $results->fetch_assoc();
+                    $placementId = $r['placementId'];
+                    $placementTeamId = $r['placementTeamId'];
+            
+                    $newTeam = "Blue";
+                    if ($placementTeamId == "Blue") {
+                        $newTeam = "Red";
+                    }
+            
+                    $query = 'UPDATE placements SET placementTeamId = ? WHERE placementId = ?';
+                    $query = $db->prepare($query);
+                    $query->bind_param("si", $newTeam, $placementId);
+                    $query->execute();
+                    
+                    //ajax missile piece update here
+                    $updateType = "lbsmChange";
+                    $query = 'INSERT INTO updates (updateGameId, updateType, updatePlacementId, updateHTML) VALUES (?, ?, ?, ?)';
+                    $query = $db->prepare($query);
+                    $query->bind_param("isis", $gameId, $updateType, $placementId, $newTeam);
+                    $query->execute();
+                }
+                //
             }
         }
     }
