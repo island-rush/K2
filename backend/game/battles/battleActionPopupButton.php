@@ -120,6 +120,42 @@ if ($gameBattleSubSection == "defense_bonus") {
         $query = $db->prepare($query);
         $query->bind_param("isis", $gameId, $updateType, $attackId, $battle_outcome);
         $query->execute();
+        
+        //need to get fighters out of the container
+        $fighter = 11;
+        $query = 'SELECT * FROM placements WHERE (placementContainerId = ?) AND (placementUnitId = ?)';
+        $query = $db->prepare($query);
+        $query->bind_param("ii", $attackId, $fighter);
+        $query->execute();
+        $results = $query->get_result();
+        $numresults = $results->num_rows;
+        if ($numresults > 0){
+            for ($i = 0; $i < $numresults; $i++) {
+
+                $r = $results->fetch_assoc();
+                $thisPlacementId = $r['placementId'];
+                $thisPosition = $r['placementPositionId'];
+                $thisMoves = $r['placementCurrentMoves'];
+                $thisUnitId = $r['placementUnitId'];
+    
+                $noContainer = -1;
+                $query = 'UPDATE placements SET placementContainerId = ? WHERE placementId = ?';
+                $query = $db->prepare($query);
+                $query->bind_param("ii", $noContainer, $thisPlacementId);
+                $query->execute();
+                
+                $unitNames = ['Transport', 'Submarine', 'Destroyer', 'AircraftCarrier', 'ArmyCompany', 'ArtilleryBattery', 'TankPlatoon', 'MarinePlatoon', 'MarineConvoy', 'AttackHelo', 'SAM', 'FighterSquadron', 'BomberSquadron', 'StealthBomberSquadron', 'Tanker', 'LandBasedSeaMissile'];
+    
+                $newTitle = $unitNames[$thisUnitId]."\nMoves: ".$thisMoves;
+
+                $updateType = "pieceMove";
+                $query = 'INSERT INTO updates (updateGameId, updateType, updatePlacementId, updateNewPositionId, updateNewContainerId, updateHTML) VALUES (?, ?, ?, ?, ?, ?)';
+                $query = $db->prepare($query);
+                $query->bind_param("isiiis", $gameId, $updateType, $thisPlacementId, $thisPosition, $noContainer, $newTitle);
+                $query->execute();
+            }
+        }
+        //
         $query = 'DELETE FROM placements WHERE placementId = ?';
         $query = $db->prepare($query);
         $query->bind_param("i", $attackId);
@@ -153,6 +189,44 @@ if ($gameBattleSubSection == "defense_bonus") {
         $query = $db->prepare($query);
         $query->bind_param("isis", $gameId, $updateType, $defendId, $battle_outcome);
         $query->execute();
+        
+        //need to get fighters out of the container
+        //
+        $fighter = 11;
+        $query = 'SELECT * FROM placements WHERE (placementContainerId = ?) AND (placementUnitId = ?)';
+        $query = $db->prepare($query);
+        $query->bind_param("ii", $defendId, $fighter);
+        $query->execute();
+        $results = $query->get_result();
+        $numresults = $results->num_rows;
+        if ($numresults > 0){
+            for ($i = 0; $i < $numresults; $i++) {
+
+                $r = $results->fetch_assoc();
+                $thisPlacementId = $r['placementId'];
+                $thisPosition = $r['placementPositionId'];
+                $thisMoves = $r['placementCurrentMoves'];
+                $thisUnitId = $r['placementUnitId'];
+    
+                $noContainer = -1;
+                $query = 'UPDATE placements SET placementContainerId = ? WHERE placementId = ?';
+                $query = $db->prepare($query);
+                $query->bind_param("ii", $noContainer, $thisPlacementId);
+                $query->execute();
+                
+                $unitNames = ['Transport', 'Submarine', 'Destroyer', 'AircraftCarrier', 'ArmyCompany', 'ArtilleryBattery', 'TankPlatoon', 'MarinePlatoon', 'MarineConvoy', 'AttackHelo', 'SAM', 'FighterSquadron', 'BomberSquadron', 'StealthBomberSquadron', 'Tanker', 'LandBasedSeaMissile'];
+    
+                $newTitle = $unitNames[$thisUnitId]."\nMoves: ".$thisMoves;
+
+                $updateType = "pieceMove";
+                $query = 'INSERT INTO updates (updateGameId, updateType, updatePlacementId, updateNewPositionId, updateNewContainerId, updateHTML) VALUES (?, ?, ?, ?, ?, ?)';
+                $query = $db->prepare($query);
+                $query->bind_param("isiiis", $gameId, $updateType, $thisPlacementId, $thisPosition, $noContainer, $newTitle);
+                $query->execute();
+            }
+        }
+        //
+        
         $query = 'DELETE FROM placements WHERE placementId = ?';
         $query = $db->prepare($query);
         $query->bind_param("i", $defendId);
