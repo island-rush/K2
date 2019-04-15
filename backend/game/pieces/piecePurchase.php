@@ -1,7 +1,7 @@
 <?php
 session_start();
 include("../../db.php");
-$gameId = $_SESSION['gameId'];
+$gameId = (int) $_SESSION['gameId'];
 $myTeam = $_SESSION['myTeam'];
 $placementUnitId = (int) $_REQUEST['unitId'];
 $costs = [8, 8, 10, 15, 4, 5, 6, 5, 8, 7, 8, 12, 12, 15, 11, 10];
