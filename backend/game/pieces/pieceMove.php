@@ -74,7 +74,89 @@ if (($oldPositionId == 118 && $gamePhase != 4) || ($gamePhase == 4 && $oldPositi
     echo "Can only place Reinforcements in inventory during 'Reinforcement Place' phase.";
     exit;
 }
-if ($oldPositionId == $newPositionId && $oldContainerId == $newContainerId) {  //do nothing if dropped into same spot
+if ($oldPositionId == $newPositionId && $oldContainerId == $newContainerId) {  //do nothing if dropped into same spot (check for flag capture again to be safe)
+    $query = 'SELECT placementUnitId FROM placements WHERE placementPositionId = ? AND placementTeamId != ? AND placementGameId = ?';  //get the other pieces that are there
+    $preparedQuery = $db->prepare($query);
+    $preparedQuery->bind_param("isi", $newPositionId, $myTeam, $gameId);
+    $preparedQuery->execute();
+    $results = $preparedQuery->get_result();
+    $num_results = $results->num_rows;
+    if ($num_results == 0) {
+        //should check here again if the piece is able to capture the island, and that was skipped for whatever reason...
+        $flagPositions = [75, 79, 85, 86, 90, 94, 97, 100, 103, 107, 111, 114, 55, 65];
+        if (in_array($newPositionId, $flagPositions)) {
+            $index = array_search($newPositionId, $flagPositions);
+            if ($ownerships[$index] != $myTeam) {
+                if ($placementUnitId >= 4 && $placementUnitId <= 8) {  //land units that can capture
+                    $query = 'UPDATE games SET gameIsland'.($index + 1).' = ?, game'.$myTeam.'Hpoints = game'.$myTeam.'Hpoints + 1 WHERE gameId = ?';
+                    $query = $db->prepare($query);
+                    $query->bind_param("si", $myTeam, $gameId);
+                    $query->execute();
+                    $islandToChange = $index + 1;
+                    $updateType = "islandOwnerChange";
+                    $query = 'INSERT INTO updates (updateGameId, updateType, updatePlacementId, updateHTML) VALUES (?, ?, ?, ?)';
+                    $query = $db->prepare($query);
+                    $query->bind_param("isis", $gameId, $updateType, $islandToChange, $myTeam);
+                    $query->execute();
+                    
+                    $updateType = "getBoard";
+                    $query = 'INSERT INTO updates (updateGameId, updateType) VALUES (?, ?)';
+                    $query = $db->prepare($query);
+                    $query->bind_param("is", $gameId, $updateType);
+                    $query->execute();
+                    
+                    $query = 'DELETE FROM movements WHERE movementGameId = ?';
+                    $query = $db->prepare($query);
+                    $query->bind_param("i", $gameId);
+                    $query->execute();
+                    
+                    //
+                    $myArray = array(
+                        2 => 121,
+                        6 => 122,
+                        7 => 123,
+                        9 => 124
+                    );
+                    $positionForMissile = $myArray[$islandToChange];
+                    
+                    $query = 'SELECT placementId, placementTeamId FROM placements WHERE (placementPositionId = ?) AND (placementGameId = ?)';
+                    $query = $db->prepare($query);
+                    $query->bind_param("ii", $positionForMissile, $gameId);
+                    $query->execute();
+                    $results = $query->get_result();
+                    $num_results = $results->num_rows;
+                
+                    if ($num_results == 1) {
+                        $r = $results->fetch_assoc();
+                        $placementId = $r['placementId'];
+                        $placementTeamId = $r['placementTeamId'];
+                
+                        $newTeam = "Blue";
+                        if ($placementTeamId == "Blue") {
+                            $newTeam = "Red";
+                        }
+                
+                        $query = 'UPDATE placements SET placementTeamId = ? WHERE placementId = ?';
+                        $query = $db->prepare($query);
+                        $query->bind_param("si", $newTeam, $placementId);
+                        $query->execute();
+                        
+                        
+                        //ajax missile piece update here
+                        $updateType = "lbsmChange";
+                        $query = 'INSERT INTO updates (updateGameId, updateType, updatePlacementId, updateHTML) VALUES (?, ?, ?, ?)';
+                        $query = $db->prepare($query);
+                        $query->bind_param("isis", $gameId, $updateType, $placementId, $newTeam);
+                        $query->execute();
+                    }
+                    
+                    
+                    //
+                }
+            }
+        }
+    }
+
     echo "Moved Piece Into Same Position.";
     exit;
 }
@@ -82,12 +164,21 @@ if ($placementUnitId != 15 && $placementCurrentMoves == 0) {
     echo "This piece is out of moves.";
     exit;
 }
-if ($placementUnitId != 15) {
-    if (($_SESSION['dist'][$oldPositionId][$newPositionId] != 1 && ($oldPositionId != $newPositionId)) && $newPositionId != -1) {
-        echo "Can only move 1 space at a time.";
-        exit;
-    }
-}
+
+
+
+
+// if ($placementUnitId != 15) {
+//     if (($_SESSION['dist'][$oldPositionId][$newPositionId] != 1 && ($oldPositionId != $newPositionId)) && $newPositionId != -1) {
+//         echo "Can only move 1 space at a time.";
+//         exit;
+//     }
+// }
+
+
+
+
+
 if ($newContainerId != -1) {
     $query = 'SELECT placementUnitId, placementTeamId, placementPositionId FROM placements WHERE placementId = ?';
     $preparedQuery = $db->prepare($query);
@@ -195,6 +286,10 @@ if ($newContainerId != -1) {
                 exit;
             }
         }
+        if ($_SESSION['dist'][$oldPositionId][$newPositionId] != 1) {
+            echo "Can only move 1 space at a time.";
+            exit;
+        }
         $listEnemyPiecesInPosition_UnitIds = [];  //checking blockade
         for ($i = 0; $i < $num_results; $i++) {
             $r = $results->fetch_assoc();
@@ -209,6 +304,7 @@ if ($newContainerId != -1) {
             echo "Blockaded by another ship.";
             exit;
         }
+        
     }
 }
 if ($gamePhase == 4 && $placementUnitId != 15) {  //Reinforcement Place controls, already checked missile stuff, already checked from 118
@@ -394,10 +490,59 @@ if ($killed == 1) {
                     $query = $db->prepare($query);
                     $query->bind_param("isis", $gameId, $updateType, $islandToChange, $myTeam);
                     $query->execute();
+                    
+                    $updateType = "getBoard";
+                    $query = 'INSERT INTO updates (updateGameId, updateType) VALUES (?, ?)';
+                    $query = $db->prepare($query);
+                    $query->bind_param("is", $gameId, $updateType);
+                    $query->execute();
+                    
                     $query = 'DELETE FROM movements WHERE movementGameId = ?';
                     $query = $db->prepare($query);
                     $query->bind_param("i", $gameId);
                     $query->execute();
+                    
+                    $myArray = array(
+                        2 => 121,
+                        6 => 122,
+                        7 => 123,
+                        9 => 124
+                    );
+                    $positionForMissile = $myArray[$islandToChange];
+                    
+                    $query = 'SELECT placementId, placementTeamId FROM placements WHERE (placementPositionId = ?) AND (placementGameId = ?)';
+                    $query = $db->prepare($query);
+                    $query->bind_param("ii", $positionForMissile, $gameId);
+                    $query->execute();
+                    $results = $query->get_result();
+                    $num_results = $results->num_rows;
+                
+                    if ($num_results == 1) {
+                        $r = $results->fetch_assoc();
+                        $placementId = $r['placementId'];
+                        $placementTeamId = $r['placementTeamId'];
+                
+                        $newTeam = "Blue";
+                        if ($placementTeamId == "Blue") {
+                            $newTeam = "Red";
+                        }
+                
+                        $query = 'UPDATE placements SET placementTeamId = ? WHERE placementId = ?';
+                        $query = $db->prepare($query);
+                        $query->bind_param("si", $newTeam, $placementId);
+                        $query->execute();
+                        
+                        
+                        //ajax missile piece update here
+                        $updateType = "lbsmChange";
+                        $query = 'INSERT INTO updates (updateGameId, updateType, updatePlacementId, updateHTML) VALUES (?, ?, ?, ?)';
+                        $query = $db->prepare($query);
+                        $query->bind_param("isis", $gameId, $updateType, $placementId, $newTeam);
+                        $query->execute();
+                    }
+                    
+                    //
+                    
                 }
             }
         }
