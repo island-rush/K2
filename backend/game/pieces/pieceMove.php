@@ -117,37 +117,40 @@ if ($oldPositionId == $newPositionId && $oldContainerId == $newContainerId) {  /
                         7 => 123,
                         9 => 124
                     );
-                    $positionForMissile = $myArray[$islandToChange];
                     
-                    $query = 'SELECT placementId, placementTeamId FROM placements WHERE (placementPositionId = ?) AND (placementGameId = ?)';
-                    $query = $db->prepare($query);
-                    $query->bind_param("ii", $positionForMissile, $gameId);
-                    $query->execute();
-                    $results = $query->get_result();
-                    $num_results = $results->num_rows;
-                
-                    if ($num_results == 1) {
-                        $r = $results->fetch_assoc();
-                        $placementId = $r['placementId'];
-                        $placementTeamId = $r['placementTeamId'];
-                
-                        $newTeam = "Blue";
-                        if ($placementTeamId == "Blue") {
-                            $newTeam = "Red";
+                    if ($islandToChange == 2 || $islandToChange == 6 || $islandToChange == 7 || $islandToChange == 9) {
+                        $positionForMissile = $myArray[$islandToChange];
+                    
+                        $query = 'SELECT placementId, placementTeamId FROM placements WHERE (placementPositionId = ?) AND (placementGameId = ?)';
+                        $query = $db->prepare($query);
+                        $query->bind_param("ii", $positionForMissile, $gameId);
+                        $query->execute();
+                        $results = $query->get_result();
+                        $num_results = $results->num_rows;
+                    
+                        if ($num_results == 1) {
+                            $r = $results->fetch_assoc();
+                            $placementId = $r['placementId'];
+                            $placementTeamId = $r['placementTeamId'];
+                    
+                            $newTeam = "Blue";
+                            if ($placementTeamId == "Blue") {
+                                $newTeam = "Red";
+                            }
+                    
+                            $query = 'UPDATE placements SET placementTeamId = ? WHERE placementId = ?';
+                            $query = $db->prepare($query);
+                            $query->bind_param("si", $newTeam, $placementId);
+                            $query->execute();
+                            
+                            
+                            //ajax missile piece update here
+                            $updateType = "lbsmChange";
+                            $query = 'INSERT INTO updates (updateGameId, updateType, updatePlacementId, updateHTML) VALUES (?, ?, ?, ?)';
+                            $query = $db->prepare($query);
+                            $query->bind_param("isis", $gameId, $updateType, $placementId, $newTeam);
+                            $query->execute();
                         }
-                
-                        $query = 'UPDATE placements SET placementTeamId = ? WHERE placementId = ?';
-                        $query = $db->prepare($query);
-                        $query->bind_param("si", $newTeam, $placementId);
-                        $query->execute();
-                        
-                        
-                        //ajax missile piece update here
-                        $updateType = "lbsmChange";
-                        $query = 'INSERT INTO updates (updateGameId, updateType, updatePlacementId, updateHTML) VALUES (?, ?, ?, ?)';
-                        $query = $db->prepare($query);
-                        $query->bind_param("isis", $gameId, $updateType, $placementId, $newTeam);
-                        $query->execute();
                     }
                     
                     
@@ -508,40 +511,43 @@ if ($killed == 1) {
                         7 => 123,
                         9 => 124
                     );
-                    $positionForMissile = $myArray[$islandToChange];
                     
-                    $query = 'SELECT placementId, placementTeamId FROM placements WHERE (placementPositionId = ?) AND (placementGameId = ?)';
-                    $query = $db->prepare($query);
-                    $query->bind_param("ii", $positionForMissile, $gameId);
-                    $query->execute();
-                    $results = $query->get_result();
-                    $num_results = $results->num_rows;
-                
-                    if ($num_results == 1) {
-                        $r = $results->fetch_assoc();
-                        $placementId = $r['placementId'];
-                        $placementTeamId = $r['placementTeamId'];
-                
-                        $newTeam = "Blue";
-                        if ($placementTeamId == "Blue") {
-                            $newTeam = "Red";
+                    if ($islandToChange == 2 || $islandToChange == 6 || $islandToChange == 7 || $islandToChange == 9) {
+                        $positionForMissile = $myArray[$islandToChange];
+                    
+                        $query = 'SELECT placementId, placementTeamId FROM placements WHERE (placementPositionId = ?) AND (placementGameId = ?)';
+                        $query = $db->prepare($query);
+                        $query->bind_param("ii", $positionForMissile, $gameId);
+                        $query->execute();
+                        $results = $query->get_result();
+                        $num_results = $results->num_rows;
+                    
+                        if ($num_results == 1) {
+                            $r = $results->fetch_assoc();
+                            $placementId = $r['placementId'];
+                            $placementTeamId = $r['placementTeamId'];
+                    
+                            $newTeam = "Blue";
+                            if ($placementTeamId == "Blue") {
+                                $newTeam = "Red";
+                            }
+                    
+                            $query = 'UPDATE placements SET placementTeamId = ? WHERE placementId = ?';
+                            $query = $db->prepare($query);
+                            $query->bind_param("si", $newTeam, $placementId);
+                            $query->execute();
+                            
+                            
+                            //ajax missile piece update here
+                            $updateType = "lbsmChange";
+                            $query = 'INSERT INTO updates (updateGameId, updateType, updatePlacementId, updateHTML) VALUES (?, ?, ?, ?)';
+                            $query = $db->prepare($query);
+                            $query->bind_param("isis", $gameId, $updateType, $placementId, $newTeam);
+                            $query->execute();
                         }
-                
-                        $query = 'UPDATE placements SET placementTeamId = ? WHERE placementId = ?';
-                        $query = $db->prepare($query);
-                        $query->bind_param("si", $newTeam, $placementId);
-                        $query->execute();
-                        
-                        
-                        //ajax missile piece update here
-                        $updateType = "lbsmChange";
-                        $query = 'INSERT INTO updates (updateGameId, updateType, updatePlacementId, updateHTML) VALUES (?, ?, ?, ?)';
-                        $query = $db->prepare($query);
-                        $query->bind_param("isis", $gameId, $updateType, $placementId, $newTeam);
-                        $query->execute();
                     }
                     
-                    //
+             
                     
                 }
             }
