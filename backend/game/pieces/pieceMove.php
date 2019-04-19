@@ -191,7 +191,7 @@ if ($newContainerId != -1) {
     $r = $results->fetch_assoc();
     $newPositionId = $r['placementPositionId'];  //positionId was -1, now we know actual position going to
     if ($_SESSION['dist'][$oldPositionId][$newPositionId] != 1 && ($oldPositionId != $newPositionId)) {
-        echo "Can only move 1 space at a time.";
+        echo "Can only move 1 space at a time!";
         exit;
     }
     $containerUnitId = $r['placementUnitId'];
@@ -289,8 +289,8 @@ if ($newContainerId != -1) {
                 exit;
             }
         }
-        if ($_SESSION['dist'][$oldPositionId][$newPositionId] != 1) {
-            echo "Can only move 1 space at a time.";
+        if ($_SESSION['dist'][$oldPositionId][$newPositionId] != 1 && ($oldPositionId != $newPositionId)) {
+            echo "Can only move 1 space at a time!!";
             exit;
         }
         $listEnemyPiecesInPosition_UnitIds = [];  //checking blockade
@@ -459,7 +459,14 @@ if ($killed == 1) {
         $query->bind_param("ii", $newPositionId, $placementId);
         $query->execute();
     }
+    
+    $dist = 1;
     $query = 'UPDATE placements SET placementPositionId = ?, placementCurrentMoves = placementCurrentMoves - 1, placementContainerId = ? WHERE (placementId = ?)';
+    if ($newPositionId == $oldPositionId) {
+        $dist = 0;
+        $query = 'UPDATE placements SET placementPositionId = ?, placementContainerId = ? WHERE (placementId = ?)';
+    }
+    
     $query = $db->prepare($query);
     $query->bind_param("iii", $newPositionId,  $newContainerId,  $placementId);
     $query->execute();
@@ -471,7 +478,7 @@ if ($killed == 1) {
     if ($placementBattleUsed == 1) {
         $battleUsedText = "\nUsed in Attack";
     }
-    $newTitle = $placementUnitName."\nMoves: ".($placementCurrentMoves-1).$battleUsedText;
+    $newTitle = $placementUnitName."\nMoves: ".($placementCurrentMoves-$dist).$battleUsedText;
     $updateType = "pieceMove";
     $query = 'INSERT INTO updates (updateGameId, updateType, updatePlacementId, updateNewPositionId, updateNewContainerId, updateHTML) VALUES (?, ?, ?, ?, ?, ?)';
     $query = $db->prepare($query);
