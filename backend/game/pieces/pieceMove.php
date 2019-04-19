@@ -376,7 +376,7 @@ if ($gamePhase != 4 && $gamePhase != 1 && ($placementUnitId == 11 || $placementU
     }
     array_push($adjSam, $newPositionId);
     for ($j = 0; $j < sizeof($adjSam); $j++) {
-        $query = 'SELECT placementPositionId FROM placements WHERE (placementPositionId = ?) AND (placementTeamId != ?) AND (placementUnitId = 10) AND (placementGameId = ?)';
+        $query = 'SELECT placementPositionId FROM placements WHERE (placementPositionId = ?) AND (placementTeamId != ?) AND (placementContainerId = -1) AND (placementUnitId = 10) AND (placementGameId = ?)';
         $query = $db->prepare($query);
         $position = $adjSam[$j];
         $query->bind_param("isi", $position, $myTeam, $gameId);
