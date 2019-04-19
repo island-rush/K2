@@ -40,7 +40,23 @@ if ($num_results > 0) {
     $movementFromPosition = $r['movementFromPosition'];
     $movementFromContainer = $r['movementFromContainer'];
     $movementPlacementId = $r['movementNowPlacement'];
+    
+    
+    $query = 'SELECT placementPositionId FROM placements WHERE placementId = ?';
+    $query = $db->prepare($query);
+    $query->bind_param("i", $movementPlacementId);
+    $query->execute();
+    $results = $query->get_result();
+    $r = $results->fetch_assoc();
+    $oldPositionId = $r['placementPositionId'];
+    
+    $dist = 1;
     $query = 'UPDATE placements SET placementPositionId = ?, placementCurrentMoves = placementCurrentMoves + 1, placementContainerId = ? WHERE (placementId = ?)';
+    if ($movementFromPosition == $oldPositionId) {
+        $dist = 0;
+        $query = 'UPDATE placements SET placementPositionId = ?, placementContainerId = ? WHERE (placementId = ?)';
+    }
+    
     $query = $db->prepare($query);
     $query->bind_param("iii", $movementFromPosition,  $movementFromContainer,  $movementPlacementId);
     $query->execute();
