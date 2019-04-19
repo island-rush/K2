@@ -164,6 +164,7 @@ function getBoard(roll){
 	phpPhaseChange.open("GET", "backend/game/getBoard.php", true);
 	phpPhaseChange.send();
 }
+// setTimeout(getBoard(false), 100000);
 getBoard(false);
 function ajaxUpdate(){
 	let phpUpdateBoard = new XMLHttpRequest();
@@ -218,6 +219,9 @@ function ajaxUpdate(){
 					case "updateMoves":
 						ajaxUpdateMoves(JSON.parse(decoded.updateHTML));
 						break;
+					case "lbsmChange":
+						ajaxLBSMChange(parseInt(decoded.updatePlacementId), decoded.updateHTML);
+						break;
 					default:
 						alert("Error with ajax call, unknown updateType " + decoded.updateType);
 				}
@@ -239,6 +243,14 @@ function ajaxPieceMove(placementId, toPositionId, toContainerId, newTitle) {
 		setTimeout(function() { newLocation.classList.remove("selectedPos"); }, 2000);
 	}
 }
+
+function ajaxLBSMChange(placementId, newTeam) {
+	let gamePiece = document.querySelector("[data-placementId='" + placementId + "']");
+	let oldTeam = newTeam == "Blue" ? "Red" : "Blue";
+	gamePiece.classList.remove(oldTeam);
+	gamePiece.classList.add(newTeam);
+}
+
 function ajaxPieceRemove(placementId) {
 	document.querySelector("[data-placementId='" + placementId + "']").remove();
 }
