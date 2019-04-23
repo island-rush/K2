@@ -114,69 +114,76 @@ if ($gameBattleSection == "attack" || $gameBattleSection == "counter") {
         $r = $results->fetch_assoc();
         $islandOwner = $r['gameIsland' . $islandNum];
         if ($islandOwner != $myTeam) {
-            $query = 'SELECT placementId FROM placements WHERE placementPositionId = ? AND placementTeamId != ?';  //get the other pieces that are there
+            $query = 'SELECT placementId FROM placements WHERE placementPositionId = ? AND placementTeamId != ? AND placementGameId = ?';  //get the other pieces that are there
             $preparedQuery = $db->prepare($query);
-            $preparedQuery->bind_param("is", $gameBattlePosSelected, $myTeam);
+            $preparedQuery->bind_param("isi", $gameBattlePosSelected, $myTeam, $gameId);
             $preparedQuery->execute();
             $results = $preparedQuery->get_result();
             $num_results = $results->num_rows;
             if ($num_results == 0) {
-                $query = 'UPDATE games SET gameIsland' . $islandNum . ' = ?, game' . $myTeam . 'Hpoints = game' . $myTeam . 'Hpoints + 1 WHERE gameId = ?';
-                $query = $db->prepare($query);
-                $query->bind_param("si", $myTeam, $gameId);
-                $query->execute();
-                $updateType = "islandOwnerChange";
-                $query = 'INSERT INTO updates (updateGameId, updateType, updatePlacementId, updateHTML) VALUES (?, ?, ?, ?)';
-                $query = $db->prepare($query);
-                $query->bind_param("isis", $gameId, $updateType, $islandNum, $myTeam);
-                $query->execute();
-                $query = 'DELETE FROM movements WHERE movementGameId = ?';
-                $query = $db->prepare($query);
-                $query->bind_param("i", $gameId);
-                $query->execute();
-                //
-                $myArray = array(
-                    2 => 121,
-                    6 => 122,
-                    7 => 123,
-                    9 => 124
-                );
-                
-                if ($islandToChange == 2 || $islandToChange == 6 || $islandToChange == 7 || $islandToChange == 9) {
-                    $positionForMissile = $myArray[$islandToChange];
-                
-                    $query = 'SELECT placementId, placementTeamId FROM placements WHERE (placementPositionId = ?) AND (placementGameId = ?)';
+                //also need to check at least 1 land piece on the square
+                $query = 'SELECT placementId FROM placements WHERE placementPositionId = ? AND placementTeamId = ? AND (placementUnitId >= 4 AND placementUnitId <= 8) AND placementGameId = ?';  //get the other pieces that are there
+                $preparedQuery = $db->prepare($query);
+                $preparedQuery->bind_param("isi", $gameBattlePosSelected, $myTeam, $gameId);
+                $preparedQuery->execute();
+                $results = $preparedQuery->get_result();
+                $num_results = $results->num_rows;
+                if ($num_results != 0) {
+                    $query = 'UPDATE games SET gameIsland' . $islandNum . ' = ?, game' . $myTeam . 'Hpoints = game' . $myTeam . 'Hpoints + 1 WHERE gameId = ?';
                     $query = $db->prepare($query);
-                    $query->bind_param("ii", $positionForMissile, $gameId);
+                    $query->bind_param("si", $myTeam, $gameId);
                     $query->execute();
-                    $results = $query->get_result();
-                    $num_results = $results->num_rows;
-                
-                    if ($num_results == 1) {
-                        $r = $results->fetch_assoc();
-                        $placementId = $r['placementId'];
-                        $placementTeamId = $r['placementTeamId'];
-                
-                        $newTeam = "Blue";
-                        if ($placementTeamId == "Blue") {
-                            $newTeam = "Red";
+                    $updateType = "islandOwnerChange";
+                    $query = 'INSERT INTO updates (updateGameId, updateType, updatePlacementId, updateHTML) VALUES (?, ?, ?, ?)';
+                    $query = $db->prepare($query);
+                    $query->bind_param("isis", $gameId, $updateType, $islandNum, $myTeam);
+                    $query->execute();
+                    $query = 'DELETE FROM movements WHERE movementGameId = ?';
+                    $query = $db->prepare($query);
+                    $query->bind_param("i", $gameId);
+                    $query->execute();
+
+                    $myArray = array(
+                        2 => 121,
+                        6 => 122,
+                        7 => 123,
+                        9 => 124
+                    );
+
+                    if ($islandNum == 2 || $islandNum == 6 || $islandNum == 7 || $islandNum == 9) {
+                        $positionForMissile = $myArray[$islandNum];
+
+                        $query = 'SELECT placementId, placementTeamId FROM placements WHERE (placementPositionId = ?) AND (placementGameId = ?)';
+                        $query = $db->prepare($query);
+                        $query->bind_param("ii", $positionForMissile, $gameId);
+                        $query->execute();
+                        $results = $query->get_result();
+                        $num_results = $results->num_rows;
+
+                        if ($num_results == 1) {
+                            $r = $results->fetch_assoc();
+                            $placementId = $r['placementId'];
+                            $placementTeamId = $r['placementTeamId'];
+
+                            $newTeam = "Blue";
+                            if ($placementTeamId == "Blue") {
+                                $newTeam = "Red";
+                            }
+
+                            $query = 'UPDATE placements SET placementTeamId = ? WHERE placementId = ?';
+                            $query = $db->prepare($query);
+                            $query->bind_param("si", $newTeam, $placementId);
+                            $query->execute();
+
+                            //ajax missile piece update here
+                            $updateType = "lbsmChange";
+                            $query = 'INSERT INTO updates (updateGameId, updateType, updatePlacementId, updateHTML) VALUES (?, ?, ?, ?)';
+                            $query = $db->prepare($query);
+                            $query->bind_param("isis", $gameId, $updateType, $placementId, $newTeam);
+                            $query->execute();
                         }
-                
-                        $query = 'UPDATE placements SET placementTeamId = ? WHERE placementId = ?';
-                        $query = $db->prepare($query);
-                        $query->bind_param("si", $newTeam, $placementId);
-                        $query->execute();
-                        
-                        
-                        //ajax missile piece update here
-                        $updateType = "lbsmChange";
-                        $query = 'INSERT INTO updates (updateGameId, updateType, updatePlacementId, updateHTML) VALUES (?, ?, ?, ?)';
-                        $query = $db->prepare($query);
-                        $query->bind_param("isis", $gameId, $updateType, $placementId, $newTeam);
-                        $query->execute();
                     }
                 }
-
             }
         }
     }
