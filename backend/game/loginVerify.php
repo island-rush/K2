@@ -17,7 +17,7 @@ if ( (isset($_POST['gameSection'])) && (isset($_POST['gameInstructor'])) && (iss
         $_SESSION['gameId'] = $r['gameId'];
         $_SESSION['gameSection'] = $section;
         $_SESSION['gameInstructor'] = $instructor;
-        if ($r['gameActive'] == 0) {
+        if ($r['gameActive'] == 0 && $_SESSION['myTeam'] != "Spec") {
             header("location:../../home.php?err=1");
             exit;
         }
