@@ -1,4 +1,19 @@
 <?php
+function fixJSON($json) {
+	$newJSON = '';
+	$jsonLength = strlen($json);
+	for ($i = 0; $i < $jsonLength; $i++) {
+		if ($json[$i] == '"' || $json[$i] == "'") {
+			$nextQuote = strpos($json, $json[$i], $i + 1);
+			$quoteContent = substr($json, $i + 1, $nextQuote - $i - 1);
+			$newJSON .= '"' . str_replace('"', "'", $quoteContent) . '"';
+			$i = $nextQuote;
+		} else {
+			$newJSON .= $json[$i];
+		}
+	}
+	return $newJSON;
+}
 session_start();
 include("../../db.php");
 $gameId = $_SESSION['gameId'];
@@ -52,6 +67,7 @@ if ($gameBattleSection != "none") {
 }
 $unitTerrains = ['water', 'water', 'water', 'water', 'land', 'land', 'land', 'land', 'land', 'air', 'land', 'air', 'air', 'air', 'air', 'missile'];
 $unitNames = ['Transport', 'Submarine', 'Destroyer', 'AircraftCarrier', 'ArmyCompany', 'ArtilleryBattery', 'TankPlatoon', 'MarinePlatoon', 'MarineConvoy', 'AttackHelo', 'SAM', 'FighterSquadron', 'BomberSquadron', 'StealthBomberSquadron', 'Tanker', 'LandBasedSeaMissile'];
+$realUnitNames = ['transport', 'submarine', 'destroyer', 'aircraftCarrier', 'soldier', 'artillery', 'tank', 'marine', 'convoy', 'attackHelo', 'sam', 'fighter', 'bomber', 'stealthBomber', 'tanker', 'missile'];
 $query = 'SELECT placementUnitId, placementTeamId, placementCurrentMoves, placementPositionId, placementContainerId, placementBattleUsed FROM placements WHERE placementId = ?';
 $preparedQuery = $db->prepare($query);
 $preparedQuery->bind_param("i", $placementId);
@@ -109,8 +125,7 @@ if ($oldPositionId == $newPositionId && $oldContainerId == $newContainerId) {  /
                     $query = $db->prepare($query);
                     $query->bind_param("i", $gameId);
                     $query->execute();
-                    
-                    //
+
                     $myArray = array(
                         2 => 121,
                         6 => 122,
@@ -142,8 +157,7 @@ if ($oldPositionId == $newPositionId && $oldContainerId == $newContainerId) {  /
                             $query = $db->prepare($query);
                             $query->bind_param("si", $newTeam, $placementId);
                             $query->execute();
-                            
-                            
+
                             //ajax missile piece update here
                             $updateType = "lbsmChange";
                             $query = 'INSERT INTO updates (updateGameId, updateType, updatePlacementId, updateHTML) VALUES (?, ?, ?, ?)';
@@ -152,14 +166,10 @@ if ($oldPositionId == $newPositionId && $oldContainerId == $newContainerId) {  /
                             $query->execute();
                         }
                     }
-                    
-                    
-                    //
                 }
             }
         }
     }
-
     echo "Moved Piece Into Same Position!";
     exit;
 }
@@ -167,21 +177,6 @@ if ($placementUnitId != 15 && $placementCurrentMoves == 0) {
     echo "This piece is out of moves.";
     exit;
 }
-
-
-
-
-// if ($placementUnitId != 15) {
-//     if (($_SESSION['dist'][$oldPositionId][$newPositionId] != 1 && ($oldPositionId != $newPositionId)) && $newPositionId != -1) {
-//         echo "Can only move 1 space at a time.";
-//         exit;
-//     }
-// }
-
-
-
-
-
 if ($newContainerId != -1) {
     $query = 'SELECT placementUnitId, placementTeamId, placementPositionId FROM placements WHERE placementId = ?';
     $preparedQuery = $db->prepare($query);
@@ -307,7 +302,6 @@ if ($newContainerId != -1) {
             echo "Blockaded by another ship.";
             exit;
         }
-        
     }
 }
 if ($gamePhase == 4 && $placementUnitId != 15) {  //Reinforcement Place controls, already checked missile stuff, already checked from 118
@@ -348,15 +342,14 @@ for ($i = 0; $i < $num_results; $i++) {
             $newsPieces = $r['newsPieces'];
             $newsZone = $r['newsZone'];
             $islandPositions = [[75, 76, 77, 78], [79, 80, 81, 82, 121], [83, 84, 85], [86, 87, 88, 89], [90, 91, 92, 93], [94, 95, 96, 122], [97, 98, 99, 123], [100, 101, 102], [103, 104, 105, 106, 124], [107, 108, 109, 110], [111, 112, 113], [114, 115, 116, 117], [55, 56, 57, 58, 59, 60, 61, 62, 63, 64], [65, 66, 67, 68, 69, 70, 71, 72, 73, 74]];
-            
 			if ($newsZone < 100) {  //water position
 				//check same position + pieceType
 				if ($newsZone == $newPositionId || $newsZone == $oldPositionId) {
 					//pieceType
-					$decoded = json_decode($newsPieces, true);
-					if ((int) $decoded[$placementUnitName] == 1) {
+					$decoded = json_decode(fixJSON($newsPieces), true);				
+					if ((int) $decoded[$realUnitNames[$placementUnitId]] == 1) {
 						if ((int) $oldPositionId != 118 && $placementUnitId != 15){  //purchased is exempt (except for missiles)
-							echo "Hybrid War / News Alert Prevented the Move. (Water)";
+							echo "Hybrid War / News Alert Prevented the Move. (All of these units)";
 							exit;
 						}
 					}
@@ -364,8 +357,8 @@ for ($i = 0; $i < $num_results; $i++) {
 			}
 			if ($newsZone == 200) {  //all positions everywhere
 				//need to check only piece type
-				$decoded = json_decode($newsPieces, true);
-                if ((int) $decoded[$placementUnitName] == 1) {
+				$decoded = json_decode(fixJSON($newsPieces), true);				
+                if ((int) $decoded[$realUnitNames[$placementUnitId]] == 1) {
                     if ((int) $oldPositionId != 118 && $placementUnitId != 15){  //purchased is exempt (except for missiles)
                         echo "Hybrid War / News Alert Prevented the Move. (All of these units)";
                         exit;
@@ -376,10 +369,10 @@ for ($i = 0; $i < $num_results; $i++) {
 				//check same position + pieceType
 				if (($newsZone - 1000) == $newPositionId || ($newsZone - 1000) == $oldPositionId) {
 					//pieceType
-					$decoded = json_decode($newsPieces, true);
-					if ((int) $decoded[$placementUnitName] == 1) {
+					$decoded = json_decode(fixJSON($newsPieces), true);				
+					if ((int) $decoded[$realUnitNames[$placementUnitId]] == 1) {
 						if ((int) $oldPositionId != 118 && $placementUnitId != 15){  //purchased is exempt (except for missiles)
-							echo "Hybrid War / News Alert Prevented the Move. (Specific Land)";
+							echo "Hybrid War / News Alert Prevented the Move. (All of these units)";
 							exit;
 						}
 					}
@@ -388,38 +381,15 @@ for ($i = 0; $i < $num_results; $i++) {
 			if ($newsZone < 200) {  //Entire Island
 				//check position in that specific array + pieceType (inArray)
 				if ((in_array(($newPositionId), ($islandPositions[$newsZone-101]))) || (in_array(($oldPositionId), ($islandPositions[$newsZone-101])))) {
-					$decoded = json_decode($newsPieces, true);
-					if ((int) $decoded[$placementUnitName] == 1) {
+					$decoded = json_decode(fixJSON($newsPieces), true);				
+					if ((int) $decoded[$realUnitNames[$placementUnitId]] == 1) {
 						if ((int) $oldPositionId != 118 && $placementUnitId != 15){  //purchased is exempt (except for missiles)
-							echo "Hybrid War / News Alert Prevented the Move. (Entire Island Blocked)";
+							echo "Hybrid War / News Alert Prevented the Move. (All of these units)";
 							exit;
 						}
 					}
 				}
 			}
-			
-			
-			
-			
-			
-			//if ($newsZone == 200 ||
-            //    ($newsZone == $newPositionId && $newPositionId < 100) ||
-            //    ($newsZone == $oldPositionId && $oldPositionId < 100) ||
-            //    (in_array(($newPositionId), ($islandPositions[$newsZone-101]))) ||
-            //    (in_array(($oldPositionId), ($islandPositions[$newsZone-101]))) ||
-            //    (($newsZone > 1000) && (($newsZone - 1000 == $newPositionId) || ($newsZone - 1000 == $oldPositionId)))) {
-            //    $decoded = json_decode($newsPieces, true);
-            //    if ((int) $decoded[$placementUnitName] == 1) {
-            //        if ((int) $oldPositionId != 118 && $placementUnitId != 15){  //purchased is exempt (except for missiles)
-            //            echo "News Alert Prevented the Move.";
-            //            exit;
-            //        }
-            //    }
-            //}
-			
-			
-			
-			
         }
     }
 }
@@ -517,14 +487,12 @@ if ($killed == 1) {
         $query->bind_param("ii", $newPositionId, $placementId);
         $query->execute();
     }
-    
     $dist = 1;
     $query = 'UPDATE placements SET placementPositionId = ?, placementCurrentMoves = placementCurrentMoves - 1, placementContainerId = ? WHERE (placementId = ?)';
     if ($newPositionId == $oldPositionId) {
         $dist = 0;
         $query = 'UPDATE placements SET placementPositionId = ?, placementContainerId = ? WHERE (placementId = ?)';
     }
-    
     $query = $db->prepare($query);
     $query->bind_param("iii", $newPositionId,  $newContainerId,  $placementId);
     $query->execute();
@@ -601,8 +569,7 @@ if ($killed == 1) {
                             $query = $db->prepare($query);
                             $query->bind_param("si", $newTeam, $placementId);
                             $query->execute();
-                            
-                            
+
                             //ajax missile piece update here
                             $updateType = "lbsmChange";
                             $query = 'INSERT INTO updates (updateGameId, updateType, updatePlacementId, updateHTML) VALUES (?, ?, ?, ?)';
@@ -611,9 +578,6 @@ if ($killed == 1) {
                             $query->execute();
                         }
                     }
-                    
-             
-                    
                 }
             }
         }
