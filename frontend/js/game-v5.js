@@ -692,7 +692,7 @@ function hybridDeletePiece() {
 				}
 			}
 		};
-		phpUpdateBoard.open("GET", "backend/game/hybrid/hybridDisableAirfieldRequest.php", true);
+		phpUpdateBoard.open("GET", "backend/game/hybrid/hybridDeletePieceRequest.php", true);
 		phpUpdateBoard.send();
 	}
 }

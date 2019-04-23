@@ -24,11 +24,11 @@ while(true) {
         echo json_encode($arr);
         break;
     }
-    if ($loopCounter++ >= 400) {  //800 = ~3.5 min
+    if ($loopCounter++ >= 4000) {  //800 = ~3.5 min
         echo "TIMEOUT";
         break;
     }
-    usleep(250000);   //.25 seconds in-between each query
+    usleep(25000);   //.025 seconds in-between each query
 }
 $results->free();
 $db->close();

@@ -3,7 +3,7 @@ session_start();
 include("../../db.php");
 $gameId = $_SESSION['gameId'];
 $myTeam = $_SESSION['myTeam'];
-$positionId = (int) ($_REQUEST['positionId'] + 1000);
+$positionId = (int) ($_REQUEST['positionId']);
 $query = 'SELECT gameActive, gamePhase, gameCurrentTeam, game'.$myTeam.'Hpoints FROM GAMES WHERE gameId = ?';
 $preparedQuery = $db->prepare($query);
 $preparedQuery->bind_param("i", $gameId);
@@ -37,7 +37,7 @@ if (!in_array($positionId, $listairfields)) {
 $order = 0;
 $length = 2;
 $activated = 1;
-$zone = $positionId;
+$zone = $positionId + 1000;
 $disable = "disable";
 $team = "Red";
 if ($myTeam == "Red") {

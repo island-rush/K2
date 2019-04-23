@@ -5,7 +5,7 @@ $gameId = (int) $_SESSION['gameId'];
 $myTeam = $_SESSION['myTeam'];
 $placementUnitId = (int) $_REQUEST['unitId'];
 $costs = [8, 8, 10, 15, 4, 5, 6, 5, 8, 7, 8, 12, 12, 15, 11, 10];
-$query = 'SELECT gameActive, gamePhase, gameCurrentTeam, game'.$myTeam.'Rpoints FROM GAMES WHERE gameId = ?';
+$query = 'SELECT gameActive, gamePhase, gameCurrentTeam, gameBlueRpoints, gameRedRpoints FROM GAMES WHERE gameId = ?';
 $preparedQuery = $db->prepare($query);
 $preparedQuery->bind_param("i", $gameId);
 $preparedQuery->execute();
@@ -13,7 +13,6 @@ $results = $preparedQuery->get_result();
 $r = $results->fetch_assoc();
 $gamePhase = $r['gamePhase'];
 $gameCurrentTeam = $r['gameCurrentTeam'];
-$points = $r['game'.$myTeam.'Rpoints'];
 if ($r['gameActive'] != 1) {
     header("location:home.php?err=1");
     exit;
@@ -22,6 +21,7 @@ if ($myTeam != $gameCurrentTeam) {
     echo "Not your team's turn.";
     exit;
 }
+$points = $r['game'.$myTeam.'Rpoints'];
 if ($gamePhase != 1) {
     echo "Not the right phase to purchase.";
     exit;

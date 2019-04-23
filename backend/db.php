@@ -1,6 +1,6 @@
 <?php
-$hostname = 'LOCALHOST';
-$user = 'root';
+$hostname = '';
+$user = '';
 $password = '';
 $database = 'islandRushDB';
 @ $db = new mysqli($hostname, $user, $password, $database);

@@ -94,7 +94,7 @@ $waterClass = 'class="gridblock water"';
                 <div id="rest_things">
                     <div id="phase_indicator">Current Phase = Loading...</div>
                     <div id="team_indicators">
-                        <div id="red_team_indicator" style="color: red;">Züün</div>
+                        <div id="red_team_indicator" style="color: red;">Zuun</div>
                         <div id="blue_team_indicator" style="color: blue;">Vestrland</div>
                     </div>
                     <div id="rPoints_indicators">
@@ -401,6 +401,6 @@ $waterClass = 'class="gridblock water"';
                 </div>
             </div>
         </div>
-        <script src="frontend/js/game-v3.js"></script>
+        <script src="frontend/js/game-v5.js"></script>
     </body>
 </html>

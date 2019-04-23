@@ -28,5 +28,5 @@ if ($points < 6) {
     echo "Not enough hybrid points.";
     exit;
 }
-echo "Select Piece to Delete.";
+echo "Select Piece to Destory.";
 exit;
