@@ -413,6 +413,9 @@ $query->execute();
 $query->bind_param("iisiiii", $gameId, $fighter, $blue, $container, $moves[$fighter], $position, $placementBattleUsed);
 $query->execute();
 
+$length2 = 2;
+$length4 = 4;
+
 $allPieces = "{'transport':1, 'submarine':1, 'destroyer':1, 'aircraftCarrier':1, 'soldier':1, 'artillery':1, 'tank':1, 'marine':1, 'convoy':1, 'attackHelo':1, 'sam':1, 'fighter':1, 'bomber':1, 'stealthBomber':1, 'tanker':1}";
 $order = 1;
 $all = "All";
@@ -462,9 +465,9 @@ $zone = 200; //all
 $text = "SCANDAL! Alarming Reports come out of Zuun Air Force HQ";
 $effectText = "All Zuun Air assets are grounded for one turn";
 $manualPieces = "{'transport':0, 'submarine':0, 'destroyer':0, 'aircraftCarrier':0, 'soldier':0, 'artillery':0, 'tank':0, 'marine':0, 'convoy':0, 'attackHelo':0, 'sam':0, 'fighter':1, 'bomber':1, 'stealthBomber':1, 'tanker':1}";
-$query = 'INSERT INTO newsAlerts (newsGameId, newsOrder, newsTeam, newsPieces, newsEffect, newsZone, newsText, newsEffectText) VALUES(?,?,?,?,?,?,?,?)';
+$query = 'INSERT INTO newsAlerts (newsGameId, newsOrder, newsTeam, newsPieces, newsEffect, newsZone, newsText, newsEffectText, newsLength) VALUES(?,?,?,?,?,?,?,?,?)';
 $query = $db->prepare($query);
-$query->bind_param("iisssiss",$gameId, $order, $red, $manualPieces, $disable, $zone, $text, $effectText );
+$query->bind_param("iisssissi",$gameId, $order, $red, $manualPieces, $disable, $zone, $text, $effectText, $length2 );
 $query->execute();
 $order = 6;
 $zone = 112; //island 12
@@ -486,9 +489,9 @@ $zone = 106; //island 6
 $text = "Ogaden Measles strikes unsuspecting troops";
 $effectText = "All Vesterland soldiers and marines on Shor Island have fallen ill and cannot move";
 $manualPieces = "{'transport':0, 'submarine':0, 'destroyer':0, 'aircraftCarrier':0, 'soldier':1, 'artillery':0, 'tank':0, 'marine':1, 'convoy':0, 'attackHelo':0, 'sam':0, 'fighter':0, 'bomber':0, 'stealthBomber':0, 'tanker':0}";
-$query = 'INSERT INTO newsAlerts (newsGameId, newsOrder, newsTeam, newsPieces, newsEffect, newsZone, newsText, newsEffectText) VALUES(?,?,?,?,?,?,?,?)';
+$query = 'INSERT INTO newsAlerts (newsGameId, newsOrder, newsTeam, newsPieces, newsEffect, newsZone, newsText, newsEffectText, newsLength) VALUES(?,?,?,?,?,?,?,?,?)';
 $query = $db->prepare($query);
-$query->bind_param("iisssiss",$gameId, $order, $blue, $manualPieces, $disable, $zone, $text, $effectText );
+$query->bind_param("iisssissi",$gameId, $order, $blue, $manualPieces, $disable, $zone, $text, $effectText, $length2 );
 $query->execute();
 $order = 9;
 $zone = 200; //all
@@ -554,7 +557,7 @@ $query->execute();
 $order = 18;
 $zone = 105;
 $text = "IZA END OF THE WORLD: Freak blizzard sweeps through Iza Island. All ports are closed and all land assets are covered in snow";
-$effectText = "All forces on Iza Island cannot move or attack for one turn";
+$effectText = "All forces on Iza Island cannot move for one turn";
 $query = 'INSERT INTO newsAlerts (newsGameId, newsOrder, newsTeam, newsPieces, newsEffect, newsZone, newsText, newsEffectText) VALUES(?,?,?,?,?,?,?,?)';
 $query = $db->prepare($query);
 $query->bind_param("iisssiss",$gameId, $order, $all, $allPieces, $disable, $zone, $text, $effectText );
@@ -588,7 +591,7 @@ $effectText = "Zone F5 is closed to Zuun naval traffic for two turns";
 $manualPieces = "{'transport':1, 'submarine':1, 'destroyer':1, 'aircraftCarrier':1, 'soldier':0, 'artillery':0, 'tank':0, 'marine':0, 'convoy':0, 'attackHelo':0, 'sam':0, 'fighter':0, 'bomber':0, 'stealthBomber':0, 'tanker':0}";
 $query = 'INSERT INTO newsAlerts (newsGameId, newsOrder, newsTeam, newsPieces, newsEffect, newsZone, newsText, newsEffectText, newsLength) VALUES(?,?,?,?,?,?,?,?,?)';
 $query = $db->prepare($query);
-$query->bind_param("iisssissi",$gameId, $order, $red, $manualPieces, $disable, $zone, $text, $effectText, $length);
+$query->bind_param("iisssissi",$gameId, $order, $red, $manualPieces, $disable, $zone, $text, $effectText, $length4);
 $query->execute();
 $order = 23;
 $text = "BONE ZONE: The inhabitants of Yehuda find a massive fossil reserve and work to preserve area";
@@ -626,7 +629,7 @@ $query->execute();
 $order = 28;
 $zone = 104;
 $text = "No, you didnt imagine it, the island actually shook. Shrek Island gets hit by an 8.5 Earthquake";
-$effectText = "All ground vehicles have been damaged and are unsuable for one turn. Soliders and Marines are still good to fight";
+$effectText = "All ground vehicles have been damaged and are unsuable for one turn.";
 $manualPieces = "{'transport':0, 'submarine':0, 'destroyer':0, 'aircraftCarrier':0, 'soldier':0, 'artillery':1, 'tank':1, 'marine':0, 'convoy':1, 'attackHelo':1, 'sam':1, 'fighter':0, 'bomber':0, 'stealthBomber':0, 'tanker':0}";
 $query = 'INSERT INTO newsAlerts (newsGameId, newsOrder, newsTeam, newsPieces, newsEffect, newsZone, newsText, newsEffectText, newsHumanitarian) VALUES(?,?,?,?,?,?,?,?,?)';
 $query = $db->prepare($query);
@@ -637,7 +640,7 @@ $zone = 200; // all
 $text = "SCANDAL!!! Alarming reports come out of Vesterland Navy";
 $effectText = "All Vesterland (Blue) Naval assets grounded for one turn";
 $manualPieces = "{'transport':1, 'submarine':1, 'destroyer':1, 'aircraftCarrier':1, 'soldier':0, 'artillery':0, 'tank':0, 'marine':0, 'convoy':0, 'attackHelo':0, 'sam':0, 'fighter':0, 'bomber':0, 'stealthBomber':0, 'tanker':0}";
-$query = 'INSERT INTO newsAlerts (newsGameId, newsOrder, newsTeam, newsPieces, newsEffect, newsZone, newsText, newsEffectText) VALUES(?,?,?,?,?,?,?,?)';
+$query = 'INSERT INTO newsAlerts (newsGameId, newsOrder, newsTeam, newsPieces, newsEffect, newsZone, newsText, newsEffectText, newsLength) VALUES(?,?,?,?,?,?,?,?,?)';
 $query = $db->prepare($query);
-$query->bind_param("iisssiss",$gameId, $order, $blue, $manualPieces, $disable, $zone, $text, $effectText);
+$query->bind_param("iisssissi",$gameId, $order, $blue, $manualPieces, $disable, $zone, $text, $effectText, $length2);
 $query->execute();

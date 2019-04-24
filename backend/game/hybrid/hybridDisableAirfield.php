@@ -43,7 +43,7 @@ $team = "Red";
 if ($myTeam == "Red") {
     $team = "Blue";
 }
-$aircraft = '{"Transport":0, "Submarine":0, "Destroyer":0, "AircraftCarrier":0, "ArmyCompany":0, "ArtilleryBattery":0, "TankPlatoon":0, "MarinePlatoon":0, "MarineConvoy":0, "AttackHelo":0, "SAM":0, "FighterSquadron":1, "BomberSquadron":1, "StealthBomberSquadron":1, "Tanker":1}';
+$aircraft = '{"transport":0, "submarine":0, "destroyer":0, "aircraftCarrier":0, "soldier":0, "artillery":0, "tank":0, "marine":0, "convoy":0, "attackHelo":0, "sam":0, "fighter":1, "bomber":1, "stealthBomber":1, "tanker":1}';
 $query = 'INSERT INTO newsAlerts (newsGameId, newsOrder, newsTeam, newsPieces, newsEffect, newsZone, newsLength, newsActivated) VALUES(?, ?, ?, ?, ?, ?, ?, ?)';
 $query = $db->prepare($query);
 $query->bind_param("iisssiii",$gameId, $order, $team, $aircraft, $disable, $zone, $length, $activated);
