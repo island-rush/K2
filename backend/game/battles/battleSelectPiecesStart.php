@@ -35,7 +35,7 @@ if ($positionId < 0 || $positionId > 117) {
 }
 $query = 'SELECT placementId, placementUnitId FROM placements WHERE placementGameId = ? AND placementPositionId = ? AND placementTeamId != ?';
 if ($positionId <= 54) {  //exclude land units in a transport when in water, but include fighters inside carrier
-    $query = 'SELECT placementId, placementUnitId FROM placements WHERE placementGameId = ? AND placementPositionId = ? AND placementTeamId != ? AND placementUnitId != 4 AND placementUnitId != 5 AND placementUnitId != 6 AND placementUnitId != 7 AND placementUnitId != 8 AND placementUnitId != 15';
+    $query = 'SELECT placementId, placementUnitId FROM placements WHERE placementGameId = ? AND placementPositionId = ? AND placementTeamId != ? AND placementUnitId != 4 AND placementUnitId != 5 AND placementUnitId != 6 AND placementUnitId != 7 AND placementUnitId != 8 AND placementUnitId != 9 AND placementUnitId != 10 AND placementUnitId != 15';
 }
 $query = $db->prepare($query);
 $query->bind_param("iis", $gameId, $positionId, $myTeam);

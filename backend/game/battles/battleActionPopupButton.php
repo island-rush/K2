@@ -121,8 +121,8 @@ if ($gameBattleSubSection == "defense_bonus") {
         $query->bind_param("isis", $gameId, $updateType, $attackId, $battle_outcome);
         $query->execute();
         
-        //need to get fighters (11) / attackHelos (9) out of the container (if it is a container)
-        $query = 'SELECT * FROM placements WHERE (placementContainerId = ?) AND (placementUnitId = 11 OR placementUnitId = 9)';
+        //need to get fighters (11) out of the container (if it is a container)
+        $query = 'SELECT * FROM placements WHERE (placementContainerId = ?) AND (placementUnitId = 11)';
         $query = $db->prepare($query);
         $query->bind_param("i", $attackId);
         $query->execute();
@@ -194,7 +194,7 @@ if ($gameBattleSubSection == "defense_bonus") {
         $query->bind_param("isis", $gameId, $updateType, $defendId, $battle_outcome);
         $query->execute();
 
-        $query = 'SELECT * FROM placements WHERE (placementContainerId = ?) AND (placementUnitId = 11 OR placementUnitId = 9)';
+        $query = 'SELECT * FROM placements WHERE (placementContainerId = ?) AND (placementUnitId = 11)';
         $query = $db->prepare($query);
         $query->bind_param("i", $defendId);
         $query->execute();
