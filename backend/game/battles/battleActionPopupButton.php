@@ -121,11 +121,10 @@ if ($gameBattleSubSection == "defense_bonus") {
         $query->bind_param("isis", $gameId, $updateType, $attackId, $battle_outcome);
         $query->execute();
         
-        //need to get fighters out of the container
-        $fighter = 11;
-        $query = 'SELECT * FROM placements WHERE (placementContainerId = ?) AND (placementUnitId = ?)';
+        //need to get fighters (11) / attackHelos (9) out of the container (if it is a container)
+        $query = 'SELECT * FROM placements WHERE (placementContainerId = ?) AND (placementUnitId = 11 OR placementUnitId = 9)';
         $query = $db->prepare($query);
-        $query->bind_param("ii", $attackId, $fighter);
+        $query->bind_param("i", $attackId);
         $query->execute();
         $results = $query->get_result();
         $numresults = $results->num_rows;
@@ -155,11 +154,16 @@ if ($gameBattleSubSection == "defense_bonus") {
                 $query->execute();
             }
         }
-        //
         $query = 'DELETE FROM placements WHERE placementId = ?';
         $query = $db->prepare($query);
         $query->bind_param("i", $attackId);
         $query->execute();
+
+        $query = 'DELETE FROM placements WHERE placementContainerId = ?';
+        $query = $db->prepare($query);
+        $query->bind_param("i", $attackId);
+        $query->execute();
+
         $updateType = "pieceRemove";
         $query = 'INSERT INTO updates (updateGameId, updateType, updatePlacementId) VALUES (?, ?, ?)';
         $query = $db->prepare($query);
@@ -189,13 +193,10 @@ if ($gameBattleSubSection == "defense_bonus") {
         $query = $db->prepare($query);
         $query->bind_param("isis", $gameId, $updateType, $defendId, $battle_outcome);
         $query->execute();
-        
-        //need to get fighters out of the container
-        //
-        $fighter = 11;
-        $query = 'SELECT * FROM placements WHERE (placementContainerId = ?) AND (placementUnitId = ?)';
+
+        $query = 'SELECT * FROM placements WHERE (placementContainerId = ?) AND (placementUnitId = 11 OR placementUnitId = 9)';
         $query = $db->prepare($query);
-        $query->bind_param("ii", $defendId, $fighter);
+        $query->bind_param("i", $defendId);
         $query->execute();
         $results = $query->get_result();
         $numresults = $results->num_rows;
@@ -225,12 +226,17 @@ if ($gameBattleSubSection == "defense_bonus") {
                 $query->execute();
             }
         }
-        //
-        
+
         $query = 'DELETE FROM placements WHERE placementId = ?';
         $query = $db->prepare($query);
         $query->bind_param("i", $defendId);
         $query->execute();
+
+        $query = 'DELETE FROM placements WHERE placementContainerId = ?';
+        $query = $db->prepare($query);
+        $query->bind_param("i", $defendId);
+        $query->execute();
+
         $updateType = "pieceRemove";
         $query = 'INSERT INTO updates (updateGameId, updateType, updatePlacementId) VALUES (?, ?, ?)';
         $query = $db->prepare($query);
