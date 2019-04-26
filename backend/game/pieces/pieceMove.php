@@ -260,7 +260,17 @@ if ($newContainerId != -1) {
             echo "Need to own the island to place a missile.";
             exit;
         }
-        if ($num_results > 0) {
+
+        //
+        $query2 = 'SELECT placementUnitId FROM placements WHERE placementPositionId = ? AND placementGameId = ?';  //can't check for other team specifically for missile site, could optimize query above with code below that checks for blockade
+        $preparedQuery2 = $db->prepare($query2);
+        $preparedQuery2->bind_param("ii", $newPositionId, $gameId);
+        $preparedQuery2->execute();
+        $results2 = $preparedQuery2->get_result();
+        $num_results2 = $results2->num_rows;
+        //
+
+        if ($num_results2 > 0) {
             echo "Missile already at this site.";
             exit;
         }
