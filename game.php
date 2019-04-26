@@ -35,7 +35,7 @@ $gameIsland13 = htmlentities($r['gameIsland13']);
 $gameIsland14 = htmlentities($r['gameIsland14']);
 $waterFunctions = 'draggable="false" ondragstart="event.preventDefault();" onclick="waterClick(event, this);" ondblclick="doubleClick(event, this);" ondragover="positionDragover(event, this);" ondrop="positionDrop(event, this);"';
 $landFunctions = 'draggable="false" ondragstart="event.preventDefault();" onclick="landClick(event, this);" ondblclick="doubleClick(event, this);" ondragover="positionDragover(event, this);" ondrop="positionDrop(event, this);"';
-$gridIslandFunctions = 'draggable="false" ondragstart="event.preventDefault();" onclick="gridIslandClick(event, this);" ondragenter="islandDragenter(event, this);" ondragleave="islandDragleave(event, this);"   ';
+$gridIslandFunctions = 'draggable="false" ondragstart="event.preventDefault();" onclick="gridIslandClick(event, this);" ondragenter="islandDragenter(event, this);" ondragleave="popupDragenter(event, this);"   ';
 $popIslandFunctions = 'draggable="false" ondragstart="event.preventDefault();" ondragenter="popupDragenter(event, this);" ondragleave="popupDragleave(event, this);" ondragover="popupDragenter(event, this);"';
 $trashBoxFunctions = 'draggable="false" ondragstart="event.preventDefault();" ondragover="positionDragover(event, this);" ondrop="pieceTrash(event, this);"';
 $landPositionClass = 'class="gridblockTiny"';

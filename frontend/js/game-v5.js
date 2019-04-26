@@ -326,11 +326,6 @@ function islandDragenter(event, callingElement) {
 	islandTimer = setTimeout(function() { gridIslandClick(event, callingElement);}, 1000);
 	event.stopPropagation();
 }
-function islandDragleave(event, callingElement) {
-	event.preventDefault();
-	clearTimeout(islandTimer);
-	event.stopPropagation();
-}
 function popupDragleave(event, callingElement) {
 	event.preventDefault();
 	clearTimeout(islandTimer);
