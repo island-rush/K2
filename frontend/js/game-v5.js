@@ -337,11 +337,6 @@ function popupDragleave(event, callingElement) {
 	islandTimer = setTimeout(function() { unpopIslands();}, 1000);
 	event.stopPropagation();
 }
-function popupDragover(event, callingElement) {
-	event.preventDefault();
-	clearTimeout(islandTimer);
-	event.stopPropagation();
-}
 function popupDragenter(event, callingElement) {
 	event.preventDefault();
 	clearTimeout(islandTimer);
