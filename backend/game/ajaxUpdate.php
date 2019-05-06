@@ -24,7 +24,7 @@ while(true) {
         echo json_encode($arr);
         break;
     }
-    if ($loopCounter++ >= 4000) {  //800 = ~3.5 min
+    if ($loopCounter++ >= 4000) {  //4000 * .025 ~= 100 seconds, change frequency if server is slow
         echo "TIMEOUT";
         break;
     }
