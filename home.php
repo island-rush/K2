@@ -12,7 +12,7 @@
     </script>
 </head>
 <body>
-<h1>Island Rush Homepage (Stable Version)</h1>
+<h1>Island Rush Homepage</h1>
 <nav>
     <a class="active" href="home.php">Home</a>
 	<a href="troubleshoot.html">Troubleshoot</a>
