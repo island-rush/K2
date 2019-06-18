@@ -54,3 +54,9 @@ Basically:
 - Files need to be hosted on a network (files = repository)
 - Database accessible (use db_create) through that network (local or external)
 - Have a good understanding of PHP, Javascript, HTML, CSS, MySQL and Networking (web-hosting)
+
+# TODO
+
+- Better game.php for fewer database queries. Only 1 query and cache/store the pieces.
+- Fix piece dragging and popups timing to be more stable.
+- Add wiki type website to explain the game / rules.
