@@ -14,7 +14,7 @@
 <body>
 <h1>Island Rush Homepage</h1>
 <nav>
-    <a class="active" href="home.php">Home</a>
+    <a class="active" href="index.php">Home</a>
 	<a href="troubleshoot.html">Troubleshoot</a>
 </nav>
 <table border="0" cellpadding="30" cellspacing="10">
