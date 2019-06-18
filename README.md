@@ -1,6 +1,4 @@
-# Island Rush 2.5
-
-K2.5 is a rewritten and refactored K2
+# Island Rush 2
 
 - Server Side Architecture, 100% server side checks
 
