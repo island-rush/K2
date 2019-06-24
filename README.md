@@ -60,3 +60,4 @@ Basically:
 - Better game.php for fewer database queries. Only 1 query and cache/store the pieces.
 - Fix piece dragging and popups timing to be more stable.
 - Add wiki type website to explain the game / rules.
+- Add credits page next to the troubleshooting page / Improve troubleshooting.
