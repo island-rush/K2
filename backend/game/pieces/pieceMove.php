@@ -50,7 +50,7 @@ $gameIsland13 = $r['gameIsland13'];
 $gameIsland14 = $r['gameIsland14'];
 $ownerships = [$gameIsland1, $gameIsland2, $gameIsland3, $gameIsland4, $gameIsland5, $gameIsland6, $gameIsland7, $gameIsland8, $gameIsland9, $gameIsland10, $gameIsland11, $gameIsland12, $gameIsland13, $gameIsland14];
 if ($r['gameActive'] != 1) {
-    header("location:home.php?err=1");
+    header("location:index.php?err=1");
     exit;
 }
 if ($myTeam != $gameCurrentTeam) {

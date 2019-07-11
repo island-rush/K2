@@ -18,12 +18,12 @@ if ( (isset($_POST['gameSection'])) && (isset($_POST['gameInstructor'])) && (iss
         $_SESSION['gameSection'] = $section;
         $_SESSION['gameInstructor'] = $instructor;
         if ($r['gameActive'] == 0 && $_SESSION['myTeam'] != "Spec") {
-            header("location:../../home.php?err=1");
+            header("location:../../index.php?err=1");
             exit;
         }
         if ($team == "Red") {
             if ($r['gameRedJoined'] == 1) {
-                header("location:../../home.php?err=2");
+                header("location:../../index.php?err=2");
                 exit;
             }
             $query = 'UPDATE games SET gameRedJoined = 1 WHERE (gameId = ?)';
@@ -33,7 +33,7 @@ if ( (isset($_POST['gameSection'])) && (isset($_POST['gameInstructor'])) && (iss
             $query->execute();
         } else if ($team == "Blue") {
             if ($r['gameBlueJoined'] == 1) {
-                header("location:../../home.php?err=3");
+                header("location:../../index.php?err=3");
                 exit;
             }
             $query = 'UPDATE games SET gameBlueJoined = 1 WHERE (gameId = ?)';
@@ -44,7 +44,7 @@ if ( (isset($_POST['gameSection'])) && (isset($_POST['gameInstructor'])) && (iss
         } else if ($team == "Spec") {
             //do nothing for spectator
         } else {
-            header("location:../../home.php?err=4");  //bad value for team
+            header("location:../../index.php?err=4");  //bad value for team
             exit;
         }
         if (($handle = fopen('../matrices/adjMatrix.csv', "r")) !== FALSE) {
@@ -72,12 +72,12 @@ if ( (isset($_POST['gameSection'])) && (isset($_POST['gameInstructor'])) && (iss
         header("location:../../game.php");
     } else {
         if ($numResults == 0) {
-            header("location:../../home.php?err=7");  //game does not exist
+            header("location:../../index.php?err=7");  //game does not exist
         } else {
-            header("location:../../home.php?err=5");  //multiple games
+            header("location:../../index.php?err=5");  //multiple games
         }
     }
 } else {
-    header("location:../../home.php?err=6");  //did not send all of the submit values to log in
+    header("location:../../index.php?err=6");  //did not send all of the submit values to log in
 }
 $db->close();

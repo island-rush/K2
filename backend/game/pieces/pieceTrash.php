@@ -13,7 +13,7 @@ $r = $results->fetch_assoc();
 $gamePhase = $r['gamePhase'];
 $gameCurrentTeam = $r['gameCurrentTeam'];
 if ($r['gameActive'] != 1) {
-    header("location:home.php?err=1");
+    header("location:index.php?err=1");
     exit;
 }
 if ($myTeam != $gameCurrentTeam) {

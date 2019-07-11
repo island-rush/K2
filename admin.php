@@ -2,7 +2,7 @@
 session_start();
 include("backend/db.php");
 if (!isset($_SESSION['secretAdminSessionVariable']) || !isset($_SESSION['gameId']) || !isset($_SESSION['gameSection']) || !isset($_SESSION['gameInstructor'])) {
-    header("location:home.php?err=4");
+    header("location:index.php?err=4");
     exit;
 }
 $gameId = $_SESSION['gameId'];
@@ -47,7 +47,7 @@ $gameTurn = $r['gameTurn'];
 <body>
 <h1>Island Rush Admin</h1>
 <nav>
-    <a href="./home.php">Home</a>
+    <a href="./index.php">Home</a>
 	<a href="troubleshoot.html">Troubleshoot</a>
 </nav>
 <h2>Admin Tools</h2>

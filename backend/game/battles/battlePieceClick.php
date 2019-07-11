@@ -15,7 +15,7 @@ $gameCurrentTeam = $r['gameCurrentTeam'];
 $gameBattleSection = $r['gameBattleSection'];
 $gameBattleSubSection = $r['gameBattleSubSection'];
 if ($r['gameActive'] != 1) {
-    header("location:home.php?err=1");
+    header("location:index.php?err=1");
     exit;
 }
 if ($gamePhase != 2 || $myTeam == "Spec") {

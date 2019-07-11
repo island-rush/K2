@@ -28,7 +28,7 @@ $gameIsland12 = $r['gameIsland12'];
 $gameIsland13 = $r['gameIsland13'];
 $gameIsland14 = $r['gameIsland14'];
 if ($r['gameActive'] != 1) {
-    header("location:home.php?err=1");
+    header("location:index.php?err=1");
     exit;
 }
 if ($myTeam != $gameCurrentTeam) {

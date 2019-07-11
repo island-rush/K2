@@ -2,7 +2,7 @@
 session_start();
 include("backend/db.php");
 if (!isset($_SESSION['gameId']) && !isset($_SESSION['myTeam'])) {
-    header("location:home.php?err=9");
+    header("location:index.php?err=9");
     exit;
 }
 $gameId = $_SESSION['gameId'];
@@ -16,7 +16,7 @@ $results = $preparedQuery->get_result();
 $r = $results->fetch_assoc();
 $gameActive = $r['gameActive'];
 if ($gameActive != 1 && $myTeam != "Spec") {
-    header("location:home.php?err=1");
+    header("location:index.php?err=1");
     exit;
 }
 $gameIsland1 = htmlentities($r['gameIsland1']);

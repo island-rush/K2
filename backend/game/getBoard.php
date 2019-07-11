@@ -10,7 +10,7 @@ $preparedQuery->execute();
 $results = $preparedQuery->get_result();
 $r = $results->fetch_assoc();
 if ($r['gameActive'] != 1 && $myTeam != "Spec") {
-    header("location:home.php?err=1");
+    header("location:index.php?err=1");
     exit;
 }
 $gamePhase = $r['gamePhase'];

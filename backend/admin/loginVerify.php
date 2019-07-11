@@ -14,7 +14,7 @@ if ( (isset($_POST['adminSection'])) && (isset($_POST['adminInstructor'])) && (i
     $numRows = $results->num_rows;
     switch($numRows){
         case 0:
-            header("location:../../home.php?err=7");  //Game does not exist
+            header("location:../../index.php?err=7");  //Game does not exist
             break;
         case 1:
             $r = $results->fetch_assoc();
@@ -25,10 +25,10 @@ if ( (isset($_POST['adminSection'])) && (isset($_POST['adminInstructor'])) && (i
             header("location:../../admin.php");
             break;
         default:
-            header("location:../../home.php?err=5");  //Multiple games exist :(
+            header("location:../../index.php?err=5");  //Multiple games exist :(
             break;
     }
     $db->close();
 } else {
-    header("location:../../home.php?err=6");  //Came to this file without sending everything
+    header("location:../../index.php?err=6");  //Came to this file without sending everything
 }
