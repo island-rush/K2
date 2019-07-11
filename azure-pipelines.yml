@@ -21,6 +21,3 @@ steps:
     sudo update-alternatives --set phar.phar /usr/bin/phar.phar$(phpVersion)
     php -version
   displayName: 'Use PHP version $(phpVersion)'
-
-- script: composer install --no-interaction --prefer-dist
-  displayName: 'composer install'
