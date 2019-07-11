@@ -1,7 +1,7 @@
 # PHP
 # Test and package your PHP project.
 # Add steps that run tests, save build artifacts, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/php
+# https://docs.microsoft.com/azure/devops/pipelines/languages/php  
 
 trigger:
 - master
@@ -11,6 +11,8 @@ pool:
 
 variables:
   phpVersion: 7.2
+  serviceConnectionToAzure: IslandRushRGConnection
+  appName: IslandRushK2
 
 steps:
 - script: |
@@ -24,3 +26,25 @@ steps:
 
 - script: composer install --no-interaction --prefer-dist
   displayName: 'composer install'
+
+# add these as the last steps (below all the other `task` items under `steps`)
+# to deploy to your app service
+- task: ArchiveFiles@1
+  displayName: Archive files
+  inputs:
+    rootFolder: $(System.DefaultWorkingDirectory)
+    includeRootFolder: false
+    archiveType: zip
+
+- task: PublishBuildArtifacts@1
+  displayName: Publish Artifact
+  inputs:
+    PathtoPublish: $(build.artifactstagingdirectory)
+
+- task: AzureWebApp@1
+  displayName: Azure Web App Deploy
+  inputs:
+    azureSubscription: $(serviceConnectionToAzure)
+    appType: webAppLinux
+    appName: $(appName)
+    package: $(build.artifactstagingdirectory)/**/*.zip
