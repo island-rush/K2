@@ -1,5 +1,4 @@
 <?php
-// session_abort();
 session_start();
 if ( (isset($_POST['adminSection'])) && (isset($_POST['adminInstructor'])) && (isset($_POST['adminPassword'])) ){
     include("../db.php");
@@ -14,7 +13,12 @@ if ( (isset($_POST['adminSection'])) && (isset($_POST['adminInstructor'])) && (i
     $numRows = $results->num_rows;
     switch($numRows){
         case 0:
-            header("location:../../index.php?err=7");  //Game does not exist
+            if ($section = 'CourseDirector' && $instructor == getenv('CD_LASTNAME') && $password == getenv('CD_PASSWORD')) {
+                $_SESSION['secretCourseDirectorVariable'] = "SpencerIsAwesome";
+                header("location:../../courseDirector.php");  //Course Director Log In
+            } else {
+                header("location:../../index.php?err=7");  //Game does not exist
+            }
             break;
         case 1:
             $r = $results->fetch_assoc();

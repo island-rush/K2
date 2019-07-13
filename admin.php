@@ -2,7 +2,7 @@
 session_start();
 include("backend/db.php");
 if (!isset($_SESSION['secretAdminSessionVariable']) || !isset($_SESSION['gameId']) || !isset($_SESSION['gameSection']) || !isset($_SESSION['gameInstructor'])) {
-    header("location:index.php?err=4");
+    header("location:index.php?err=8");
     exit;
 }
 $gameId = $_SESSION['gameId'];
@@ -22,7 +22,7 @@ $gameTurn = $r['gameTurn'];
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Island Rush Admin</title>
+    <title>Island Rush Teacher</title>
     <link rel="stylesheet" type="text/css" href="frontend/css/main.css">
     <script>
 		console.log("Admin Javascript");
@@ -45,12 +45,12 @@ $gameTurn = $r['gameTurn'];
     </script>
 </head>
 <body>
-<h1>Island Rush Admin</h1>
+<h1>Island Rush Teacher</h1>
 <nav>
     <a href="./index.php">Home</a>
 	<a href="troubleshoot.html">Troubleshoot</a>
 </nav>
-<h2>Admin Tools</h2>
+<h2>Teacher Tools</h2>
 <span class="important" id="section">Section: <?php echo htmlentities($section); ?></span>
 <span class="important" id="instructor">Instructor: <?php echo htmlentities($instructor); ?></span>
 <br>

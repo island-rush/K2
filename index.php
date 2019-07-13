@@ -1,5 +1,7 @@
 <?php
-
+session_start();
+session_destroy();  //Unsetting all session variables from last known session
+session_start();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -91,7 +93,7 @@
             </form>
         </td>
         <td>
-            <H3>Admin Login</H3>
+            <H3>Teacher Login</H3>
             <form name="adminLogin" method="post" id="adminLogin" action="backend/admin/loginVerify.php">
                 <table border="0" cellpadding="3" cellspacing="1">
                     <tr>
