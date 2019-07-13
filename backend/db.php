@@ -5,8 +5,8 @@ putenv("DB_HOSTNAME=localhost");
 putenv("DB_USERNAME=root");
 putenv("DB_PASSWORD=");
 
-putenv("CD_LASTNAME=Smith");
-putenv("CD_PASSWORD=5f4dcc3b5aa765d61d8327deb882cf99");
+// putenv("CD_LASTNAME=Smith");
+// putenv("CD_PASSWORD=5f4dcc3b5aa765d61d8327deb882cf99");
 
 //Environment Variables for Database Connection
 $hostname = getenv('DB_HOSTNAME');
