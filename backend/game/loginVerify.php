@@ -5,7 +5,7 @@ if ( (isset($_POST['gameSection'])) && (isset($_POST['gameInstructor'])) && (iss
     $section = mysqli_real_escape_string($db, $_POST['gameSection']);
     $instructor = mysqli_real_escape_string($db, $_POST['gameInstructor']);
     $team = mysqli_real_escape_string($db, $_POST['gameTeam']);
-    $query = "SELECT gameId, gameActive, gameRedJoined, gameBlueJoined FROM GAMES WHERE gameSection = ? AND gameInstructor = ?";
+    $query = "SELECT gameId, gameActive, gameRedJoined, gameBlueJoined FROM games WHERE gameSection = ? AND gameInstructor = ?";
     $preparedQuery = $db->prepare($query);
     $preparedQuery->bind_param("ss", $section,$instructor);
     $preparedQuery->execute();

@@ -9,7 +9,7 @@ $gameId = $_SESSION['gameId'];
 $gameSection = $_SESSION['gameSection'];
 $gameInstructor = $_SESSION['gameInstructor'];
 
-$query = "SELECT gameAdminPassword FROM GAMES WHERE gameId = ?";
+$query = "SELECT gameAdminPassword FROM games WHERE gameId = ?";
 $preparedQuery = $db->prepare($query);
 $preparedQuery->bind_param("i", $gameId);
 $preparedQuery->execute();

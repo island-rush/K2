@@ -8,7 +8,7 @@ if (!isset($_SESSION['secretAdminSessionVariable']) || !isset($_SESSION['gameId'
 $gameId = $_SESSION['gameId'];
 $section = $_SESSION['gameSection'];
 $instructor = $_SESSION['gameInstructor'];
-$query = "SELECT gameActive, gameCurrentTeam, gameTurn FROM GAMES WHERE gameId = ?";
+$query = "SELECT gameActive, gameCurrentTeam, gameTurn FROM games WHERE gameId = ?";
 $preparedQuery = $db->prepare($query);
 $preparedQuery->bind_param("i", $gameId);
 $preparedQuery->execute();

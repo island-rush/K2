@@ -25,7 +25,7 @@ if (!isset($_REQUEST['placementId']) || !isset($_REQUEST['positionId']) || !isse
 $placementId = (int) $_REQUEST['placementId'];  //piece that was moved
 $newPositionId = (int) $_REQUEST['positionId'];  //could be -1
 $newContainerId = (int) $_REQUEST['containerId'];  //could be -1
-$query = 'SELECT gameActive, gamePhase, gameCurrentTeam, gameBattleSection, gameIsland1, gameIsland2, gameIsland3, gameIsland4, gameIsland5, gameIsland6, gameIsland7, gameIsland8, gameIsland9, gameIsland10, gameIsland11, gameIsland12, gameIsland13, gameIsland14 FROM GAMES WHERE gameId = ?';
+$query = 'SELECT gameActive, gamePhase, gameCurrentTeam, gameBattleSection, gameIsland1, gameIsland2, gameIsland3, gameIsland4, gameIsland5, gameIsland6, gameIsland7, gameIsland8, gameIsland9, gameIsland10, gameIsland11, gameIsland12, gameIsland13, gameIsland14 FROM games WHERE gameId = ?';
 $preparedQuery = $db->prepare($query);
 $preparedQuery->bind_param("i", $gameId);
 $preparedQuery->execute();

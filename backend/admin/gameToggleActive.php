@@ -7,7 +7,7 @@ if (!isset($_SESSION['secretAdminSessionVariable']) || !isset($_SESSION['gameId'
 }
 $gameId = $_SESSION['gameId'];
 
-$query = "UPDATE GAMES SET gameActive = (gameActive + 1) % 2, gameRedJoined = 0, gameBlueJoined = 0  WHERE gameId = ?";
+$query = "UPDATE games SET gameActive = (gameActive + 1) % 2, gameRedJoined = 0, gameBlueJoined = 0  WHERE gameId = ?";
 $preparedQuery = $db->prepare($query);
 $preparedQuery->bind_param("i",  $gameId);
 $preparedQuery->execute();

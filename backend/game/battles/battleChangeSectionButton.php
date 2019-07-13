@@ -3,7 +3,7 @@ session_start();
 include("../../db.php");
 $gameId = $_SESSION['gameId'];
 $myTeam = $_SESSION['myTeam'];
-$query = 'SELECT gameActive, gamePhase, gameCurrentTeam, gameBattleSection, gameBattleSubSection, gameBattlePosSelected FROM GAMES WHERE gameId = ?';
+$query = 'SELECT gameActive, gamePhase, gameCurrentTeam, gameBattleSection, gameBattleSubSection, gameBattlePosSelected FROM games WHERE gameId = ?';
 $preparedQuery = $db->prepare($query);
 $preparedQuery->bind_param("i", $gameId);
 $preparedQuery->execute();
@@ -106,7 +106,7 @@ if ($gameBattleSection == "attack" || $gameBattleSection == "counter") {
     $flagPositions = [75, 79, 85, 86, 90, 94, 97, 100, 103, 107, 111, 114, 55, 65];
     if (in_array($gameBattlePosSelected, $flagPositions)) {
         $islandNum = array_search($gameBattlePosSelected, $flagPositions) + 1;
-        $query = 'SELECT gameIsland' . $islandNum . ' FROM GAMES WHERE gameId = ?';
+        $query = 'SELECT gameIsland' . $islandNum . ' FROM games WHERE gameId = ?';
         $preparedQuery = $db->prepare($query);
         $preparedQuery->bind_param("i", $gameId);
         $preparedQuery->execute();

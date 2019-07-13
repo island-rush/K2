@@ -5,7 +5,7 @@ if ( (isset($_POST['adminSection'])) && (isset($_POST['adminInstructor'])) && (i
     $section = mysqli_real_escape_string($db, $_POST['adminSection']);
     $instructor = mysqli_real_escape_string($db, $_POST['adminInstructor']);
     $password = md5(mysqli_real_escape_string($db, $_POST['adminPassword']));
-    $query = "SELECT gameId FROM GAMES WHERE gameSection = ? AND gameInstructor = ? AND gameAdminPassword = ?";
+    $query = "SELECT gameId FROM games WHERE gameSection = ? AND gameInstructor = ? AND gameAdminPassword = ?";
     $preparedQuery = $db->prepare($query);
     $preparedQuery->bind_param("sss", $section, $instructor, $password);
     $preparedQuery->execute();

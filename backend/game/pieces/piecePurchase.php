@@ -5,7 +5,7 @@ $gameId = (int) $_SESSION['gameId'];
 $myTeam = $_SESSION['myTeam'];
 $placementUnitId = (int) $_REQUEST['unitId'];
 $costs = [8, 8, 10, 15, 4, 5, 6, 5, 8, 7, 8, 12, 12, 15, 11, 10];
-$query = 'SELECT gameActive, gamePhase, gameCurrentTeam, gameBlueRpoints, gameRedRpoints FROM GAMES WHERE gameId = ?';
+$query = 'SELECT gameActive, gamePhase, gameCurrentTeam, gameBlueRpoints, gameRedRpoints FROM games WHERE gameId = ?';
 $preparedQuery = $db->prepare($query);
 $preparedQuery->bind_param("i", $gameId);
 $preparedQuery->execute();
