@@ -7,7 +7,6 @@ if (!isset($_SESSION['secretCourseDirectorVariable'])) {
 }
 ?>
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>

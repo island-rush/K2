@@ -2,7 +2,6 @@
 session_start();
 session_destroy();  //Unsetting all session variables from last known session
 session_start();
-echo getenv('CD_LASTNAME');
 ?>
 <!DOCTYPE html>
 <html lang="en">

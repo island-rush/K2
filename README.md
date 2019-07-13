@@ -16,7 +16,7 @@
 
 ------------
 
-## INSTRUCTIONS
+## INSTRUCTIONS (slightly outdated)
 
 ------------
 
@@ -48,6 +48,16 @@
 - Note: Azure provides simple dns records to connect (ex: islandrush.azurewebsites.net)
 - We had issues with php sessions getting lost between instances, could resolve this with external session store
 
+--------------
+
+- Environment Variables to know / use
+  - CD_LASTNAME -> CourseDirector Lastname
+  - CD_PASSWORD -> MD5 hash of CourseDirector Password
+  - DB_HOSTNAME -> Database host
+  - DB_USERNAME -> Database username
+  - DB_PASSWORD -> Database password
+  - DB_NAME -> Database name (usually 'islandRushDB')
+
 -------------
 Basically:
 
@@ -59,5 +69,6 @@ Basically:
 
 - Better game.php for fewer database queries. Only 1 query and cache/store the pieces.
 - Fix piece dragging and popups timing to be more stable.
-- Add wiki type website to explain the game / rules.
+- Add wiki type website to explain the game / rules. (in progress)
 - Add credits page next to the troubleshooting page / Improve troubleshooting.
+- Safety checks for environment variables missing from deployment
