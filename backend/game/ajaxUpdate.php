@@ -28,7 +28,7 @@ while(true) {
         echo "TIMEOUT";
         break;
     }
-    usleep(25000);   //.025 seconds in-between each query
+    usleep(250000);   //25000 => .025 seconds in-between each query
 }
 $results->free();
 $db->close();
