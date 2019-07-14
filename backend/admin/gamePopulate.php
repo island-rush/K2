@@ -1,21 +1,27 @@
 <?php
-session_start();
-include("../db.php");
-if (!isset($_SESSION['secretAdminSessionVariable']) || !isset($_SESSION['gameId']) || !isset($_SESSION['gameSection']) || !isset($_SESSION['gameInstructor'])) {
-    header("location:index.php?err=8");
-    exit;
+if(!isset($_SESSION)) { 
+    session_start(); 
 }
-$gameId = $_SESSION['gameId'];
-$gameSection = $_SESSION['gameSection'];
-$gameInstructor = $_SESSION['gameInstructor'];
+include("../db.php");
+if (!isset($_SESSION['secretAdminSessionVariable']) || !isset($_SESSION['gameId'])) {
+    if (!isset($_SESSION['secretCourseDirectorVariable'])) {
+        header("location:index.php?err=8");
+        exit;
+    }
+}
 
-$query = "SELECT gameAdminPassword FROM games WHERE gameId = ?";
+$gameId = $_SESSION['gameId'];
+
+$query = "SELECT gameAdminPassword, gameSection, gameInstructor FROM games WHERE gameId = ?";
 $preparedQuery = $db->prepare($query);
 $preparedQuery->bind_param("i", $gameId);
 $preparedQuery->execute();
 $results = $preparedQuery->get_result();
 $r = $results->fetch_assoc();
+
 $gameAdminPassword = $r['gameAdminPassword'];
+$gameSection = $r['gameSection'];
+$gameInstructor = $r['gameInstructor'];
 
 $updateType = "logout";
 $query = 'INSERT INTO updates (updateGameId, updateType) VALUES (?, ?)';
@@ -489,16 +495,19 @@ $zone = 106; //island 6
 $text = "Ogaden Measles strikes unsuspecting troops";
 $effectText = "All Vesterland soldiers and marines on Shor Island have fallen ill and cannot move";
 $manualPieces = "{'transport':0, 'submarine':0, 'destroyer':0, 'aircraftCarrier':0, 'soldier':1, 'artillery':0, 'tank':0, 'marine':1, 'convoy':0, 'attackHelo':0, 'sam':0, 'fighter':0, 'bomber':0, 'stealthBomber':0, 'tanker':0}";
+
 $query = 'INSERT INTO newsAlerts (newsGameId, newsOrder, newsTeam, newsPieces, newsEffect, newsZone, newsText, newsEffectText, newsLength) VALUES(?,?,?,?,?,?,?,?,?)';
+
 $query = $db->prepare($query);
 $query->bind_param("iisssissi",$gameId, $order, $blue, $manualPieces, $disable, $zone, $text, $effectText, $length2 );
 $query->execute();
+
 $order = 9;
 $zone = 200; //all
 $text = "Oil tanker sinks! Oil Crisis arises as countries are conserving all resources";
 $effectText = "All Naval and Aircraft units are unable to move for the next turn";
 $manualPieces = "{'transport':1, 'submarine':1, 'destroyer':1, 'aircraftCarrier':1, 'soldier':0, 'artillery':0, 'tank':0, 'marine':0, 'convoy':0, 'attackHelo':0, 'sam':0, 'fighter':1, 'bomber':1, 'stealthBomber':1, 'tanker':1}";
-$query->bind_param("iisssiss",$gameId, $order, $all, $manualPieces, $disable, $zone, $text, $effectText );
+$query->bind_param("iisssissi", $gameId, $order, $all, $manualPieces, $disable, $zone, $text, $effectText, $length2);
 $query->execute();
 $order = 10;
 $text = "Breaking News: The sun came up and the sky is a lovely shade of blue!";

@@ -1,4 +1,10 @@
 <?php
+session_start();
+//Verify Course Director Logged On
+if (!isset($_SESSION['secretCourseDirectorVariable'])) {
+     header("location:../../index.php?err=8");
+     exit;
+}
 $mysql_host = getenv('DB_HOSTNAME');
 $mysql_database = getenv('DB_NAME');
 $mysql_user = getenv('DB_USERNAME');
