@@ -50,6 +50,7 @@ $gameTurn = $r['gameTurn'];
     <a href="./index.php">Home</a>
     <a href="troubleshoot.html">Troubleshoot</a>
     <a href="credits.html">Credits</a>
+    <a href="https://gitreports.com/issue/island-rush/K2" target="_blank" style="float: right">Report an Issue</a>
     <a href="https://github.com/island-rush/K2/wiki" target="_blank" style="float: right">Wiki</a>
 </nav>
 <h2>Teacher Tools</h2>
