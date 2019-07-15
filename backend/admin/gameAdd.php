@@ -26,4 +26,4 @@ $_SESSION['gameId'] = $gameId;
 
 include("gamePopulate.php");
 
-header('location:../../courseDirector.php');
+header('location:../../courseDirector.php?gameAdded=true');

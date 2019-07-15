@@ -103,7 +103,7 @@ for ($i = 0; $i < $num_results; $i++) {
 </table>
 
 <h1>Delete a Game</h1>
-<form name="gameAdd" method="post" id="gameDelete" onsubmit="confirmDelete()" action="backend/admin/gameDelete.php">
+<form name="gameAdd" method="post" id="gameDelete" onsubmit="return confirmDelete()" action="backend/admin/gameDelete.php">
 	<table border="0" cellpadding="3" cellspacing="1">
 		<tr>
 			<td>Game Id</td>
@@ -121,8 +121,8 @@ for ($i = 0; $i < $num_results; $i++) {
 
 <br>
 
-<form name="ResetDatabase" method="post" id="databaseResetForm" onsubmit="databaseReset()" action="backend/admin/databaseReset.php">
-	<input type="submit" class="btn btn-danger" name="Submit" id="databaseResetButton" value="RESET DATABASE">
+<form name="ResetDatabase" method="post" id="databaseResetForm" onsubmit="return databaseReset()" action="backend/admin/databaseReset.php">
+	<input type="submit" class="btn btn-danger" name="Submit" id="databaseResetButton" value="GENERATE DATABASE">
 </form>
 
 
@@ -130,10 +130,7 @@ for ($i = 0; $i < $num_results; $i++) {
 		console.log("Course Director Javascript");
 
 		function databaseReset() {
-			if(confirm("ARE YOU SURE YOU WANT TO RESET THE ENTIRE DATABASE?")) {
-				return confirm("THIS ACTION WILL DELETE ALL GAMES AND ASSOCIATED DATA");
-			}
-			return false;
+			return confirm("This button should only need to be pressed once, as a convenience of creating the database tables. It is assumed that the database itself already exists. This action will not effect current tables if they already exist.");
 		}
 
 		function confirmDelete() {

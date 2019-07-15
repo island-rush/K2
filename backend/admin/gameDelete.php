@@ -34,4 +34,4 @@ $preparedQuery = $db->prepare($query);
 $preparedQuery->bind_param("i", $gameId);
 $preparedQuery->execute();
 
-header('location:../../courseDirector.php');
+header('location:../../courseDirector.php?deletedGame=true');
