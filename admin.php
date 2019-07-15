@@ -48,7 +48,9 @@ $gameTurn = $r['gameTurn'];
 <h1>Island Rush Teacher</h1>
 <nav>
     <a href="./index.php">Home</a>
-	<a href="troubleshoot.html">Troubleshoot</a>
+    <a href="troubleshoot.html">Troubleshoot</a>
+    <a href="credits.html">Credits</a>
+    <a href="https://github.com/island-rush/K2/wiki" target="_blank" style="float: right">Wiki</a>
 </nav>
 <h2>Teacher Tools</h2>
 <span class="important" id="section">Section: <?php echo htmlentities($section); ?></span>

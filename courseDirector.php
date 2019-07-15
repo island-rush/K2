@@ -43,6 +43,8 @@ for ($i = 0; $i < $num_results; $i++) {
 <nav>
     <a href="./index.php">Home</a>
 	<a href="troubleshoot.html">Troubleshoot</a>
+	<a href="credits.html">Credits</a>
+	<a href="https://github.com/island-rush/K2/wiki" target="_blank" style="float: right">Wiki</a>
 </nav>
 
 <h1>Add a Game</h1>
@@ -77,7 +79,7 @@ for ($i = 0; $i < $num_results; $i++) {
 <h1>Current Games</h1>
 
 <!-- all the games are listed -->
-<table>
+<table border="1">
 	<tr>
 		<td>Game Id</td>
 		<td>Section</td>
@@ -119,26 +121,19 @@ for ($i = 0; $i < $num_results; $i++) {
 
 <br>
 
-<button class="btn btn-danger" id="databaseResetButton" onclick="databaseReset();">RESET DATABASE</button>
+<form name="ResetDatabase" method="post" id="databaseResetForm" onsubmit="databaseReset()" action="backend/admin/databaseReset.php">
+	<input type="submit" class="btn btn-danger" name="Submit" id="databaseResetButton" value="RESET DATABASE">
+</form>
+
 
 <script>
 		console.log("Course Director Javascript");
 
 		function databaseReset() {
-			if(confirm("ARE YOU SURE YOU WANT TO COMPLETELY RESET THE DATABASE?")){
-				if(confirm("This will remove ALL games and data associated with them, there is no reset for this action. Please backup all files and data before executing...")){
-					let phpDatabaseReset = new XMLHttpRequest();
-					phpDatabaseReset.onreadystatechange = function () {
-						if (this.readyState === 4 && this.status === 200) {
-							if (this.responseText === "Fail") {
-								alert("FAILED TO RESET THE DATABASE!...Please make sure database is online and environment variables are set up.");
-							}
-						}
-					};
-					phpDatabaseReset.open("GET", "backend/admin/databaseReset.php", true);
-					phpDatabaseReset.send();
-				}
+			if(confirm("ARE YOU SURE YOU WANT TO RESET THE ENTIRE DATABASE?")) {
+				return confirm("THIS ACTION WILL DELETE ALL GAMES AND ASSOCIATED DATA");
 			}
+			return false;
 		}
 
 		function confirmDelete() {

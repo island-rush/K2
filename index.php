@@ -14,10 +14,13 @@ session_start();
     </script>
 </head>
 <body>
-<h1>Island Rush Homepage V2.5 (HAPPY BIRTHDAY)</h1>
+<h1>Island Rush V2.5</h1>
 <nav>
     <a class="active" href="index.php">Home</a>
-	<a href="troubleshoot.html">Troubleshoot</a>
+    <a href="troubleshoot.html">Troubleshoot</a>
+    <a href="credits.html">Credits</a>
+    <a href="https://gitreports.com/issue/island-rush/K2" target="_blank" style="float: right">Report an Issue</a>
+    <a href="https://github.com/island-rush/K2/wiki" target="_blank" style="float: right">Wiki</a>
 </nav>
 <table border="0" cellpadding="30" cellspacing="10">
     <tr>
@@ -120,6 +123,20 @@ session_start();
                 </table>
             </form>
         </td>
+    </tr>
+    <tr>
+        Database Active Status: <?php
+            $hostname = getenv('DB_HOSTNAME');
+            $user = getenv('DB_USERNAME');
+            $password = getenv('DB_PASSWORD');
+            $database = getenv('DB_NAME');
+            @ $db = new mysqli($hostname, $user, $password, $database);
+            if (mysqli_connect_errno()) {
+                echo "<Red>FAILED</Red>";
+            } else {
+                echo "<Green>SUCCESS</Green>";
+            }
+        ?>
     </tr>
 </table>
 </body>
