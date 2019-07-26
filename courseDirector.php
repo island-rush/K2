@@ -1,10 +1,9 @@
 <?php
 session_start();
-if(isset($_SESSION['gameId'])) {
+if (isset($_SESSION['gameId'])) {
 	unset($_SESSION['gameId']);
 }
 
-include("backend/db.php");
 if (!isset($_SESSION['secretCourseDirectorVariable'])) {
     header("location:index.php?err=8");
     exit;
@@ -27,8 +26,6 @@ for ($i = 0; $i < $num_results; $i++) {
 		'gameActive' => $r['gameActive']
 	]);
 }
-
-
 ?>
 
 <!DOCTYPE html>
@@ -79,7 +76,6 @@ for ($i = 0; $i < $num_results; $i++) {
 
 <h1>Current Games</h1>
 
-<!-- all the games are listed -->
 <table border="1">
 	<tr>
 		<td>Game Id</td>
@@ -100,7 +96,6 @@ for ($i = 0; $i < $num_results; $i++) {
 			</tr>";
 		}
 	?>
-
 </table>
 
 <h1>Delete a Game</h1>
@@ -125,7 +120,6 @@ for ($i = 0; $i < $num_results; $i++) {
 <form name="ResetDatabase" method="post" id="databaseResetForm" onsubmit="return databaseReset()" action="backend/admin/databaseReset.php">
 	<input type="submit" class="btn btn-danger" name="Submit" id="databaseResetButton" value="GENERATE DATABASE">
 </form>
-
 
 <script>
 		console.log("Course Director Javascript");
