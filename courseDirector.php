@@ -118,14 +118,19 @@ for ($i = 0; $i < $num_results; $i++) {
 <br>
 
 <form name="ResetDatabase" method="post" id="databaseResetForm" onsubmit="return databaseReset()" action="backend/admin/databaseReset.php">
-	<input type="submit" class="btn btn-danger" name="Submit" id="databaseResetButton" value="GENERATE DATABASE">
+	<input type="submit" class="btn btn-danger" name="Submit" id="databaseResetButton" value="RESET DATABASE">
 </form>
 
 <script>
 		console.log("Course Director Javascript");
 
 		function databaseReset() {
-			return confirm("This button should only need to be pressed once, as a convenience of creating the database tables. It is assumed that the database itself already exists. This action will not effect current tables if they already exist.");
+			if (confirm("This button should only need to be pressed once, as a convenience of creating the database tables. It is assumed that the database itself already exists. This action will effect current tables if they already exist. BACKUP DATA")) {
+				if (confirm("ARE YOU SURE?")) {
+					return confirm("THIS WILL DELETE AND RESET EVERYTHING! ARE YOU ABSOLUTELY SURE?");
+				}
+			}
+			return false;
 		}
 
 		function confirmDelete() {
