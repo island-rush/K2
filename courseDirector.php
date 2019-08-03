@@ -33,7 +33,8 @@ for ($i = 0; $i < $num_results; $i++) {
 <head>
     <meta charset="UTF-8">
     <title>Island Rush Course Director</title>
-    <link rel="stylesheet" type="text/css" href="frontend/css/main.css">
+	<link rel="stylesheet" type="text/css" href="frontend/css/main.css">
+	<link rel="shortcut icon" href="./frontend/images/favicon.ico" type="image/x-icon">
 </head>
 <body>
 <h1>Island Rush Course Director</h1>

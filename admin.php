@@ -24,6 +24,7 @@ $gameTurn = $r['gameTurn'];
     <meta charset="UTF-8">
     <title>Island Rush Teacher</title>
     <link rel="stylesheet" type="text/css" href="frontend/css/main.css">
+    <link rel="shortcut icon" href="./frontend/images/favicon.ico" type="image/x-icon">
     <script>
 		console.log("Admin Javascript");
 		function populateGame() {

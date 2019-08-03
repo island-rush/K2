@@ -8,6 +8,7 @@ session_start();
 <head>
     <meta charset="UTF-8">
     <title>Island Rush</title>
+    <link rel="shortcut icon" href="./frontend/images/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" type="text/css" href="frontend/css/main.css">
     <script>
 		console.log("Home Page Javascript");
