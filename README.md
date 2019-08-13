@@ -70,7 +70,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 Version 2.5.1
 
-# TODO
+## TODO
 
 - Fix piece dragging and popups timing to be more stable.
 - Add wiki type website to explain the game / rules. (in progress)
