@@ -77,7 +77,7 @@ for ($i = 0; $i < $num_results; $i++) {  //for each piece that is in the game
     }
 }
 $finalPieceHTML = array();
-for ($z = 0; $z <= 118; $z++) {
+for ($z = 0; $z <= 125; $z++) {
     array_push($finalPieceHTML, "");
 }
 for ($x = 0; $x < sizeof($allPiecesArray); $x++) {
