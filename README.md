@@ -68,7 +68,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Version
 
-Version 2.5.1
+Version 2.6.1
 
 ## TODO
 
