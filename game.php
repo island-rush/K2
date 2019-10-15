@@ -107,7 +107,7 @@ for ($x = 0; $x < sizeof($allPiecesArray); $x++) {
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Island Rush Game V2.5</title>
+        <title>Island Rush Game V2.6.1</title>
         <link rel="stylesheet" type="text/css" href="frontend/css/game.css">
         <link rel="shortcut icon" href="./frontend/images/favicon.ico" type="image/x-icon">
         <script>
