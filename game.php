@@ -133,22 +133,22 @@ for ($x = 0; $x < sizeof($allPiecesArray); $x++) {
             <div id="side_panel">
                 <div id="titlebar">Logged into: <?php echo htmlentities($_SESSION['gameSection'])." - ".htmlentities($_SESSION['gameInstructor'])." - ".htmlentities($_SESSION['myTeam']); ?><br>Reinforcement Shop</div>
                 <div id="purchase_buttons_container">
-                    <div class="purchase_square Transport" title="Transport&#013;Cost: 8&#013;Moves: 2" id="Transport" data-unitId="0" onclick="piecePurchase(0);"></div>
-                    <div class="purchase_square Submarine" title="Submarine&#013;Cost: 8&#013;Moves: 2" id="Submarine" data-unitId="1" onclick="piecePurchase(1);"></div>
-                    <div class="purchase_square Destroyer" title="Destroyer&#013;Cost: 10&#013;Moves: 2" id="Destroyer" data-unitId="2" onclick="piecePurchase(2);"></div>
-                    <div class="purchase_square AircraftCarrier" title="AircraftCarrier&#013;Cost: 15&#013;Moves: 2" id="AircraftCarrier" data-unitId="3" onclick="piecePurchase(3);"></div>
-                    <div class="purchase_square ArmyCompany" title="ArmyCompany&#013;Cost: 4&#013;Moves: 1" id="ArmyCompany" data-unitId="4" onclick="piecePurchase(4);"></div>
-                    <div class="purchase_square ArtilleryBattery" title="ArtilleryBattery&#013;Cost: 5&#013;Moves: 1" id="ArtilleryBattery" data-unitId="5" onclick="piecePurchase(5);"></div>
-                    <div class="purchase_square TankPlatoon" title="TankPlatoon&#013;Cost: 6&#013;Moves: 1" id="TankPlatoon" data-unitId="6" onclick="piecePurchase(6);"></div>
-                    <div class="purchase_square MarinePlatoon" title="MarinePlatoon&#013;Cost: 5&#013;Moves: 1" id="MarinePlatoon" data-unitId="7" onclick="piecePurchase(7);"></div>
-                    <div class="purchase_square MarineConvoy" title="MarineConvoy&#013;Cost: 8&#013;Moves: 2" id="MarineConvoy" data-unitId="8" onclick="piecePurchase(8);"></div>
-                    <div class="purchase_square AttackHelo" title="AttackHelo&#013;Cost: 7&#013;Moves: 3" id="AttackHelo" data-unitId="9" onclick="piecePurchase(9);"></div>
-                    <div class="purchase_square SAM" title="SAM&#013;Cost: 8&#013;Moves: 1" id="SAM" data-unitId="10" onclick="piecePurchase(10);"></div>
-                    <div class="purchase_square FighterSquadron" title="FighterSquadron&#013;Cost: 12&#013;Moves: 4" id="FighterSquadron" data-unitId="11" onclick="piecePurchase(11);"></div>
-                    <div class="purchase_square BomberSquadron" title="BomberSquadron&#013;Cost: 12&#013;Moves: 6" id="BomberSquadron" data-unitId="12" onclick="piecePurchase(12);"></div>
-                    <div class="purchase_square StealthBomberSquadron" title="StealthBomberSquadron&#013;Cost: 15&#013;Moves: 5" id="StealthBomberSquadron" data-unitId="13" onclick="piecePurchase(13);"></div>
-                    <div class="purchase_square Tanker" title="Tanker&#013;Cost: 11&#013;Moves: 5" id="Tanker" data-unitId="14" onclick="piecePurchase(14);"></div>
-                    <div class="purchase_square LandBasedSeaMissile" title="LandBasedSeaMissile&#013;Cost: 10" id="LandBasedSeaMissile" data-unitId="15" onclick="piecePurchase(15);"></div>
+                    <div class="purchase_square Transport" title="Transport&#010;Cost: 8&#010;Moves: 2" id="Transport" data-unitId="0" onclick="piecePurchase(0);"></div>
+                    <div class="purchase_square Submarine" title="Submarine&#010;Cost: 8&#010;Moves: 2" id="Submarine" data-unitId="1" onclick="piecePurchase(1);"></div>
+                    <div class="purchase_square Destroyer" title="Destroyer&#010;Cost: 10&#010;Moves: 2" id="Destroyer" data-unitId="2" onclick="piecePurchase(2);"></div>
+                    <div class="purchase_square AircraftCarrier" title="AircraftCarrier&#010;Cost: 15&#010;Moves: 2" id="AircraftCarrier" data-unitId="3" onclick="piecePurchase(3);"></div>
+                    <div class="purchase_square ArmyCompany" title="ArmyCompany&#010;Cost: 4&#010;Moves: 1" id="ArmyCompany" data-unitId="4" onclick="piecePurchase(4);"></div>
+                    <div class="purchase_square ArtilleryBattery" title="ArtilleryBattery&#010;Cost: 5&#010;Moves: 1" id="ArtilleryBattery" data-unitId="5" onclick="piecePurchase(5);"></div>
+                    <div class="purchase_square TankPlatoon" title="TankPlatoon&#010;Cost: 6&#010;Moves: 1" id="TankPlatoon" data-unitId="6" onclick="piecePurchase(6);"></div>
+                    <div class="purchase_square MarinePlatoon" title="MarinePlatoon&#010;Cost: 5&#010;Moves: 1" id="MarinePlatoon" data-unitId="7" onclick="piecePurchase(7);"></div>
+                    <div class="purchase_square MarineConvoy" title="MarineConvoy&#010;Cost: 8&#010;Moves: 2" id="MarineConvoy" data-unitId="8" onclick="piecePurchase(8);"></div>
+                    <div class="purchase_square AttackHelo" title="AttackHelo&#010;Cost: 7&#010;Moves: 3" id="AttackHelo" data-unitId="9" onclick="piecePurchase(9);"></div>
+                    <div class="purchase_square SAM" title="SAM&#010;Cost: 8&#010;Moves: 1" id="SAM" data-unitId="10" onclick="piecePurchase(10);"></div>
+                    <div class="purchase_square FighterSquadron" title="FighterSquadron&#010;Cost: 12&#010;Moves: 4" id="FighterSquadron" data-unitId="11" onclick="piecePurchase(11);"></div>
+                    <div class="purchase_square BomberSquadron" title="BomberSquadron&#010;Cost: 12&#010;Moves: 6" id="BomberSquadron" data-unitId="12" onclick="piecePurchase(12);"></div>
+                    <div class="purchase_square StealthBomberSquadron" title="StealthBomberSquadron&#010;Cost: 15&#010;Moves: 5" id="StealthBomberSquadron" data-unitId="13" onclick="piecePurchase(13);"></div>
+                    <div class="purchase_square Tanker" title="Tanker&#010;Cost: 11&#010;Moves: 5" id="Tanker" data-unitId="14" onclick="piecePurchase(14);"></div>
+                    <div class="purchase_square LandBasedSeaMissile" title="LandBasedSeaMissile&#010;Cost: 10" id="LandBasedSeaMissile" data-unitId="15" onclick="piecePurchase(15);"></div>
                 </div>
                 <div id="purchase_seperator">Inventory</div>
                 <div id="shopping_things">
@@ -421,40 +421,40 @@ for ($x = 0; $x < sizeof($allPiecesArray); $x++) {
                                 <tbody>
                                 <tr>
                                     <td rowspan="2">Cyber</td>
-                                    <td title="A Cyber attack causes an enemy airfield to be completely shutdown. &#013;Aircraft may not leave or enter that airfield during the enemy turn.">Air Traffic Control Scramble</td>
+                                    <td title="A Cyber attack causes an enemy airfield to be completely shutdown. &#010;Aircraft may not leave or enter that airfield during the enemy turn.">Air Traffic Control Scramble</td>
                                     <td>3</td>
                                     <td><button id="hybridAirfieldShutdown" onclick="hybridDisableAirfield();">Choose</button></td>
                                 </tr>
                                 <tr>
-                                    <td title="Enemy island value counts towards your points for the next two turns. &#013;Enemy team does not earn any points from this island.">Bank Drain</td>
+                                    <td title="Enemy island value counts towards your points for the next two turns. &#010;Enemy team does not earn any points from this island.">Bank Drain</td>
                                     <td>4</td>
                                     <td><button id="hybridBankDrain" onclick="hybridBankDrain();">Choose</button></td>
                                 </tr>
                                 <tr>
                                     <td rowspan="2">Space</td>
-                                    <td title="Satellite technology has discovered how to temporarily shorten all &#013;logisical routes. For one turn, all your units get +1 moves.">Advanced Remote Sensing</td>
+                                    <td title="Satellite technology has discovered how to temporarily shorten all &#010;logisical routes. For one turn, all your units get +1 moves.">Advanced Remote Sensing</td>
                                     <td>8</td>
                                     <td><button id="hybridAddMove" onclick="hybridAddMove();">Choose</button></td>
                                 </tr>
                                 <tr>
-                                    <td title="Satellite technology allows for kinetic effects from space! &#013;Instantly destroy a unit on the board. &#013;(destroying a container destroys everything inside of it)">Rods from God</td>
+                                    <td title="Satellite technology allows for kinetic effects from space! &#010;Instantly destroy a unit on the board. &#010;(destroying a container destroys everything inside of it)">Rods from God</td>
                                     <td>6</td>
                                     <td><button id="hybridDeletePiece" onclick="hybridDeletePiece();">Choose</button></td>
                                 </tr>
                                 <tr>
                                     <td rowspan="2" title="Using a nuclear option makes a team unable to use Humanitarian options for 3 turns">Nuclear*</td>
-                                    <td title="A high altitude ICBM detonation produces an electromagnetic pulse &#013;over all enemy aircraft, disabling them for their next turn.">Goldeneye</td>
+                                    <td title="A high altitude ICBM detonation produces an electromagnetic pulse &#010;over all enemy aircraft, disabling them for their next turn.">Goldeneye</td>
                                     <td>10</td>
                                     <td><button id="hybridAircraftDisable" onclick="hybridDisableAircraft();">Choose</button></td>
                                 </tr>
                                 <tr>
-                                    <td title="An ICBM ground burst strike destroys a non-capital island. All units on island &#013;and adjacent sea zones are destroyed. The island will not be used for &#013;the rest of the game and does not contribute to points.">Nuclear Strike</td>
+                                    <td title="An ICBM ground burst strike destroys a non-capital island. All units on island &#010;and adjacent sea zones are destroyed. The island will not be used for &#010;the rest of the game and does not contribute to points.">Nuclear Strike</td>
                                     <td>12</td>
                                     <td><button id="hybridNukeIsland" onclick="hybridNuke();">Choose</button></td>
                                 </tr>
                                 <tr>
                                     <td>Humanitarian</td>
-                                    <td title="When a News alert notifies a team about a catastrophe in an area, &#013;teams have the option to provide humanitarian aid to that nation. &#013;Spend 3 HW points and receive 10 Reinforcement Points.">Humanitarian Option</td>
+                                    <td title="When a News alert notifies a team about a catastrophe in an area, &#010;teams have the option to provide humanitarian aid to that nation. &#010;Spend 3 HW points and receive 10 Reinforcement Points.">Humanitarian Option</td>
                                     <td>3</td>
                                     <td><button id="hybridHumanitarian" onclick="hybridHumanitarian();">Choose</button></td>
                                 </tr>
