@@ -21,7 +21,7 @@ mysql
 
 ### Database
 
-There are many methods of running / hosting a MySQL server. Once the database exists, please create a user/password for the game to use. Set these values in the env variables.
+There are many methods of running / hosting a MySQL server. Once the database exists, please create a user/password for the game to use. Set these values in the env variables, or hard-code them in the ./db.php
 
 ### Development
 
@@ -37,7 +37,7 @@ Hosting the repository should allow access to these pages.
 - /game.php
   - You must authenticate via player login to see/use this page.
 
-Note there are several env variables used by the backend. There are no default values for these, they can be directly changed within db.php and loginVerify.php
+Note there are several env variables used by the backend, although these could also be changed with hard-coded default values. (Within ./db.php and ./loginVerify.php)
 
 - CD_LASTNAME = Course Director Last Name (lowercase)
 - CD_PASSWORD = Course Director MD5 Password Hash
@@ -46,11 +46,11 @@ Note there are several env variables used by the backend. There are no default v
 - DB_USERNAME = database user
 - DB_PASSWORD = database password
 
-Inserting the database tables and creating/deleting games can be accomplished from the /courseDirector page. Login from the homepage with the creditionals used in the env variables. The password used when creating a game is the password used by teachers to login to their /admin page. Teachers are able activate/deactivate their games, as well as reset the game to have initial pieces on the board.
+Inserting the database tables must be done manually through either command line interface, or usually MySQL Workbench. Run the ./db_reset.sql script to accomplish this before all other tasks. Creating/deleting games can be accomplished from the ./courseDirector page. Login from the homepage with the creditionals used in the env variables. The password used when creating a game is the password used by teachers to login to their ./admin page. Teachers are able activate/deactivate their games, as well as reset the game to have initial pieces on the board.
 
 ## Deployment
 
-Simply host this directory, create a mysql database, and correctly assign all env variables.
+Simply host this directory, create a mysql database, and correctly assign all env variables/hard-coded variables.
 
 Current Official Deployments have been automated and setup with [Azure](https://azure.microsoft.com/en-us/).
 
@@ -68,14 +68,13 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Version
 
-Version 2.6.1
+Version 2.6.2
 
 ## TODO
 
 - Fix piece dragging and popups timing to be more stable.
 - Add wiki type website to explain the game / rules. (in progress)
 - Improve Troubleshooting page
-- Safety checks for environment variables missing from deployment, set default values
-- Added url messages into body on CD page, similar to K3.1
+- Added url messages into body on CD page, similar to K3
 
 Note: Although this version is no longer being developed, it is still supported by the Island Rush Dev Team. Please [report](https://gitreports.com/issue/island-rush/K2) any issues.

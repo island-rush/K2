@@ -14,7 +14,7 @@ if ( (isset($_POST['adminSection'])) && (isset($_POST['adminInstructor'])) && (i
     switch($numRows){
         case 0:
             $lowercaseInstructor = strtolower($instructor);
-            if ($section = 'CourseDirector' && $lowercaseInstructor == getenv('CD_LASTNAME') && $password == getenv('CD_PASSWORD')) {
+            if ($section = 'CourseDirector' && $lowercaseInstructor == $courseDirectorLastName && $password == $courseDirectorPasswordHash) {
                 $_SESSION['secretCourseDirectorVariable'] = "SpencerIsAwesome";
                 header("location:../../courseDirector.php");  //Course Director Log In
             } else {

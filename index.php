@@ -15,7 +15,7 @@ session_start();
     </script>
 </head>
 <body>
-<h1>Island Rush V2.6.1</h1>
+<h1>Island Rush V2.6.2</h1>
 <nav>
     <a class="active" href="index.php">Home</a>
     <a href="troubleshoot.html">Troubleshoot</a>
