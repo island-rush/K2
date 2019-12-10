@@ -37,7 +37,7 @@ Hosting the repository should allow access to these pages.
 - /game.php
   - You must authenticate via player login to see/use this page.
 
-Note there are several env variables used by the backend, although these could also be changed with hard-coded default values. (Within ./db.php and ./loginVerify.php)
+Note there are several env variables used by the backend, although these could also be changed with hard-coded default values. (Within ./db.php and ./loginVerify.php) (index.php also uses some of these values separately.)
 
 - CD_LASTNAME = Course Director Last Name (lowercase)
 - CD_PASSWORD = Course Director MD5 Password Hash

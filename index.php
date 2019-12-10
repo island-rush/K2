@@ -127,10 +127,15 @@ session_start();
     </tr>
     <tr>
         Database Active Status: <?php
-            $hostname = getenv('DB_HOSTNAME');
-            $user = getenv('DB_USERNAME');
-            $password = getenv('DB_PASSWORD');
-            $database = getenv('DB_NAME');
+            // $hostname = getenv('DB_HOSTNAME');
+            // $user = getenv('DB_USERNAME');
+            // $password = getenv('DB_PASSWORD');
+            // $database = getenv('DB_NAME');
+            $hostname = "localhost";
+            $user = "root";
+            $password = "";
+            $database = "islandrushdb";
+
             @ $db = new mysqli($hostname, $user, $password, $database);
             if (mysqli_connect_errno()) {
                 echo "<Red>FAILED</Red>";
