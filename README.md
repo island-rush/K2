@@ -64,7 +64,7 @@ Azure App Services may have issues with php session data. This may be due to aut
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+Please Contact Owners for Information.
 
 ## Version
 
